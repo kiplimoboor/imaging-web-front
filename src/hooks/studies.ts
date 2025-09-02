@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { studies } from "../data/test";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

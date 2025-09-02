@@ -8,7 +8,11 @@ import { useGetUsers } from "../hooks/users";
 import Navbar from "./Navbar";
 import TableRowActions from "./StudiesTableRowActions";
 
-function StudyTable({ studies }) {
+type StudyTableProps = {
+  studies: Study[] | undefined;
+};
+
+function StudyTable({ studies }: StudyTableProps) {
   const [alert, setAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
   const { data: users } = useGetUsers();
