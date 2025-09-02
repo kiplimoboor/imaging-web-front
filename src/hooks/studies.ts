@@ -18,13 +18,21 @@ type AssignmentCreate = {
   radiologist_id: number;
 };
 
-function useGetStudies() {
+function useGetStudies(radiologist?: number) {
   return useQuery<Study[]>({
     queryKey: ["studies"],
-    queryFn: getStudies,
+    queryFn: () => getStudies(radiologist),
     // staleTime: Infinity,
     // queryFn: async (): Promise<Study[]> => studies,
   });
+}
+
+async function getStudies(radiologist?: number): Promise<Study[]> {
+  const url_params = new URLSearchParams();
+  if (radiologist) url_params.append("radiologist", radiologist.toString());
+  const res = await fetch(API_URL + "/assignments?" + url_params);
+  const data: Study[] = await res.json();
+  return data;
 }
 
 function useAssignment() {
@@ -33,17 +41,11 @@ function useAssignment() {
       const res = await fetch(API_URL + "/assignments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dicom_uid, radiologist_id }),
+        body: JSON.stringify({ dicom_uid, radiologist: radiologist_id }),
       });
       return res.status;
     },
   });
-}
-
-async function getStudies(): Promise<Study[]> {
-  const res = await fetch(API_URL + "/assignments");
-  const data: Study[] = await res.json();
-  return data;
 }
 
 export { useAssignment, useGetStudies, type Study };

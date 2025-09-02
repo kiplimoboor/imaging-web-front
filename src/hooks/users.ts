@@ -9,6 +9,7 @@ interface User {
   email: string;
   status: number;
   role: string;
+  admin: boolean;
 }
 
 type UserCreate = {
@@ -16,6 +17,7 @@ type UserCreate = {
   email: string;
   role: string;
 };
+
 type UserUpdate = {
   id: number;
   field: string;

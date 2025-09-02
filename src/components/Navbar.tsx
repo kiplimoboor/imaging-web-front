@@ -1,13 +1,16 @@
 import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/material";
 import { Link } from "react-router";
+import { useAuth } from "../context/AuthContext";
 
-type Page = { title: string; link: string };
+type Page = { title: string; link: string; admin: boolean };
 const pages: Page[] = [
-  { title: "Home", link: "/dashboard" },
-  { title: "Users", link: "/users" },
+  { title: "Dashboard", link: "/dashboard", admin: false },
+  { title: "Assignments", link: "/assignments", admin: true },
+  { title: "Users", link: "/users", admin: true },
 ];
 
 function Navbar() {
+  const { user } = useAuth();
   return (
     <AppBar
       position="static"
@@ -37,13 +40,14 @@ function Navbar() {
           </Box>
           <Box sx={{ display: { xs: "none", md: "flex", marginRight: 12 } }}>
             {pages.map((page) => {
-              if (page.link.startsWith("http")) {
+              if (page.admin && user?.admin) {
                 return (
-                  <a href={`${page.link}`} key={page.link}>
+                  <Link to={`${page.link}`} key={page.link}>
                     <Button sx={{ my: 2, color: "black", display: "block" }}>{page.title}</Button>
-                  </a>
+                  </Link>
                 );
-              } else {
+              }
+              if (page.admin === false) {
                 return (
                   <Link to={`${page.link}`} key={page.link}>
                     <Button sx={{ my: 2, color: "black", display: "block" }}>{page.title}</Button>

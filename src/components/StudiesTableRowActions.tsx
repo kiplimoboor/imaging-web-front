@@ -9,6 +9,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { useQueryClient } from "@tanstack/react-query";
 import { type MRT_Row } from "material-react-table";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { useAssignment, type Study } from "../hooks/studies";
 import { type User } from "../hooks/users";
 
@@ -23,6 +24,7 @@ function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
   const mutation = useAssignment();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const rowData = row.original;
+  const { user } = useAuth();
 
   const handleAssign = (user: User, dicom_uid: string) => {
     // NOTE: This is an optimistic update
@@ -55,12 +57,13 @@ function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
         </Tooltip>
       </IconButton>
 
-      <IconButton disabled={rowData.status !== 0} onClick={(e) => setAnchorEl(e.currentTarget)}>
-        <Tooltip title="Assign to">
-          <PersonAddIcon />
-        </Tooltip>
-      </IconButton>
-
+      {user && user.admin && (
+        <IconButton disabled={rowData.status !== 0} onClick={(e) => setAnchorEl(e.currentTarget)}>
+          <Tooltip title="Assign to">
+            <PersonAddIcon />
+          </Tooltip>
+        </IconButton>
+      )}
       <IconButton onClick={() => console.log("Print Report Clicked")} disabled={rowData.status != 2}>
         <Tooltip title="Print Report">
           <PrintIcon />

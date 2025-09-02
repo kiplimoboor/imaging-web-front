@@ -19,13 +19,14 @@ function AuthCallback() {
       const success = await login(code);
 
       if (success) setLoggedIn(true);
+      else setError(true);
     }
     loginUser();
   }, []);
 
   if (loggedIn) return <Navigate to="/dashboard" />;
 
-  if (error) return "There was an error logging you in";
+  if (error) return <Navigate to="/401" />;
 
   return "Loading...";
 }

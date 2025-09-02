@@ -23,6 +23,7 @@ function getLocalStorageUser(): User | null {
 
 function AuthProvider({ children }: React.PropsWithChildren) {
   const [user, setUser] = useState<User | null>(getLocalStorageUser());
+  // const [user, setUser] = useState<User | null>(null);
 
   const login = async (code: string) => {
     const res = await fetch(API_URL + "/oauth/exchange", {
