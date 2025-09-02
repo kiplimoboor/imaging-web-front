@@ -2,6 +2,7 @@ import { Alert, Snackbar } from "@mui/material";
 import Box from "@mui/material/Box";
 import { MaterialReactTable, useMaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { useMemo, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { studyStatusMap } from "../data/test";
 import { type Study } from "../hooks/studies";
 import { useGetUsers } from "../hooks/users";
@@ -13,6 +14,7 @@ type StudyTableProps = {
 };
 
 function StudyTable({ studies }: StudyTableProps) {
+  const { user } = useAuth();
   const [alert, setAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
   const { data: users } = useGetUsers();
@@ -53,6 +55,7 @@ function StudyTable({ studies }: StudyTableProps) {
           );
         },
       },
+      { accessorKey: "radiologist_name", header: "Assignee" },
     ],
     [],
   );
@@ -61,7 +64,11 @@ function StudyTable({ studies }: StudyTableProps) {
     columns,
     data: studies ?? [],
     enableDensityToggle: false,
-    initialState: { showGlobalFilter: true, density: "compact" },
+    initialState: {
+      showGlobalFilter: true,
+      density: "compact",
+      columnVisibility: { radiologist_name: user?.admin ?? true },
+    },
     enableRowActions: true,
     positionActionsColumn: "last",
     renderRowActions: ({ row }) => <TableRowActions row={row} users={users} showAlert={showAlert} />,
