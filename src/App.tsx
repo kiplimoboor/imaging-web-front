@@ -5,6 +5,7 @@ import AuthCallback from "./components/AuthCallback";
 import Home from "./components/Home";
 import { AllStudies, UserStudies } from "./components/Studies";
 import Users from "./components/Users";
+import Viewer from "./components/Viewer.tsx";
 import { AuthProvider } from "./context/AuthContext";
 import { AdminRoutes, PrivateRoutes } from "./routes/AppRoutes";
 
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<AuthCallback />} />
             <Route path="/401" element={<Unauthorized />} />
+            <Route path="/viewer/:id" element={<Viewer />} />
             <Route element={<PrivateRoutes />}>
               <Route path="/dashboard" element={<UserStudies />}></Route>
               <Route element={<AdminRoutes />}>
