@@ -38,7 +38,7 @@ function useAssignment() {
   return useMutation({
     mutationFn: async ({ dicom_uid, radiologist_id }: AssignmentCreate) => {
       const res = await fetch(API_URL + "/studies", {
-        method: "POST",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dicom_uid, radiologist: radiologist_id }),
       });
