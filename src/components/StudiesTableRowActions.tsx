@@ -69,11 +69,13 @@ function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
           </Tooltip>
         </IconButton>
       )}
-      <IconButton onClick={() => console.log("Print Report Clicked")} disabled={rowData.status != 2}>
-        <Tooltip title="Print Report">
-          <PrintIcon />
-        </Tooltip>
-      </IconButton>
+      <div className="hidden">
+        <IconButton onClick={() => console.log("Print Report Clicked")} disabled={rowData.status != 2}>
+          <Tooltip title="Print Report">
+            <PrintIcon />
+          </Tooltip>
+        </IconButton>
+      </div>
 
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
         {users

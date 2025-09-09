@@ -6,7 +6,6 @@ import { useAuth } from "../context/AuthContext";
 import { studyStatusMap } from "../data/test";
 import { type Study } from "../hooks/studies";
 import { useGetUsers } from "../hooks/users";
-import Navbar from "./Navbar";
 import TableRowActions from "./StudiesTableRowActions";
 
 type StudyTableProps = {
@@ -76,7 +75,6 @@ function StudyTable({ studies }: StudyTableProps) {
 
   return (
     <>
-      <Navbar />
       <div className="w-10/12 mx-auto my-8">
         <MaterialReactTable table={table} />
       </div>
