@@ -29,7 +29,7 @@ function useGetStudies(radiologist?: number) {
 async function getStudies(radiologist?: number): Promise<Study[]> {
   const url_params = new URLSearchParams();
   if (radiologist) url_params.append("radiologist", radiologist.toString());
-  const res = await fetch(API_URL + "/assignments?" + url_params);
+  const res = await fetch(API_URL + "/studies?" + url_params);
   const data: Study[] = await res.json();
   return data;
 }
@@ -37,7 +37,7 @@ async function getStudies(radiologist?: number): Promise<Study[]> {
 function useAssignment() {
   return useMutation({
     mutationFn: async ({ dicom_uid, radiologist_id }: AssignmentCreate) => {
-      const res = await fetch(API_URL + "/assignments", {
+      const res = await fetch(API_URL + "/studies", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dicom_uid, radiologist: radiologist_id }),

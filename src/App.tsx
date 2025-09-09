@@ -19,7 +19,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<AuthCallback />} />
             <Route path="/401" element={<Unauthorized />} />
-            <Route path="/viewer/:id" element={<Viewer />} />
+            <Route path="/viewer/:uid" element={<Viewer />} />
             <Route element={<PrivateRoutes />}>
               <Route path="/dashboard" element={<UserStudies />}></Route>
               <Route element={<AdminRoutes />}>

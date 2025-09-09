@@ -9,6 +9,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { useQueryClient } from "@tanstack/react-query";
 import { type MRT_Row } from "material-react-table";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { useAssignment, type Study } from "../hooks/studies";
 import { type User } from "../hooks/users";
@@ -20,6 +21,7 @@ interface TableRowActionProps {
 }
 
 function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const mutation = useAssignment();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -44,13 +46,16 @@ function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <IconButton
-        onClick={() => {
-          const studyLink = "http://172.16.0.29/ohif/viewer";
-          const params = new URLSearchParams({
-            StudyInstanceUIDs: rowData.dicom_uid,
-          });
-          window.open(`${studyLink}?${params}`, "_self");
-        }}
+        onClick={() =>
+          navigate("/viewer/" + rowData.dicom_uid, {
+            state: {
+              uid: rowData.dicom_uid,
+              name: rowData.patient_name,
+              id: rowData.patient_id,
+              date: rowData.study_date,
+            },
+          })
+        }
       >
         <Tooltip title="View Study">
           <VisibilityIcon />
