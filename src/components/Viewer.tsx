@@ -26,11 +26,18 @@ function Viewer() {
 
   return (
     <div className="flex h-screen w-full">
+      {/*
+  First iframe: always rendered
+*/}
       <iframe
-        src={"http://172.16.0.29/ohif/viewer?StudyInstanceUIDs=" + uid}
+        src={`http://172.16.0.29/ohif/viewer?StudyInstanceUIDs=${uid}`}
         className={`h-full ${study?.radiologist ? "w-8/12" : "w-full"}`}
       ></iframe>
-      {study?.radiologist && <iframe ref={iframeRef} src="http://172.16.0.29/editor/" className="w-4/12"></iframe>}
+
+      {/*
+  Second iframe: rendered only if radiologist is truthy
+*/}
+      {Boolean(study?.radiologist) && <iframe ref={iframeRef} src="http://172.16.0.29/editor/" className="w-4/12" />}
     </div>
   );
 }
