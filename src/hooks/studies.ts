@@ -10,6 +10,7 @@ interface Study {
   study_date: string;
   modalities: string[];
   status: 0 | 1 | 2;
+  radiologist: number;
 }
 
 type AssignmentCreate = {

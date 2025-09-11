@@ -26,8 +26,11 @@ function Viewer() {
 
   return (
     <div className="flex h-screen w-full">
-      <iframe src={"http://172.16.0.29/ohif/viewer?StudyInstanceUIDs=" + uid} className="w-8/12 h-full"></iframe>
-      <iframe ref={iframeRef} src="http://172.16.0.29/editor/" className="w-4/12"></iframe>
+      <iframe
+        src={"http://172.16.0.29/ohif/viewer?StudyInstanceUIDs=" + uid}
+        className={`h-full ${study?.radiologist ? "w-8/12" : "w-full"}`}
+      ></iframe>
+      {study?.radiologist && <iframe ref={iframeRef} src="http://172.16.0.29/editor/" className="w-4/12"></iframe>}
     </div>
   );
 }
