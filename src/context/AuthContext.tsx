@@ -4,10 +4,7 @@ import { type User } from "../hooks/users";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-type AuthContextProps = {
-  login: (code: string) => Promise<boolean>;
-  user: User | null;
-};
+type AuthContextProps = { login: (code: string) => Promise<boolean>; user: User | null };
 
 const AuthContext = createContext<AuthContextProps>({ login: async () => false, user: null });
 
@@ -23,7 +20,6 @@ function getLocalStorageUser(): User | null {
 
 function AuthProvider({ children }: React.PropsWithChildren) {
   const [user, setUser] = useState<User | null>(getLocalStorageUser());
-  // const [user, setUser] = useState<User | null>(null);
 
   const login = async (code: string) => {
     const res = await fetch(API_URL + "/oauth/exchange", {
