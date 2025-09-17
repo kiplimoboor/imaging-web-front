@@ -10,16 +10,18 @@ const AuthContext = createContext<AuthContextProps>({ login: async () => false, 
 
 const useAuth = () => useContext(AuthContext);
 
-function getLocalStorageUser(): User | null {
-  const token = localStorage.getItem("token");
-  if (!token) return null;
-
-  const payload: User = decodeJwt(token);
-  return payload;
-}
+// function getLocalStorageUser(): User | null {
+//   const token = localStorage.getItem("token");
+//   if (!token) return null;
+//
+//   const payload: User = decodeJwt(token);
+//   return payload;
+// }
 
 function AuthProvider({ children }: React.PropsWithChildren) {
-  const [user, setUser] = useState<User | null>(getLocalStorageUser());
+  // const [user, setUser] = useState<User | null>(getLocalStorageUser());
+
+  const [user, setUser] = useState<User | null>(null);
 
   const login = async (code: string) => {
     const res = await fetch(API_URL + "/oauth/exchange", {
