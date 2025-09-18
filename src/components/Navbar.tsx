@@ -2,11 +2,11 @@ import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/materi
 import { Link } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
-type Page = { title: string; link: string; admin: boolean };
+type Page = { title: string; link: string };
 const pages: Page[] = [
-  { title: "Dashboard", link: "/dashboard", admin: false },
-  { title: "Assignments", link: "/assignments", admin: true },
-  { title: "Users", link: "/users", admin: true },
+  { title: "Dashboard", link: "/dashboard" },
+  { title: "Assignments", link: "/assignments" },
+  { title: "Users", link: "/users" },
 ];
 
 function Navbar() {
@@ -18,7 +18,7 @@ function Navbar() {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <img src="/mtrh.svg" alt="MTRH Logo" />
             <Typography
               variant="h6"
@@ -38,24 +38,23 @@ function Navbar() {
               MTRH
             </Typography>
           </Box>
-          <Box sx={{ display: { xs: "none", md: "flex", marginRight: 12 } }}>
-            {pages.map((page) => {
-              if (page.admin && user?.admin) {
-                return (
-                  <Link to={`${page.link}`} key={page.link}>
-                    <Button sx={{ my: 2, color: "black", display: "block" }}>{page.title}</Button>
-                  </Link>
-                );
-              }
-              if (page.admin === false) {
-                return (
-                  <Link to={`${page.link}`} key={page.link}>
-                    <Button sx={{ my: 2, color: "black", display: "block" }}>{page.title}</Button>
-                  </Link>
-                );
-              }
-            })}
+
+          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+            {user?.admin &&
+              pages.map((page) => (
+                <Link to={`${page.link}`} key={page.link}>
+                  <Button sx={{ my: 2, color: "black", display: "block" }}>{page.title}</Button>
+                </Link>
+              ))}
           </Box>
+
+          {user && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography variant="body2" sx={{ color: "black", fontStyle: "italic" }}>
+                Logged in as: <strong>{user.full_name}</strong>
+              </Typography>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
