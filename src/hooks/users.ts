@@ -40,7 +40,6 @@ function useCreateUser() {
 function useGetUsers() {
   return useQuery<User[]>({
     queryKey: ["users"],
-    // queryFn: async (): Promise<User[]> => users,
     staleTime: Infinity,
     queryFn: async (): Promise<User[]> => {
       const res = await fetch(API_URL + "/users");

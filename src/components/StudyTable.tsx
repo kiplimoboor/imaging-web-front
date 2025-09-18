@@ -54,7 +54,7 @@ function StudyTable({ studies }: StudyTableProps) {
           );
         },
       },
-      { accessorKey: "radiologist_name", header: "Assignee" },
+      { accessorKey: "radiologist_name", header: "Radiologist" },
     ],
     [],
   );

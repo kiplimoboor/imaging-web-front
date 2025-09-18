@@ -16,12 +16,11 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<Home />} />
             <Route path="/auth" element={<AuthCallback />} />
             <Route path="/401" element={<Unauthorized />} />
             <Route path="/viewer/:uid" element={<Viewer />} />
             <Route element={<PrivateRoutes />}>
-              <Route path="/dashboard" element={<UserStudies />}></Route>
+              <Route path="/" element={<UserStudies />} />
               <Route element={<AdminRoutes />}>
                 <Route path="/users" element={<Users />} />
                 <Route path="/assignments" element={<AllStudies />}></Route>

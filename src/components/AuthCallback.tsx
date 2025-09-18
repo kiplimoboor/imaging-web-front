@@ -24,7 +24,7 @@ function AuthCallback() {
     loginUser();
   }, []);
 
-  if (loggedIn) return <Navigate to="/dashboard" />;
+  if (loggedIn) return <Navigate to="/" />;
 
   if (error) return <Navigate to="/401" />;
 

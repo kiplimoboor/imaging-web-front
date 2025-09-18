@@ -4,7 +4,6 @@ import { useAuth } from "../context/AuthContext";
 
 type Page = { title: string; link: string };
 const pages: Page[] = [
-  { title: "Dashboard", link: "/dashboard" },
   { title: "Assignments", link: "/assignments" },
   { title: "Users", link: "/users" },
 ];
@@ -24,7 +23,6 @@ function Navbar() {
               variant="h6"
               noWrap
               component="a"
-              href="/dashboard"
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
