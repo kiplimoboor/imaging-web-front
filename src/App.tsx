@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, Routes } from "react-router";
 import Unauthorized from "./components/401.tsx";
 import AuthCallback from "./components/AuthCallback";
-import Home from "./components/Home";
 import { AllStudies, UserStudies } from "./components/Studies";
 import Users from "./components/Users";
 import Viewer from "./components/Viewer.tsx";
