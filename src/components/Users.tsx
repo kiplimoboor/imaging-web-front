@@ -1,4 +1,5 @@
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Switch from "@mui/material/Switch";
@@ -22,7 +23,7 @@ function Users() {
         accessorKey: "role",
         header: "Role",
         editVariant: "select",
-        editSelectOptions: ["Administrator", "System User"],
+        editSelectOptions: ["Administrator", "System User", "Support"],
         muiEditTextFieldProps: { required: true, select: true },
       },
       {
@@ -103,24 +104,27 @@ function RowActions({ row }: RowActionProps) {
   const queryClient = useQueryClient();
   const mutation = useUpdateUser();
 
-  const active = row.original?.status == 1 ? true : false;
-  const { id, status } = row.original;
+  const { id, status, role } = row.original;
+  const active = status === 1;
   const isActive = status === 1;
   return (
-    <Switch
-      name="user-status"
-      checked={active}
-      onChange={() => {
-        queryClient.setQueryData(["users"], (oldUsers: User[]) => {
-          return oldUsers.map((user) => {
-            if (id === user.id) return { ...user, status: user.status == 0 ? 1 : 0 };
-            return user;
+    <Tooltip title={status === 1 ? "Deactivate" : "Activate"}>
+      <Switch
+        name={"user-status"}
+        checked={active}
+        disabled={role === "Support"}
+        onChange={() => {
+          queryClient.setQueryData(["users"], (oldUsers: User[]) => {
+            return oldUsers.map((user) => {
+              if (id === user.id) return { ...user, status: user.status == 0 ? 1 : 0 };
+              return user;
+            });
           });
-        });
 
-        mutation.mutate({ id, field: "status", value: isActive ? "0" : "1" });
-      }}
-    />
+          mutation.mutate({ id, field: "status", value: isActive ? "0" : "1" });
+        }}
+      />
+    </Tooltip>
   );
 }
 
