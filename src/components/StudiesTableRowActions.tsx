@@ -27,6 +27,7 @@ function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const rowData = row.original;
   const { user } = useAuth();
+  const activeUsers = users?.filter((user) => user.status === 1);
 
   const handleAssign = (user: User, dicom_uid: string) => {
     // NOTE: This is an optimistic update
@@ -61,7 +62,6 @@ function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
           <VisibilityIcon />
         </Tooltip>
       </IconButton>
-
       {user && user.admin && (
         <IconButton disabled={rowData.status !== 0} onClick={(e) => setAnchorEl(e.currentTarget)}>
           <Tooltip title="Assign to">
@@ -76,16 +76,26 @@ function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
           </Tooltip>
         </IconButton>
       </div>
-
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
-        {users
-          ?.filter((user) => user.status === 1)
-          .map((user) => (
+        {activeUsers && activeUsers.length > 0 ? (
+          activeUsers.map((user) => (
             <MenuItem key={user.id} onClick={() => handleAssign(user, rowData.dicom_uid)}>
               {user.full_name}
             </MenuItem>
-          ))}
-      </Menu>
+          ))
+        ) : (
+          <MenuItem
+            disabled
+            sx={{
+              opacity: "1 !important", // Override the default opacity
+              color: "#666 !important", // Override the default color
+              fontStyle: "italic",
+            }}
+          >
+            No available users to assign
+          </MenuItem>
+        )}
+      </Menu>{" "}
     </Box>
   );
 }

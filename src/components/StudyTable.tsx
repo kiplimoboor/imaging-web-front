@@ -28,7 +28,7 @@ function StudyTable({ studies }: StudyTableProps) {
       { accessorKey: "patient_id", header: "MRN" },
       { accessorKey: "patient_name", header: "Patient Name" },
       { accessorKey: "study_date", header: "Study Date" },
-      { accessorKey: "modalities", header: "Modalities" },
+      { accessorKey: "modalities", header: "Modalities", filterVariant: "multi-select", filterSelectOptions: ["CT"] },
       {
         header: "Status",
         id: "status",
