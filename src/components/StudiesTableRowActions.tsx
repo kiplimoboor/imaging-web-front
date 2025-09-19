@@ -33,7 +33,7 @@ function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
     // NOTE: This is an optimistic update
     queryClient.setQueryData(["studies"], (oldStudies: Study[]) => {
       return oldStudies.map((study) => {
-        if (study.id === rowData.id) return { ...study, status: 1 };
+        if (study.id === rowData.id) return { ...study, status: 1, radiologist_name: user.full_name };
         return study;
       });
     });

@@ -11,6 +11,7 @@ interface Study {
   modalities: string[];
   status: 0 | 1 | 2;
   radiologist: number;
+  radiologist_name: string;
 }
 
 type AssignmentCreate = {
