@@ -24,7 +24,7 @@ function AuthProvider({ children }: React.PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null);
 
   const login = async (code: string) => {
-    const res = await fetch(API_URL + "/oauth/exchange", {
+    const res = await fetch("http://172.16.0.29/oauth/exchange", {
       method: "POST",
       body: JSON.stringify({ code }),
       headers: { "Content-Type": "application/json" },
