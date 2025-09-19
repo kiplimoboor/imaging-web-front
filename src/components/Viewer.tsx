@@ -15,7 +15,10 @@ function Viewer() {
 
     const handleLoad = () => {
       if (iframe.contentWindow) {
-        iframe.contentWindow.postMessage({ type: "STUDY_DATA", payload: study }, "http://172.16.0.29/editor/");
+        iframe.contentWindow.postMessage(
+          { type: "STUDY_DATA", payload: study },
+          "https://radiology.mtrh.go.ke/editor/",
+        );
       }
     };
 
@@ -27,7 +30,7 @@ function Viewer() {
   return (
     <div className="flex h-screen w-full">
       <iframe
-        src={`http://172.16.0.29/ohif/viewer?StudyInstanceUIDs=${uid}`}
+        src={`https://radiology.mtrh.go.ke/ohif/viewer?StudyInstanceUIDs=${uid}`}
         className={`h-full ${study?.radiologist ? "w-8/12" : "w-full"}`}
       />
 
