@@ -19,6 +19,7 @@ const studies: Study[] = [
     study_date: "20230521",
     patient_id: "12",
     radiologist: 1,
+    radiologist_name: "Mark",
   },
   {
     id: 2,
@@ -29,6 +30,7 @@ const studies: Study[] = [
     study_date: "20230615",
     patient_id: "13",
     radiologist: 1,
+    radiologist_name: "Mark",
   },
   {
     id: 3,
@@ -39,6 +41,7 @@ const studies: Study[] = [
     study_date: "20230702",
     patient_id: "14",
     radiologist: 1,
+    radiologist_name: "Mark",
   },
   {
     id: 4,
@@ -49,6 +52,7 @@ const studies: Study[] = [
     study_date: "20230810",
     patient_id: "15",
     radiologist: 1,
+    radiologist_name: "Mark",
   },
   {
     id: 5,
@@ -59,6 +63,7 @@ const studies: Study[] = [
     study_date: "20230905",
     patient_id: "16",
     radiologist: 1,
+    radiologist_name: "Mark",
   },
   {
     id: 6,
@@ -69,6 +74,7 @@ const studies: Study[] = [
     study_date: "20231018",
     patient_id: "17",
     radiologist: 1,
+    radiologist_name: "Mark",
   },
   {
     id: 7,
@@ -79,6 +85,7 @@ const studies: Study[] = [
     study_date: "20231125",
     patient_id: "18",
     radiologist: 1,
+    radiologist_name: "Mark",
   },
   {
     id: 8,
@@ -89,6 +96,7 @@ const studies: Study[] = [
     study_date: "20231201",
     patient_id: "19",
     radiologist: 1,
+    radiologist_name: "Mark",
   },
   {
     id: 9,
@@ -99,6 +107,7 @@ const studies: Study[] = [
     study_date: "20240108",
     patient_id: "20",
     radiologist: 1,
+    radiologist_name: "Mark",
   },
   {
     id: 10,
@@ -109,6 +118,7 @@ const studies: Study[] = [
     study_date: "20240214",
     patient_id: "21",
     radiologist: 1,
+    radiologist_name: "Mark",
   },
 ];
 
