@@ -2,8 +2,6 @@ import { decodeJwt } from "jose";
 import React, { createContext, useContext, useState } from "react";
 import { type User } from "../hooks/users";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 type AuthContextProps = { login: (code: string) => Promise<boolean>; user: User | null };
 
 const AuthContext = createContext<AuthContextProps>({ login: async () => false, user: null });
