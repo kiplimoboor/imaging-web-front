@@ -29,7 +29,7 @@ function Analytics() {
           <div className="flex justify-between">
             <h3 className="text-xl font-semibold text-gray-800">{new_studies.length}</h3>
             <Link to="/" className="text-sm font-semibold text-blue-500 flex items-center group">
-              Assign Studies
+              Studies
               <span className="ml-1 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1">
                 →
               </span>

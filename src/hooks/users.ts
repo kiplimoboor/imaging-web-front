@@ -22,6 +22,7 @@ function useCreateUser() {
   return useMutation({
     mutationFn: async ({ full_name, email, role }: UserCreate) => {
       await fetch(API_URL + "/users", {
+        credentials: "include",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ full_name, email, role }),
@@ -43,7 +44,7 @@ function useActiveUsers() {
 }
 
 async function fetchUsers(): Promise<User[]> {
-  const res = await fetch(API_URL + "/users");
+  const res = await fetch(API_URL + "/users", { credentials: "include" });
   const data: User[] = await res.json();
   return data;
   // return new Promise((resolve) => setTimeout(() => resolve(users), 500));
@@ -53,6 +54,7 @@ function useUpdateUser() {
   return useMutation({
     mutationFn: async ({ id, field, value }: UserUpdate) => {
       const res = await fetch(API_URL + "/users", {
+        credentials: "include",
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, field, value }),

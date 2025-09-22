@@ -30,6 +30,7 @@ function AuthProvider({ children }: React.PropsWithChildren) {
   const login = async (code: string) => {
     const res = await fetch("https://radiology.mtrh.go.ke/oauth/exchange", {
       method: "POST",
+      credentials: "include",
       body: JSON.stringify({ code }),
       headers: { "Content-Type": "application/json" },
     });

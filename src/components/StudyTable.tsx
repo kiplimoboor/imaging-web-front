@@ -16,6 +16,8 @@ function StudyTable({ studies }: StudyTableProps) {
   const [alert, setAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
 
+  const myStudies = sessionStorage.getItem("activeTab") === "2";
+
   function showAlert(msg: string) {
     setAlert(true);
     setAlertMsg(msg);
@@ -23,13 +25,14 @@ function StudyTable({ studies }: StudyTableProps) {
 
   const columns = useMemo<MRT_ColumnDef<Study>[]>(
     () => [
-      { accessorKey: "patient_id", header: "MRN" },
+      { accessorKey: "patient_id", header: "MRN", size: 50 },
       { accessorKey: "patient_name", header: "Patient Name" },
-      { accessorKey: "study_date", header: "Study Date" },
-      { accessorKey: "modalities", header: "Modalities", filterVariant: "multi-select", filterSelectOptions: ["CT"] },
+      { accessorKey: "study_date", header: "Study Date", size: 50 },
+      { accessorKey: "modalities", header: "Modalities", size: 40 },
       {
         header: "Status",
         id: "status",
+        size: 50,
         accessorFn: (row) => studyStatusMap[row.status].text,
         Cell: ({ cell }) => {
           const status = studyStatusMap[cell.row.original.status];
@@ -52,7 +55,7 @@ function StudyTable({ studies }: StudyTableProps) {
           );
         },
       },
-      { accessorKey: "radiologist_name", header: "Radiologist" },
+      { accessorKey: "radiologist_name", header: "Radiologist", size: 50 },
     ],
     [],
   );
@@ -62,9 +65,11 @@ function StudyTable({ studies }: StudyTableProps) {
     data: studies ?? [],
     enableDensityToggle: false,
     initialState: {
+      showColumnFilters: true,
       showGlobalFilter: true,
       density: "compact",
-      columnVisibility: { radiologist_name: user?.admin ?? true },
+      columnVisibility: { radiologist_name: myStudies },
+      pagination: { pageIndex: 0, pageSize: 50 },
     },
     enableRowActions: true,
     positionActionsColumn: "last",

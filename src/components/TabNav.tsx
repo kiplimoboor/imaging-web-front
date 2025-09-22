@@ -16,9 +16,14 @@ function CustomTabPanel({ children, value, index }: TabPanelProps) {
 type TabNavProps = { tabs: { label: string; component: React.ReactNode }[] };
 
 function TabNav({ tabs }: TabNavProps) {
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (_: React.SyntheticEvent, newValue: number) => setValue(newValue);
+  const [value, setValue] = React.useState(() => {
+    const savedTab = sessionStorage.getItem("activeTab");
+    return savedTab !== null ? parseInt(savedTab, 10) : 0;
+  });
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+    sessionStorage.setItem("activeTab", newValue.toString());
+  };
 
   return (
     <div className="w-10/12 mx-auto mt-3">

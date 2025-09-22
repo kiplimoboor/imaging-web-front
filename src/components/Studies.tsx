@@ -17,8 +17,8 @@ function Studies() {
   const allStudies = isAdmin ? allAdminStudies : undefined;
 
   const tabs = [
-    ...(isAdmin ? [{ label: "New Studies", component: <StudyTable studies={newStudies} /> }] : []),
     { label: "My Studies", component: <StudyTable studies={userStudies} /> },
+    ...(isAdmin ? [{ label: "New Studies", component: <StudyTable studies={newStudies} /> }] : []),
     ...(isAdmin ? [{ label: "All Studies", component: <StudyTable studies={allStudies} /> }] : []),
   ];
 
