@@ -2,7 +2,6 @@ import { Alert, Snackbar } from "@mui/material";
 import Box from "@mui/material/Box";
 import { MaterialReactTable, useMaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { useMemo, useState } from "react";
-import { useAuth } from "../context/AuthContext";
 import { studyStatusMap } from "../data/test";
 import { type Study } from "../hooks/studies";
 import TableRowActions from "./StudiesTableRowActions";
@@ -12,7 +11,6 @@ type StudyTableProps = {
 };
 
 function StudyTable({ studies }: StudyTableProps) {
-  const { user } = useAuth();
   const [alert, setAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
 
