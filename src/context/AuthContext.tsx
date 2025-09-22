@@ -28,7 +28,7 @@ function AuthProvider({ children }: React.PropsWithChildren) {
   // };
 
   const login = async (code: string) => {
-    const res = await fetch("http://172.16.0.29/oauth/exchange", {
+    const res = await fetch("https://radiology.mtrh.go.ke/oauth/exchange", {
       method: "POST",
       body: JSON.stringify({ code }),
       headers: { "Content-Type": "application/json" },
