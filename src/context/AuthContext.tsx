@@ -1,5 +1,6 @@
 import { decodeJwt } from "jose";
 import React, { createContext, useContext, useState } from "react";
+// import { users } from "../data/test";
 import { type User } from "../hooks/users";
 
 type AuthContextProps = { login: (code: string) => Promise<boolean>; user: User | null };
@@ -20,6 +21,11 @@ function AuthProvider({ children }: React.PropsWithChildren) {
   // const [user, setUser] = useState<User | null>(getLocalStorageUser());
 
   const [user, setUser] = useState<User | null>(null);
+
+  // const login = async (_: string) => {
+  //   setUser(users[0]);
+  //   return true;
+  // };
 
   const login = async (code: string) => {
     const res = await fetch("http://172.16.0.29/oauth/exchange", {

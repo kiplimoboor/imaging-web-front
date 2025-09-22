@@ -12,26 +12,25 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { useAssignment, type Study } from "../hooks/studies";
-import { type User } from "../hooks/users";
+import { useActiveUsers, type User } from "../hooks/users";
 
 interface TableRowActionProps {
   row: MRT_Row<Study>;
-  users: User[] | undefined;
   showAlert: (msg: string) => void;
 }
 
-function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
+function TableRowActions({ row, showAlert }: TableRowActionProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const mutation = useAssignment();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const rowData = row.original;
+  const { data: activeUsers } = useActiveUsers();
   const { user } = useAuth();
-  const activeUsers = users?.filter((user) => user.status === 1);
 
   const handleAssign = (user: User, dicom_uid: string) => {
     // NOTE: This is an optimistic update
-    queryClient.setQueryData(["studies"], (oldStudies: Study[]) => {
+    queryClient.setQueryData(["studies", "all"], (oldStudies: Study[]) => {
       return oldStudies.map((study) => {
         if (study.id === rowData.id) return { ...study, status: 1, radiologist_name: user.full_name };
         return study;
@@ -80,15 +79,15 @@ function TableRowActions({ row, users, showAlert }: TableRowActionProps) {
         {activeUsers && activeUsers.length > 0 ? (
           activeUsers.map((user) => (
             <MenuItem key={user.id} onClick={() => handleAssign(user, rowData.dicom_uid)}>
-              {user.full_name}
+              {`${user.full_name}`}
             </MenuItem>
           ))
         ) : (
           <MenuItem
             disabled
             sx={{
-              opacity: "1 !important", // Override the default opacity
-              color: "#666 !important", // Override the default color
+              opacity: "1 !important",
+              color: "#666 !important",
               fontStyle: "italic",
             }}
           >

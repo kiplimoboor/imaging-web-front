@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router";
-import { useGetStudies } from "../hooks/studies";
+import { useStudies } from "../hooks/studies";
 
 function Viewer() {
-  const { data } = useGetStudies();
+  const { data } = useStudies();
   const { uid } = useParams();
   const iframeRef = useRef<HTMLIFrameElement>(null);
 

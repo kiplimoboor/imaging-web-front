@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, Routes } from "react-router";
 import Unauthorized from "./components/401.tsx";
 import AuthCallback from "./components/AuthCallback";
-import { AllStudies, UserStudies } from "./components/Studies";
+import { Studies } from "./components/Studies";
 import Users from "./components/Users";
 import Viewer from "./components/Viewer.tsx";
 import { AuthProvider } from "./context/AuthContext";
@@ -19,10 +19,9 @@ function App() {
             <Route path="/401" element={<Unauthorized />} />
             <Route path="/viewer/:uid" element={<Viewer />} />
             <Route element={<PrivateRoutes />}>
-              <Route path="/" element={<UserStudies />} />
+              <Route path="/" element={<Studies />} />
               <Route element={<AdminRoutes />}>
                 <Route path="/users" element={<Users />} />
-                <Route path="/assignments" element={<AllStudies />}></Route>
               </Route>
             </Route>
           </Routes>

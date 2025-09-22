@@ -1,4 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+// import { studies } from "../data/test";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -10,22 +12,35 @@ interface Study {
   study_date: string;
   modalities: string[];
   status: 0 | 1 | 2;
-  radiologist: number;
-  radiologist_name: string;
+  radiologist: number | null;
+  radiologist_name: string | null;
 }
 
-type AssignmentCreate = {
-  dicom_uid: string;
-  radiologist_id: number;
-};
+type AssignmentCreate = { dicom_uid: string; radiologist_id: number };
 
-function useGetStudies(radiologist?: number) {
+function useStudies() {
   return useQuery<Study[]>({
-    queryKey: ["studies"],
-    queryFn: () => getStudies(radiologist),
-    // staleTime: Infinity,
-    // queryFn: async (): Promise<Study[]> => studies,
+    queryKey: ["studies", "all"],
+    queryFn: () => getStudies(),
   });
+}
+
+function useRadiologistStudies(radiologistId: number | undefined) {
+  return useQuery<Study[]>({
+    queryKey: ["studies", radiologistId],
+    queryFn: () => getStudies(radiologistId),
+  });
+}
+
+function useNewStudies() {
+  const { data: allStudies } = useStudies();
+
+  const newStudies = useMemo(() => {
+    if (!allStudies) return [];
+    return allStudies.filter((study) => study.status === 0);
+  }, [allStudies]);
+
+  return { data: newStudies };
 }
 
 async function getStudies(radiologist?: number): Promise<Study[]> {
@@ -35,6 +50,21 @@ async function getStudies(radiologist?: number): Promise<Study[]> {
   const data: Study[] = await res.json();
   return data;
 }
+
+// async function getStudies(radiologist?: number): Promise<Study[]> {
+//   if (radiologist) {
+//     return new Promise((resolve) =>
+//       setTimeout(() => {
+//         resolve(studies.filter((study) => study.radiologist === radiologist));
+//       }, 500),
+//     );
+//   }
+//   return new Promise((resolve) =>
+//     setTimeout(() => {
+//       resolve(studies);
+//     }, 500),
+//   );
+// }
 
 function useAssignment() {
   return useMutation({
@@ -49,4 +79,4 @@ function useAssignment() {
   });
 }
 
-export { useAssignment, useGetStudies, type Study };
+export { useAssignment, useNewStudies, useRadiologistStudies, useStudies, type Study };

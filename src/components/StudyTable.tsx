@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { studyStatusMap } from "../data/test";
 import { type Study } from "../hooks/studies";
-import { useGetUsers } from "../hooks/users";
 import TableRowActions from "./StudiesTableRowActions";
 
 type StudyTableProps = {
@@ -16,7 +15,6 @@ function StudyTable({ studies }: StudyTableProps) {
   const { user } = useAuth();
   const [alert, setAlert] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
-  const { data: users } = useGetUsers();
 
   function showAlert(msg: string) {
     setAlert(true);
@@ -70,12 +68,12 @@ function StudyTable({ studies }: StudyTableProps) {
     },
     enableRowActions: true,
     positionActionsColumn: "last",
-    renderRowActions: ({ row }) => <TableRowActions row={row} users={users} showAlert={showAlert} />,
+    renderRowActions: ({ row }) => <TableRowActions row={row} showAlert={showAlert} />,
   });
 
   return (
     <>
-      <div className="w-10/12 mx-auto my-8">
+      <div className="">
         <MaterialReactTable table={table} />
       </div>
 

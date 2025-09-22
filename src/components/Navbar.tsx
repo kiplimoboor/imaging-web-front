@@ -1,12 +1,5 @@
-import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/material";
-import { Link } from "react-router";
+import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
-
-type Page = { title: string; link: string };
-const pages: Page[] = [
-  { title: "Assignments", link: "/assignments" },
-  { title: "Users", link: "/users" },
-];
 
 function Navbar() {
   const { user } = useAuth();
@@ -36,20 +29,11 @@ function Navbar() {
               MTRH
             </Typography>
           </Box>
-
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
-            {user?.admin &&
-              pages.map((page) => (
-                <Link to={`${page.link}`} key={page.link}>
-                  <Button sx={{ my: 2, color: "black", display: "block" }}>{page.title}</Button>
-                </Link>
-              ))}
-          </Box>
-
+          <Box sx={{ flexGrow: 1 }} />
           {user && (
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Typography variant="body2" sx={{ color: "black", fontStyle: "italic" }}>
-                Logged in as: <strong>{user.full_name}</strong>
+              <Typography variant="body2" sx={{ color: "black" }}>
+                <strong>{user.full_name}</strong>
               </Typography>
             </Box>
           )}

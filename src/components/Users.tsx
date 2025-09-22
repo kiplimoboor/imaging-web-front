@@ -7,11 +7,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { MaterialReactTable, useMaterialReactTable, type MRT_ColumnDef, type MRT_Row } from "material-react-table";
 import { useMemo } from "react";
 import { userStatusMap } from "../data/test";
-import { useCreateUser, useGetUsers, useUpdateUser, type User } from "../hooks/users";
+import { useCreateUser, useUpdateUser, useUsers, type User } from "../hooks/users";
+import Analytics from "./Analytics";
 import Navbar from "./Navbar";
 
 function Users() {
-  const { data: users } = useGetUsers();
+  const { data: users } = useUsers();
   const mutation = useCreateUser();
 
   const columns = useMemo<MRT_ColumnDef<User>[]>(
@@ -89,6 +90,7 @@ function Users() {
   return (
     <>
       <Navbar />
+      <Analytics />
       <div className="w-10/12 mx-auto my-8">
         <MaterialReactTable table={table} />
       </div>

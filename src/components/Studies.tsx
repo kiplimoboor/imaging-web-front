@@ -1,29 +1,34 @@
 import { useAuth } from "../context/AuthContext";
-import { useGetStudies } from "../hooks/studies";
+import { useNewStudies, useRadiologistStudies, useStudies } from "../hooks/studies";
 import Analytics from "./Analytics";
 import Navbar from "./Navbar";
 import StudyTable from "./StudyTable";
+import TabNav from "./TabNav";
 
-function UserStudies() {
+function Studies() {
   const { user } = useAuth();
-  const { data } = useGetStudies(user?.id);
+  const { data: newAdminStudies } = useNewStudies();
+  const { data: allAdminStudies } = useStudies();
+  const { data: userStudies } = useRadiologistStudies(user?.id);
+
+  const isAdmin = user?.admin;
+
+  const newStudies = isAdmin ? newAdminStudies : undefined;
+  const allStudies = isAdmin ? allAdminStudies : undefined;
+
+  const tabs = [
+    ...(isAdmin ? [{ label: "New Studies", component: <StudyTable studies={newStudies} /> }] : []),
+    { label: "My Studies", component: <StudyTable studies={userStudies} /> },
+    ...(isAdmin ? [{ label: "All Studies", component: <StudyTable studies={allStudies} /> }] : []),
+  ];
+
   return (
     <>
       <Navbar />
-      <StudyTable studies={data} />
+      {isAdmin && <Analytics />}
+      <TabNav tabs={tabs} />
     </>
   );
 }
 
-function AllStudies() {
-  const { data } = useGetStudies();
-  return (
-    <>
-      <Navbar />
-      <Analytics />
-      <StudyTable studies={data} />;
-    </>
-  );
-}
-
-export { AllStudies, UserStudies };
+export { Studies };

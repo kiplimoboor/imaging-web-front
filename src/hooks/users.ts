@@ -1,4 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
+// import { users } from "../data/test";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -9,19 +11,11 @@ interface User {
   status: number;
   role: string;
   admin: boolean;
+  studies: number;
 }
 
-type UserCreate = {
-  full_name: string;
-  email: string;
-  role: string;
-};
-
-type UserUpdate = {
-  id: number;
-  field: string;
-  value: string;
-};
+type UserCreate = { full_name: string; email: string; role: string };
+type UserUpdate = { id: number; field: string; value: string };
 
 function useCreateUser() {
   const queryClient = useQueryClient();
@@ -37,16 +31,22 @@ function useCreateUser() {
   });
 }
 
-function useGetUsers() {
-  return useQuery<User[]>({
-    queryKey: ["users"],
-    staleTime: Infinity,
-    queryFn: async (): Promise<User[]> => {
-      const res = await fetch(API_URL + "/users");
-      const data: User[] = await res.json();
-      return data;
-    },
-  });
+function useUsers() {
+  return useQuery<User[]>({ queryKey: ["users"], staleTime: Infinity, queryFn: () => fetchUsers() });
+}
+
+function useActiveUsers() {
+  const { data: users } = useUsers();
+
+  const activeUsers = useMemo(() => users?.filter((user) => user.status === 1), [users]);
+  return { data: activeUsers };
+}
+
+async function fetchUsers(): Promise<User[]> {
+  const res = await fetch(API_URL + "/users");
+  const data: User[] = await res.json();
+  return data;
+  // return new Promise((resolve) => setTimeout(() => resolve(users), 500));
 }
 
 function useUpdateUser() {
@@ -62,4 +62,4 @@ function useUpdateUser() {
   });
 }
 
-export { useCreateUser, useGetUsers, useUpdateUser, type User };
+export { useActiveUsers, useCreateUser, useUpdateUser, useUsers, type User };
