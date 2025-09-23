@@ -36,19 +36,15 @@ function TableRowActions({ row, showAlert }: TableRowActionProps) {
         return study;
       });
     });
-
     showAlert("Study assigned to " + radiologist.full_name);
-
     mutation.mutate(
       { dicom_uid, radiologist_id: radiologist.id },
       {
-        onSuccess: () => {
-          //TODO: This fails sometimes especially when user clicks away
-          if (radiologist.id === user?.id) queryClient.invalidateQueries({ queryKey: ["studies", radiologist.id] });
-          setAnchorEl(null);
-        },
+        onSuccess: () =>
+          radiologist.id === user?.id && queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }),
       },
     );
+    setAnchorEl(null);
   };
 
   return (
@@ -83,7 +79,7 @@ function TableRowActions({ row, showAlert }: TableRowActionProps) {
           </Tooltip>
         </IconButton>
       </div>
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)} keepMounted={true}>
         {activeRadiologists && activeRadiologists.length > 0 ? (
           activeRadiologists.map((radiologist) => (
             <MenuItem key={radiologist.id} onClick={() => handleAssign(radiologist, rowData.dicom_uid)}>
