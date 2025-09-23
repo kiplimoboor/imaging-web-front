@@ -9,7 +9,7 @@ function Studies() {
   const { user } = useAuth();
   const { data: newAdminStudies } = useNewStudies();
   const { data: allAdminStudies } = useStudies();
-  const { data: userStudies } = useRadiologistStudies(user?.id);
+  const { data: userStudies } = useRadiologistStudies();
 
   const isAdmin = user?.admin;
 

@@ -25,22 +25,30 @@ function TableRowActions({ row, showAlert }: TableRowActionProps) {
   const mutation = useAssignment();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const rowData = row.original;
-  const { data: activeUsers } = useActiveUsers();
+  const { data: activeRadiologists } = useActiveUsers();
   const { user } = useAuth();
 
-  const handleAssign = (user: User, dicom_uid: string) => {
+  const handleAssign = (radiologist: User, dicom_uid: string) => {
     // NOTE: This is an optimistic update
     queryClient.setQueryData(["studies", "all"], (oldStudies: Study[]) => {
       return oldStudies.map((study) => {
-        if (study.id === rowData.id) return { ...study, status: 1, radiologist_name: user.full_name };
+        if (study.id === rowData.id) return { ...study, status: 1, radiologist_name: radiologist.full_name };
         return study;
       });
     });
-    showAlert("Study assigned to " + user.full_name);
 
-    mutation.mutate({ dicom_uid, radiologist_id: user.id });
+    showAlert("Study assigned to " + radiologist.full_name);
 
-    setAnchorEl(null);
+    mutation.mutate(
+      { dicom_uid, radiologist_id: radiologist.id },
+      {
+        onSuccess: () => {
+          //TODO: This fails sometimes especially when user clicks away
+          if (radiologist.id === user?.id) queryClient.invalidateQueries({ queryKey: ["studies", radiologist.id] });
+          setAnchorEl(null);
+        },
+      },
+    );
   };
 
   return (
@@ -76,10 +84,10 @@ function TableRowActions({ row, showAlert }: TableRowActionProps) {
         </IconButton>
       </div>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
-        {activeUsers && activeUsers.length > 0 ? (
-          activeUsers.map((user) => (
-            <MenuItem key={user.id} onClick={() => handleAssign(user, rowData.dicom_uid)}>
-              {`${user.full_name}`}
+        {activeRadiologists && activeRadiologists.length > 0 ? (
+          activeRadiologists.map((radiologist) => (
+            <MenuItem key={radiologist.id} onClick={() => handleAssign(radiologist, rowData.dicom_uid)}>
+              {`${radiologist.full_name}`}
             </MenuItem>
           ))
         ) : (
@@ -94,7 +102,7 @@ function TableRowActions({ row, showAlert }: TableRowActionProps) {
             No available users to assign
           </MenuItem>
         )}
-      </Menu>{" "}
+      </Menu>
     </Box>
   );
 }

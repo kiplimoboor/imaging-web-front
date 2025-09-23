@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useAuth } from "../context/AuthContext";
 // import { studies } from "../data/test";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -25,10 +26,11 @@ function useStudies() {
   });
 }
 
-function useRadiologistStudies(radiologistId: number | undefined) {
+function useRadiologistStudies() {
+  const { user } = useAuth();
   return useQuery<Study[]>({
-    queryKey: ["studies", radiologistId],
-    queryFn: () => getStudies(radiologistId),
+    queryKey: ["studies", user?.id],
+    queryFn: () => getStudies(user?.id),
   });
 }
 
@@ -75,7 +77,7 @@ function useAssignment() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dicom_uid, radiologist: radiologist_id }),
       });
-      return res.status;
+      return res;
     },
   });
 }
