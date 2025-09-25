@@ -1,5 +1,4 @@
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import PrintIcon from "@mui/icons-material/Print";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -11,7 +10,7 @@ import { type MRT_Row } from "material-react-table";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
-import { useAssignment, type Study } from "../hooks/studies";
+import { useAssignment, useStudentAssignment, type Study } from "../hooks/studies";
 import { useActiveUsers, type User } from "../hooks/users";
 
 interface TableRowActionProps {
@@ -23,27 +22,70 @@ function TableRowActions({ row, showAlert }: TableRowActionProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const mutation = useAssignment();
+  const studentMutation = useStudentAssignment();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const rowData = row.original;
   const { data: activeRadiologists } = useActiveUsers();
   const { user } = useAuth();
 
-  const handleAssign = (radiologist: User, dicom_uid: string) => {
+  const handleAssign = (radiologist: User, dicom_uid: string, status: number) => {
     // NOTE: This is an optimistic update
     queryClient.setQueryData(["studies", "all"], (oldStudies: Study[]) => {
       return oldStudies.map((study) => {
-        if (study.id === rowData.id) return { ...study, status: 1, radiologist_name: radiologist.full_name };
+        if (study.id === rowData.id)
+          return {
+            ...study,
+            status: status === 1 ? 2 : 1,
+            radiologist_name: radiologist.full_name,
+          };
         return study;
       });
     });
     showAlert("Study assigned to " + radiologist.full_name);
-    mutation.mutate(
-      { dicom_uid, radiologist_id: radiologist.id },
-      {
-        onSuccess: () =>
-          radiologist.id === user?.id && queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }),
-      },
-    );
+    //NOTE: Admin assigning to radiologist
+    if (status === 0) {
+      queryClient.setQueryData(["studies", "all"], (oldStudies: Study[]) => {
+        return oldStudies.map((study) => {
+          if (study.id === rowData.id)
+            return {
+              ...study,
+              status: 1,
+              radiologist_name: radiologist.full_name,
+            };
+          return study;
+        });
+      });
+
+      mutation.mutate(
+        { dicom_uid, radiologist_id: radiologist.id },
+        {
+          onSuccess: () =>
+            radiologist.id === user?.id && queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }),
+        },
+      );
+    }
+    //NOTE: Radiologist assigning to resident
+    else if (status === 1) {
+      queryClient.setQueryData(["studies", user?.id], (oldStudies: Study[]) => {
+        return oldStudies.map((study) => {
+          if (study.id === rowData.id)
+            return {
+              ...study,
+              status: 2,
+              radiologist_name: radiologist.full_name,
+            };
+          return study;
+        });
+      });
+
+      studentMutation.mutate(
+        { dicom_uid, radiologist_id: radiologist.id },
+        {
+          onSuccess: () =>
+            radiologist.id === user?.id && queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }),
+        },
+      );
+    }
     setAnchorEl(null);
   };
 
@@ -65,36 +107,29 @@ function TableRowActions({ row, showAlert }: TableRowActionProps) {
           <VisibilityIcon />
         </Tooltip>
       </IconButton>
-      {user && user.admin && (
-        <IconButton disabled={rowData.status !== 0} onClick={(e) => setAnchorEl(e.currentTarget)}>
+      {user && ["System User", "Administrator"].includes(user.role) && (
+        <IconButton disabled={rowData.status > 1} onClick={(e) => setAnchorEl(e.currentTarget)}>
           <Tooltip title="Assign to">
             <PersonAddIcon />
           </Tooltip>
         </IconButton>
       )}
-      <div className="hidden">
-        <IconButton onClick={() => console.log("Print Report Clicked")} disabled={rowData.status != 2}>
-          <Tooltip title="Print Report">
-            <PrintIcon />
-          </Tooltip>
-        </IconButton>
-      </div>
+      {/* <div className="hidden"> */}
+      {/*   <IconButton onClick={() => console.log("Print Report Clicked")} disabled={rowData.status != 2}> */}
+      {/*     <Tooltip title="Print Report"> */}
+      {/*       <PrintIcon /> */}
+      {/*     </Tooltip> */}
+      {/*   </IconButton> */}
+      {/* </div> */}
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)} keepMounted={true}>
         {activeRadiologists && activeRadiologists.length > 0 ? (
           activeRadiologists.map((radiologist) => (
-            <MenuItem key={radiologist.id} onClick={() => handleAssign(radiologist, rowData.dicom_uid)}>
+            <MenuItem key={radiologist.id} onClick={() => handleAssign(radiologist, rowData.dicom_uid, rowData.status)}>
               {`${radiologist.full_name}`}
             </MenuItem>
           ))
         ) : (
-          <MenuItem
-            disabled
-            sx={{
-              opacity: "1 !important",
-              color: "#666 !important",
-              fontStyle: "italic",
-            }}
-          >
+          <MenuItem disabled sx={{ opacity: "1 !important", color: "#666 !important", fontStyle: "italic" }}>
             No available users to assign
           </MenuItem>
         )}

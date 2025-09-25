@@ -1,5 +1,5 @@
 import { useAuth } from "../context/AuthContext";
-import { useNewStudies, useRadiologistStudies, useStudies } from "../hooks/studies";
+import { useNewStudies, useRadiologistStudies, useStudentStudies, useStudies } from "../hooks/studies";
 import Analytics from "./Analytics";
 import Navbar from "./Navbar";
 import StudyTable from "./StudyTable";
@@ -9,7 +9,16 @@ function Studies() {
   const { user } = useAuth();
   const { data: newAdminStudies } = useNewStudies();
   const { data: allAdminStudies } = useStudies();
-  const { data: userStudies } = useRadiologistStudies();
+
+  let userStudies;
+
+  if (user?.role === "Student") {
+    const { data: studentStudies } = useStudentStudies();
+    userStudies = studentStudies;
+  } else {
+    const { data: systemUserStudies } = useRadiologistStudies();
+    userStudies = systemUserStudies;
+  }
 
   const isAdmin = user?.admin;
 

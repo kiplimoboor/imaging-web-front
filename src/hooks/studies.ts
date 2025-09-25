@@ -14,6 +14,7 @@ interface Study {
   modalities: string[];
   status: 0 | 1 | 2;
   radiologist: number | null;
+  student: number;
   radiologist_name: string | null;
 }
 
@@ -23,6 +24,14 @@ function useStudies() {
   return useQuery<Study[]>({
     queryKey: ["studies", "all"],
     queryFn: () => getStudies(),
+  });
+}
+
+function useStudentStudies() {
+  const { user } = useAuth();
+  return useQuery<Study[]>({
+    queryKey: ["studies", user?.id],
+    queryFn: () => getStudentStudies(user?.id),
   });
 }
 
@@ -53,20 +62,13 @@ async function getStudies(radiologist?: number): Promise<Study[]> {
   return data;
 }
 
-// async function getStudies(radiologist?: number): Promise<Study[]> {
-//   if (radiologist) {
-//     return new Promise((resolve) =>
-//       setTimeout(() => {
-//         resolve(studies.filter((study) => study.radiologist === radiologist));
-//       }, 500),
-//     );
-//   }
-//   return new Promise((resolve) =>
-//     setTimeout(() => {
-//       resolve(studies);
-//     }, 500),
-//   );
-// }
+async function getStudentStudies(student?: number): Promise<Study[]> {
+  const url_params = new URLSearchParams();
+  if (student) url_params.append("student", student.toString());
+  const res = await fetch(API_URL + "/studies/student?" + url_params, { credentials: "include" });
+  const data: Study[] = await res.json();
+  return data;
+}
 
 function useAssignment() {
   return useMutation({
@@ -82,4 +84,26 @@ function useAssignment() {
   });
 }
 
-export { useAssignment, useNewStudies, useRadiologistStudies, useStudies, type Study };
+function useStudentAssignment() {
+  return useMutation({
+    mutationFn: async ({ dicom_uid, radiologist_id }: AssignmentCreate) => {
+      const res = await fetch(API_URL + "/studies/student", {
+        credentials: "include",
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dicom_uid, student: radiologist_id }),
+      });
+      return res;
+    },
+  });
+}
+
+export {
+  useAssignment,
+  useNewStudies,
+  useRadiologistStudies,
+  useStudentAssignment,
+  useStudentStudies,
+  useStudies,
+  type Study,
+};

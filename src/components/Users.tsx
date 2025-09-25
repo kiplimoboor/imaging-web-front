@@ -24,7 +24,7 @@ function Users() {
         accessorKey: "role",
         header: "Role",
         editVariant: "select",
-        editSelectOptions: ["Administrator", "System User", "Support"],
+        editSelectOptions: ["Administrator", "System User", "Student", "Support"],
         muiEditTextFieldProps: { required: true, select: true },
       },
       {
