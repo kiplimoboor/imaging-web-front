@@ -43,6 +43,10 @@ function useActiveUsers() {
   return { data: activeUsers };
 }
 
+function useActiveStudents() {
+  return useQuery<User[]>({ queryKey: ["students"], staleTime: Infinity, queryFn: () => fetchUsers() });
+}
+
 async function fetchUsers(): Promise<User[]> {
   const res = await fetch(API_URL + "/users", { credentials: "include" });
   const data: User[] = await res.json();
@@ -64,4 +68,4 @@ function useUpdateUser() {
   });
 }
 
-export { useActiveUsers, useCreateUser, useUpdateUser, useUsers, type User };
+export { useActiveStudents, useActiveUsers, useCreateUser, useUpdateUser, useUsers, type User };

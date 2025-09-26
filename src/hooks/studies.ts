@@ -16,6 +16,7 @@ interface Study {
   radiologist: number | null;
   student: number;
   radiologist_name: string | null;
+  student_name: string | null;
 }
 
 type AssignmentCreate = { dicom_uid: string; radiologist_id: number };
