@@ -21,6 +21,7 @@ const studies: Study[] = [
     radiologist: 1,
     radiologist_name: "John Doe",
     student: 1,
+    student_name: "Jack",
   },
 ];
 
