@@ -60,7 +60,7 @@ function Users() {
   const table = useMaterialReactTable({
     columns,
     data: users ?? [],
-    initialState: { showGlobalFilter: true },
+    initialState: { showGlobalFilter: true, sorting: [{ id: "id", desc: false }] },
     enableDensityToggle: false,
     enableRowActions: true,
     positionActionsColumn: "last",
@@ -103,7 +103,6 @@ interface RowActionProps {
 }
 
 function RowActions({ row }: RowActionProps) {
-  const queryClient = useQueryClient();
   const mutation = useUpdateUser();
 
   const { id, status, role } = row.original;
@@ -115,16 +114,7 @@ function RowActions({ row }: RowActionProps) {
         name={"user-status"}
         checked={active}
         disabled={role === "Support"}
-        onChange={() => {
-          queryClient.setQueryData(["users"], (oldUsers: User[]) => {
-            return oldUsers.map((user) => {
-              if (id === user.id) return { ...user, status: user.status == 0 ? 1 : 0 };
-              return user;
-            });
-          });
-
-          mutation.mutate({ id, field: "status", value: isActive ? "0" : "1" });
-        }}
+        onChange={() => mutation.mutate({ id, field: "status", value: isActive ? "0" : "1" })}
       />
     </Tooltip>
   );

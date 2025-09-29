@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../context/AuthContext";
+import LoadingCircle from "./LoadingSpinner";
 
 function AuthCallback() {
   const { login } = useAuth();
   const location = useLocation();
   const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState(false);
+  const redirectPathRef = useRef<string | null>(null);
 
   useEffect(() => {
     async function loginUser() {
@@ -18,24 +20,25 @@ function AuthCallback() {
       }
       const success = await login(code);
 
-      if (success) setLoggedIn(true);
-      else setError(true);
+      if (success) {
+        redirectPathRef.current = sessionStorage.getItem("postLoginRedirect");
+        sessionStorage.removeItem("postLoginRedirect");
+        setLoggedIn(true);
+      } else {
+        setError(true);
+      }
     }
+
     loginUser();
   }, []);
 
-  if (loggedIn) return <Navigate to="/" />;
+  if (loggedIn) {
+    return <Navigate to={redirectPathRef.current || "/"} />;
+  }
 
   if (error) return <Navigate to="/401" />;
 
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
-      <div className="flex flex-col items-center justify-center space-y-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gray-800"></div>
-        <p className="text-gray-800 text-lg">Loading...</p>
-      </div>
-    </div>
-  );
+  return <LoadingCircle />;
 }
 
 export default AuthCallback;

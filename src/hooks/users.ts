@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
-// import { users } from "../data/test";
+import { loginRedirect } from "../utils/auth";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -17,6 +16,42 @@ interface User {
 type UserCreate = { full_name: string; email: string; role: string };
 type UserUpdate = { id: number; field: string; value: string };
 
+function useUsers() {
+  return useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const res = await fetch(API_URL + "/users", { credentials: "include" });
+      if (res.status === 401) loginRedirect();
+      const data: User[] = await res.json();
+      return data;
+    },
+  });
+}
+
+function useActiveUsers() {
+  return useQuery<User[]>({
+    queryKey: ["activeUsers"],
+    queryFn: async () => {
+      const res = await fetch(API_URL + "/users/active", { credentials: "include" });
+      if (res.status === 401) loginRedirect();
+      const data: User[] = await res.json();
+      return data;
+    },
+  });
+}
+
+function useActiveStudents() {
+  return useQuery<User[]>({
+    queryKey: ["students"],
+    queryFn: async () => {
+      const res = await fetch(API_URL + "/users/students/active", { credentials: "include" });
+      if (res.status === 401) loginRedirect();
+      const data: User[] = await res.json();
+      return data;
+    },
+  });
+}
+
 function useCreateUser() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -29,32 +64,12 @@ function useCreateUser() {
       });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+    onError: () => loginRedirect(),
   });
 }
 
-function useUsers() {
-  return useQuery<User[]>({ queryKey: ["users"], staleTime: Infinity, queryFn: () => fetchUsers() });
-}
-
-function useActiveUsers() {
-  const { data: users } = useUsers();
-
-  const activeUsers = useMemo(() => users?.filter((user) => user.status === 1), [users]);
-  return { data: activeUsers };
-}
-
-function useActiveStudents() {
-  return useQuery<User[]>({ queryKey: ["students"], staleTime: Infinity, queryFn: () => fetchUsers() });
-}
-
-async function fetchUsers(): Promise<User[]> {
-  const res = await fetch(API_URL + "/users", { credentials: "include" });
-  const data: User[] = await res.json();
-  return data;
-  // return new Promise((resolve) => setTimeout(() => resolve(users), 500));
-}
-
 function useUpdateUser() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, field, value }: UserUpdate) => {
       const res = await fetch(API_URL + "/users", {
@@ -63,8 +78,15 @@ function useUpdateUser() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, field, value }),
       });
+
       return res.status;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["activeUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+    },
+    onError: () => loginRedirect(),
   });
 }
 

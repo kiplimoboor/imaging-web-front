@@ -4,11 +4,11 @@ import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/mater
 import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { useMemo, useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNewStudies, useStudentAssignment, type Study } from "../hooks/studies";
+import { useAssignment, useNewStudies, type Study } from "../hooks/studies";
 import { useActiveUsers, type User } from "../hooks/users";
 import { studyStatusMap } from "../utils/constants";
 import BaseTable from "./BaseTable";
+import StatusPill from "./StatusPill";
 
 function NewStudies() {
   const { data: studies } = useNewStudies();
@@ -24,26 +24,7 @@ function NewStudies() {
         id: "status",
         size: 50,
         accessorFn: (row) => studyStatusMap[row.status].text,
-        Cell: ({ cell }) => {
-          const status = studyStatusMap[cell.row.original.status];
-          return (
-            <Box
-              component="span"
-              sx={(theme) => ({
-                backgroundColor: theme.palette[status.color].dark,
-                borderRadius: "9999px",
-                color: "#ffffff",
-                px: 2,
-                py: 0.5,
-                textAlign: "center",
-                display: "inline-block",
-                minWidth: "100px",
-              })}
-            >
-              {status.text}
-            </Box>
-          );
-        },
+        Cell: ({ row }) => <StatusPill status={row.original.status} map={studyStatusMap} />,
       },
     ];
   }, []);
@@ -52,15 +33,13 @@ function NewStudies() {
     const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
     const { data: radiologists } = useActiveUsers();
     const queryClient = useQueryClient();
-    const mutation = useStudentAssignment();
+    const mutation = useAssignment();
     const rowData = row.original;
-    const { user } = useAuth();
 
-    const handleAssign = (student: User, dicom_uid: string) => {
-      mutation.mutate(
-        { dicom_uid, radiologist_id: student.id },
-        { onSuccess: () => queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }) },
-      );
+    const handleAssign = (radiologist: User, dicom_uid: string) => {
+      //NOTE: Optimistic update of cache studies
+      queryClient.setQueryData(["studies", "all"], (old: Study[]) => old.filter((study) => study.id !== rowData.id));
+      mutation.mutate({ dicom_uid, radiologist_id: radiologist.id });
       setMenuAnchor(null);
     };
 
@@ -83,15 +62,15 @@ function NewStudies() {
             </Tooltip>
           </IconButton>
 
-          <Menu open={Boolean(menuAnchor)} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} keepMounted>
+          <Menu open={Boolean(menuAnchor)} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)}>
             <Box sx={{ px: 2, py: 1 }}>
               <Typography variant="subtitle1" color="textSecondary">
                 Available Radiologists
               </Typography>
             </Box>
-            {radiologists?.map((student) => (
-              <MenuItem key={student.id} onClick={() => handleAssign(student, rowData.dicom_uid)}>
-                {student.full_name}
+            {radiologists?.map((radiologist) => (
+              <MenuItem key={radiologist.id} onClick={() => handleAssign(radiologist, rowData.dicom_uid)}>
+                {radiologist.full_name}
               </MenuItem>
             ))}
           </Menu>

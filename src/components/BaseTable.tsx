@@ -18,6 +18,7 @@ function BaseTable({ columns, data, rowActions }: BaseTableProps) {
       showColumnFilters: true,
       showGlobalFilter: true,
       density: "compact",
+      sorting: [{ id: "study_date", desc: true }],
     },
 
     enableRowActions: rowActions !== undefined,

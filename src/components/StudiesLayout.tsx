@@ -1,13 +1,15 @@
 import { Outlet } from "react-router";
+import { useAuth } from "../context/AuthContext";
 import Analytics from "./Analytics";
 import NavTabs from "./NavTabs";
 import Navbar from "./Navbar";
 
 function StudiesLayout() {
+  const { isPrivileged } = useAuth();
   return (
     <>
       <Navbar />
-      <Analytics />
+      {isPrivileged && <Analytics />}
       <div className="w-10/12 mx-auto">
         <NavTabs />
         <Outlet />

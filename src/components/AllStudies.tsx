@@ -5,10 +5,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useStudentAssignment, useStudies, type Study } from "../hooks/studies";
-import { useActiveStudents, type User } from "../hooks/users";
+import { useAssignment, useStudies, type Study } from "../hooks/studies";
+import { useActiveUsers, type User } from "../hooks/users";
 import { allStudiesStatusMap } from "../utils/constants";
 import BaseTable from "./BaseTable";
+import StatusPill from "./StatusPill";
 
 function AllStudies() {
   const { data: studies } = useStudies();
@@ -24,26 +25,7 @@ function AllStudies() {
         id: "status",
         size: 50,
         accessorFn: (row) => allStudiesStatusMap[row.status].text,
-        Cell: ({ cell }) => {
-          const status = allStudiesStatusMap[cell.row.original.status];
-          return (
-            <Box
-              component="span"
-              sx={(theme) => ({
-                backgroundColor: theme.palette[status.color].dark,
-                borderRadius: "9999px",
-                color: "#ffffff",
-                px: 2,
-                py: 0.5,
-                textAlign: "center",
-                display: "inline-block",
-                minWidth: "100px",
-              })}
-            >
-              {status.text}
-            </Box>
-          );
-        },
+        Cell: ({ row }) => <StatusPill status={row.original.status} map={allStudiesStatusMap} />,
       },
       { accessorKey: "radiologist_name", header: "Radiologist", size: 50 },
     ];
@@ -51,15 +33,25 @@ function AllStudies() {
 
   const RowActions = ({ row }: { row: MRT_Row<Study> }) => {
     const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
-    const { data: students } = useActiveStudents();
+    const { data: students } = useActiveUsers();
     const queryClient = useQueryClient();
-    const mutation = useStudentAssignment();
+    const mutation = useAssignment();
     const rowData = row.original;
     const { user } = useAuth();
 
-    const handleAssign = (student: User, dicom_uid: string) => {
+    const handleAssign = (radiologist: User, dicom_uid: string) => {
+      queryClient.setQueryData(["studies", "all"], (old: Study[]) =>
+        old.map((study) => {
+          if (study.id === rowData.id) {
+            return { ...study, status: 1, radiologist_name: radiologist.full_name };
+          } else {
+            return study;
+          }
+        }),
+      );
+
       mutation.mutate(
-        { dicom_uid, radiologist_id: student.id },
+        { dicom_uid, radiologist_id: radiologist.id },
         { onSuccess: () => queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }) },
       );
       setMenuAnchor(null);

@@ -9,6 +9,7 @@ import { useRadiologistStudies, useStudentAssignment, type Study } from "../hook
 import { useActiveStudents, type User } from "../hooks/users";
 import { studyStatusMap } from "../utils/constants";
 import BaseTable from "./BaseTable";
+import StatusPill from "./StatusPill";
 
 function MyStudies() {
   const { data: studies } = useRadiologistStudies();
@@ -24,26 +25,7 @@ function MyStudies() {
         id: "status",
         size: 50,
         accessorFn: (row) => studyStatusMap[row.status].text,
-        Cell: ({ cell }) => {
-          const status = studyStatusMap[cell.row.original.status];
-          return (
-            <Box
-              component="span"
-              sx={(theme) => ({
-                backgroundColor: theme.palette[status.color].dark,
-                borderRadius: "9999px",
-                color: "#ffffff",
-                px: 2,
-                py: 0.5,
-                textAlign: "center",
-                display: "inline-block",
-                minWidth: "100px",
-              })}
-            >
-              {status.text}
-            </Box>
-          );
-        },
+        Cell: ({ row }) => <StatusPill status={row.original.status} map={studyStatusMap} />,
       },
       { accessorKey: "student_name", header: "Resident", size: 50 },
     ];
@@ -58,10 +40,15 @@ function MyStudies() {
     const { user } = useAuth();
 
     const handleAssign = (student: User, dicom_uid: string) => {
-      mutation.mutate(
-        { dicom_uid, radiologist_id: student.id },
-        { onSuccess: () => queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }) },
+      queryClient.setQueryData(["studies", user?.id], (old: Study[]) =>
+        old.map((study) => {
+          if (study.id === rowData.id) {
+            return { ...study, status: 2, student_name: student.full_name };
+          }
+          return study;
+        }),
       );
+      mutation.mutate({ dicom_uid, radiologist_id: student.id });
       setMenuAnchor(null);
     };
 

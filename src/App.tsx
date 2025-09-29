@@ -3,8 +3,8 @@ import { Route, Routes } from "react-router";
 import Unauthorized from "./components/401.tsx";
 import AllStudies from "./components/AllStudies.tsx";
 import AuthCallback from "./components/AuthCallback";
-import MyStudies from "./components/MyStudies.tsx";
 import NewStudies from "./components/NewStudies.tsx";
+import StudiesIndex from "./components/StudiesIndex.tsx";
 import StudiesLayout from "./components/StudiesLayout";
 import Users from "./components/Users";
 import Viewer from "./components/Viewer.tsx";
@@ -23,9 +23,11 @@ function App() {
             <Route path="/viewer/:uid" element={<Viewer />} />
             <Route element={<PrivateRoutes />}>
               <Route path="/" element={<StudiesLayout />}>
-                <Route index element={<MyStudies />} />
-                <Route path="new" element={<NewStudies />} />
-                <Route path="all" element={<AllStudies />} />
+                <Route index element={<StudiesIndex />} />
+                <Route element={<AdminRoutes />}>
+                  <Route path="new" element={<NewStudies />} />
+                  <Route path="all" element={<AllStudies />} />
+                </Route>
               </Route>
               <Route element={<AdminRoutes />}>
                 <Route path="/users" element={<Users />} />

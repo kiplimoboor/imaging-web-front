@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { useNewStudies, useStudies } from "../hooks/studies";
-import { useActiveUsers } from "../hooks/users";
+import { useActiveStudents, useActiveUsers } from "../hooks/users";
 
 function Analytics() {
   let incomplete = 0;
@@ -9,6 +9,7 @@ function Analytics() {
   const { data: new_studies } = useNewStudies();
   const { data: studies } = useStudies();
   const { data: activeUsers } = useActiveUsers();
+  const { data: activeStudents } = useActiveStudents();
 
   if (!studies) return;
   studies.forEach((study) => {
@@ -28,8 +29,8 @@ function Analytics() {
           <p className="text-sm text-gray-500 font-bold">New Studies</p>
           <div className="flex justify-between">
             <h3 className="text-xl font-semibold text-gray-800">{new_studies.length}</h3>
-            <Link to="/" className="text-sm font-semibold text-blue-500 flex items-center group">
-              Studies
+            <Link to="/new" className="text-sm font-semibold text-blue-500 flex items-center group">
+              New Studies
               <span className="ml-1 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1">
                 →
               </span>
@@ -40,7 +41,9 @@ function Analytics() {
         <div className="bg-white shadow-sm px-4 py-3 justify-between flex-grow-1">
           <p className="text-sm text-gray-500 font-bold">Active Users</p>
           <div className="flex justify-between">
-            <h3 className="text-xl font-semibold text-gray-800">{activeUsers?.length}</h3>
+            <h3 className="text-xl font-semibold text-gray-800">
+              {activeUsers && activeStudents && activeUsers?.length + activeStudents?.length}
+            </h3>
             <Link to="/users/" className="text-sm font-semibold text-blue-500 flex items-center group">
               Manage Users
               <span className="ml-1 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1">

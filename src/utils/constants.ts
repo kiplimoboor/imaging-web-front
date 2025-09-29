@@ -16,4 +16,4 @@ const allStudiesStatusMap: StudyStatus = {
   4: studyStatusMap[4],
 };
 
-export { allStudiesStatusMap, studyStatusMap };
+export { allStudiesStatusMap, studyStatusMap, type StudyStatus };
