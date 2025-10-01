@@ -1,8 +1,18 @@
-import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/material";
+import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await fetch("https://radiology.mtrh.go.ke/oauth/revoke", { credentials: "include" });
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <AppBar
       position="static"
@@ -32,9 +42,18 @@ function Navbar() {
           <Box sx={{ flexGrow: 1 }} />
           {user && (
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Typography variant="body2" sx={{ color: "black" }}>
+              <Typography variant="body2" sx={{ color: "black", marginRight: "6px" }}>
                 <strong>{user.full_name}</strong>
               </Typography>
+              <>|</>
+              <Button
+                size="small"
+                startIcon={<LogoutIcon />}
+                sx={{ color: "black", textTransform: "capitalize", marginLeft: "6px" }}
+                onClick={handleLogout}
+              >
+                Log Out
+              </Button>
             </Box>
           )}
         </Toolbar>

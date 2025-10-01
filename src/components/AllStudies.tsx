@@ -1,5 +1,5 @@
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import PrintIcon from "@mui/icons-material/Print";
+// import PrintIcon from "@mui/icons-material/Print";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
@@ -58,33 +58,33 @@ function AllStudies() {
       setMenuAnchor(null);
     };
 
-    const handlePrint = async (dicom_uid: string) => {
-      const newWindow = window.open("", "_blank");
-      if (newWindow === null) {
-        console.error("Error opening new window");
-        return;
-      }
-
-      newWindow.document.body.innerHTML = "<p>Generating PDF, please wait...</p>";
-
-      try {
-        const noteRes = await fetch("https://radiology.mtrh.go.ke/api/notes/" + dicom_uid, { credentials: "include" });
-        const { note } = await noteRes.json();
-
-        const res = await fetch("http://127.0.0.1:3000/pdf/" + dicom_uid, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...rowData, report: note }),
-        });
-        const blob = await res.blob();
-        const pdfUrl = URL.createObjectURL(blob);
-
-        newWindow.location.href = pdfUrl;
-      } catch (error) {
-        console.error("PDF generation failed:", error);
-        newWindow.document.body.innerHTML = "<p>Error generating the PDF.</p>";
-      }
-    };
+    // const handlePrint = async (dicom_uid: string) => {
+    //   const newWindow = window.open("", "_blank");
+    //   if (newWindow === null) {
+    //     console.error("Error opening new window");
+    //     return;
+    //   }
+    //
+    //   newWindow.document.body.innerHTML = "<p>Generating PDF, please wait...</p>";
+    //
+    //   try {
+    //     const noteRes = await fetch("https://radiology.mtrh.go.ke/api/notes/" + dicom_uid, { credentials: "include" });
+    //     const { note } = await noteRes.json();
+    //
+    //     const res = await fetch("http://127.0.0.1:3000/pdf/" + dicom_uid, {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({ ...rowData, report: note }),
+    //     });
+    //     const blob = await res.blob();
+    //     const pdfUrl = URL.createObjectURL(blob);
+    //
+    //     newWindow.location.href = pdfUrl;
+    //   } catch (error) {
+    //     console.error("PDF generation failed:", error);
+    //     newWindow.document.body.innerHTML = "<p>Error generating the PDF.</p>";
+    //   }
+    // };
 
     return (
       <>
@@ -101,11 +101,11 @@ function AllStudies() {
             </Tooltip>
           </IconButton>
 
-          <IconButton onClick={() => handlePrint(rowData.dicom_uid)}>
-            <Tooltip title="Print Report">
-              <PrintIcon />
-            </Tooltip>
-          </IconButton>
+          {/* <IconButton onClick={() => handlePrint(rowData.dicom_uid)}> */}
+          {/*   <Tooltip title="Print Report"> */}
+          {/*     <PrintIcon /> */}
+          {/*   </Tooltip> */}
+          {/* </IconButton> */}
 
           <Menu open={Boolean(menuAnchor)} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} keepMounted>
             <Box sx={{ px: 2, py: 1 }}>

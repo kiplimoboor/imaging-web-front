@@ -13,8 +13,9 @@ function Analytics() {
 
   if (!studies) return;
   studies.forEach((study) => {
-    if (study.status === 1) incomplete++;
-    else if (study.status === 2) complete++;
+    const incompleteStatuses = [1, 2, 3];
+    if (incompleteStatuses.includes(study.status)) incomplete++;
+    else if (study.status === 4) complete++;
   });
 
   const data = [

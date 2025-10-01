@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router";
 import Unauthorized from "./components/401.tsx";
 import AllStudies from "./components/AllStudies.tsx";
 import AuthCallback from "./components/AuthCallback";
+import Login from "./components/Login.tsx";
 import NewStudies from "./components/NewStudies.tsx";
 import StudiesIndex from "./components/StudiesIndex.tsx";
 import StudiesLayout from "./components/StudiesLayout";
@@ -18,6 +19,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Routes>
+            <Route path="/login" element={<Login />} />
             <Route path="/auth" element={<AuthCallback />} />
             <Route path="/401" element={<Unauthorized />} />
             <Route path="/viewer/:uid" element={<Viewer />} />

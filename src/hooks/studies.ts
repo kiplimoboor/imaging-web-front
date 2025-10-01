@@ -12,7 +12,7 @@ interface Study {
   patient_name: string;
   study_date: string;
   modalities: string[];
-  status: 0 | 1 | 2;
+  status: 0 | 1 | 2 | 3 | 4;
   radiologist: number | null;
   student: number;
   radiologist_name: string | null;
