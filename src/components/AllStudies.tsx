@@ -1,5 +1,5 @@
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import PrintIcon from "@mui/icons-material/Print";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
@@ -150,8 +150,8 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
 
         {rowData.status === 4 && (
           <IconButton onClick={handlePrint}>
-            <Tooltip title="Print Report">
-              <PrintIcon />
+            <Tooltip title="Generate PDF">
+              <PictureAsPdfIcon />
             </Tooltip>
           </IconButton>
         )}
