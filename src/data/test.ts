@@ -22,6 +22,10 @@ const studies: Study[] = [
     radiologist_name: "John Doe",
     student: 1,
     student_name: "Jack",
+    note: "new",
+    gender: "m",
+    dob: "1",
+    examination: "w",
   },
 ];
 

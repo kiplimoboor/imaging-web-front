@@ -10,6 +10,9 @@ interface Study {
   dicom_uid: string;
   patient_id: string;
   patient_name: string;
+  gender: string;
+  dob: string;
+  examination: string;
   study_date: string;
   modalities: string[];
   status: 0 | 1 | 2 | 3 | 4;
@@ -17,6 +20,7 @@ interface Study {
   student: number;
   radiologist_name: string | null;
   student_name: string | null;
+  note: string | null;
 }
 
 type AssignmentCreate = { dicom_uid: string; radiologist_id: number };
