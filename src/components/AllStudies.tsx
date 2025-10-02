@@ -117,16 +117,17 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
 
       const res = await fetch(API_URL + "/pdf", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...rowData, report: note }),
       });
 
-      const blob = await res.blob();
-      const pdfUrl = URL.createObjectURL(blob);
-      newWindow.location.href = pdfUrl;
+      const data = await res.json();
+
+      newWindow.location.href = API_URL + "/pdf?filename=" + data.filename;
     } catch (error) {
       console.error("PDF generation failed:", error);
-      newWindow.document.body.innerHTML = "<p>Error generating the PDF.</p>";
+      newWindow.document.body.innerHTML = "<p>Error generating the PDF. Please contanct support.</p>";
     }
 
     return;
