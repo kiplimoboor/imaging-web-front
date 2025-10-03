@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router";
 import Unauthorized from "./components/401.tsx";
 import AllStudies from "./components/AllStudies.tsx";
 import AuthCallback from "./components/AuthCallback";
+import CompletedStudies from "./components/CompletedStudies.tsx";
 import Login from "./components/Login.tsx";
 import NewStudies from "./components/NewStudies.tsx";
 import StudiesIndex from "./components/StudiesIndex.tsx";
@@ -29,6 +30,7 @@ function App() {
                 <Route element={<AdminRoutes />}>
                   <Route path="new" element={<NewStudies />} />
                   <Route path="all" element={<AllStudies />} />
+                  <Route path="complete" element={<CompletedStudies />} />
                 </Route>
               </Route>
               <Route element={<AdminRoutes />}>

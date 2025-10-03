@@ -15,6 +15,7 @@ function NavTabs() {
     tabs.push(
       <Tab key="/new" label="New Studies" value="/new" to="/new" component={Link} />,
       <Tab key="/all" label="All Studies" value="/all" to="/all" component={Link} />,
+      <Tab key="/complete" label="Complete" value="/complete" to="/complete" component={Link} />,
     );
   }
 

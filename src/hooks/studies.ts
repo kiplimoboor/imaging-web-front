@@ -59,6 +59,17 @@ function useNewStudies() {
   return { data: newStudies };
 }
 
+function useReportedStudies() {
+  const { data: allStudies } = useStudies();
+
+  const newStudies = useMemo(() => {
+    if (!allStudies) return [];
+    return allStudies.filter((study) => study.status === 4);
+  }, [allStudies]);
+
+  return { data: newStudies };
+}
+
 async function getStudies(radiologist?: number): Promise<Study[]> {
   const url_params = new URLSearchParams();
   if (radiologist) url_params.append("radiologist", radiologist.toString());
@@ -107,6 +118,7 @@ export {
   useAssignment,
   useNewStudies,
   useRadiologistStudies,
+  useReportedStudies,
   useStudentAssignment,
   useStudentStudies,
   useStudies,
