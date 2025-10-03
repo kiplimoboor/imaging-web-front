@@ -1,5 +1,7 @@
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
@@ -68,6 +70,7 @@ type RowActionsProps = {
 
 const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: RowActionsProps) => {
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+  const [pdfLoading, setPdfLoading] = useState(false);
   const { data: students } = useActiveUsers();
   const queryClient = useQueryClient();
   const mutation = useAssignment();
@@ -93,6 +96,7 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
   };
 
   const handlePrint = async () => {
+    setPdfLoading(true);
     const requiredFields = ["patient_name", "patient_id", "dob", "gender", "examination", "study_date"];
 
     for (const field of requiredFields) {
@@ -103,33 +107,22 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
       }
     }
 
-    const newWindow = window.open("", "_blank");
-    if (newWindow === null) {
-      console.error("Error opening new window");
-      return;
-    }
-
-    newWindow.document.body.innerHTML = "<p>Generating PDF, please wait...</p>";
-
     try {
       const noteRes = await fetch(API_URL + "/notes/" + rowData.dicom_uid, { credentials: "include" });
       const { note } = await noteRes.json();
-
       const res = await fetch(API_URL + "/pdf", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...rowData, report: note }),
       });
-
       const data = await res.json();
-
-      newWindow.location.href = API_URL + "/pdf?filename=" + data.filename;
+      setPdfLoading(false);
+      window.open(API_URL + "/pdf?filename=" + data.filename, "_blank");
     } catch (error) {
+      setPdfLoading(false);
       console.error("PDF generation failed:", error);
-      newWindow.document.body.innerHTML = "<p>Error generating the PDF. Please contanct support.</p>";
     }
-
     return;
   };
 
@@ -143,7 +136,7 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
         </IconButton>
 
         <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)} disabled={rowData.status > 1}>
-          <Tooltip title="Assign to Resident">
+          <Tooltip title="Assign to Radiologist">
             <PersonAddIcon />
           </Tooltip>
         </IconButton>
@@ -151,7 +144,7 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
         {rowData.status === 4 && (
           <IconButton onClick={handlePrint}>
             <Tooltip title="Generate PDF">
-              <PictureAsPdfIcon />
+              {pdfLoading ? <CircularProgress size="1rem" /> : <PictureAsPdfIcon />}
             </Tooltip>
           </IconButton>
         )}

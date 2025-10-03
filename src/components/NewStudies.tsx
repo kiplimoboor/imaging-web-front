@@ -56,7 +56,7 @@ function NewStudies() {
             </Tooltip>
           </IconButton>
 
-          <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)} disabled={rowData.status > 1}>
+          <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)}>
             <Tooltip title="Assign to Radiologist">
               <PersonAddIcon />
             </Tooltip>

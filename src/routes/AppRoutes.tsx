@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router";
-import LoadingCircle from "../components/LoadingSpinner";
+import LoadingSpinner from "../components/LoadingSpinner";
 import { useAuth } from "../context/AuthContext";
 import { loginRedirect } from "../utils/auth";
 
@@ -12,7 +12,7 @@ function PrivateRoutes() {
     authCheck();
   }, []);
 
-  if (loadingAuth) return <LoadingCircle />;
+  if (loadingAuth) return <LoadingSpinner message="Checking Credentials" />;
 
   if (user === null) {
     sessionStorage.setItem("postLoginRedirect", location.pathname + location.search);

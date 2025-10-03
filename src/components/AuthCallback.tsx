@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../context/AuthContext";
-import LoadingCircle from "./LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 
 function AuthCallback() {
   const { login } = useAuth();
@@ -38,7 +38,7 @@ function AuthCallback() {
 
   if (error) return <Navigate to="/401" />;
 
-  return <LoadingCircle />;
+  return <LoadingSpinner message="Logging you In" />;
 }
 
 export default AuthCallback;
