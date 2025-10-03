@@ -1,9 +1,8 @@
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import CircularProgress from "@mui/material/CircularProgress";
-
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef, MRT_Row } from "material-react-table";
 import React, { useCallback, useMemo, useState, type Dispatch, type SetStateAction } from "react";
@@ -11,11 +10,10 @@ import { useAuth } from "../context/AuthContext";
 import { useAssignment, useStudies, type Study } from "../hooks/studies";
 import { useActiveUsers, type User } from "../hooks/users";
 import { allStudiesStatusMap } from "../utils/constants";
+import { handlePrint } from "../utils/printer";
 import BaseTable from "./BaseTable";
 import PatientDetailsModal from "./PatientDetailsModal";
 import StatusPill from "./StatusPill";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 function AllStudies() {
   const { data: studies } = useStudies();
@@ -57,11 +55,6 @@ function AllStudies() {
   );
 }
 
-/*
- * The Row Actions Specifically for this table
- *
- * */
-
 type RowActionsProps = {
   row: MRT_Row<Study>;
   setPatientModalOpen: Dispatch<SetStateAction<boolean>>;
@@ -95,37 +88,6 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
     setMenuAnchor(null);
   };
 
-  const handlePrint = async () => {
-    setPdfLoading(true);
-    const requiredFields = ["patient_name", "patient_id", "dob", "gender", "examination", "study_date"];
-
-    for (const field of requiredFields) {
-      if (!Boolean(rowData[field as keyof Study])) {
-        setCurrentStudy(rowData);
-        setPatientModalOpen(true);
-        return;
-      }
-    }
-
-    try {
-      const noteRes = await fetch(API_URL + "/notes/" + rowData.dicom_uid, { credentials: "include" });
-      const { note } = await noteRes.json();
-      const res = await fetch(API_URL + "/pdf", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...rowData, report: note }),
-      });
-      const data = await res.json();
-      setPdfLoading(false);
-      window.open(API_URL + "/pdf?filename=" + data.filename, "_blank");
-    } catch (error) {
-      setPdfLoading(false);
-      console.error("PDF generation failed:", error);
-    }
-    return;
-  };
-
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -142,10 +104,10 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
         </IconButton>
 
         {rowData.status === 4 && (
-          <IconButton onClick={handlePrint}>
-            <Tooltip title="Generate PDF">
+          <IconButton onClick={() => handlePrint({ setPdfLoading, rowData, setCurrentStudy, setPatientModalOpen })}>
+            <span style={{ display: "flex", width: "100%", height: "100%" }}>
               {pdfLoading ? <CircularProgress size="1rem" /> : <PictureAsPdfIcon />}
-            </Tooltip>
+            </span>
           </IconButton>
         )}
 
