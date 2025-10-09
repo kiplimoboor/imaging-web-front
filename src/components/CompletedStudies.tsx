@@ -3,6 +3,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef, MRT_Row, MRT_TableInstance } from "material-react-table";
 import React, { type Dispatch, type SetStateAction, useCallback, useMemo, useState } from "react";
 import { type Study, useReportedStudies } from "../hooks/studies";
@@ -19,6 +20,8 @@ function CompletedStudies() {
 
 	const memoizedModalSet = useCallback(setPatientModalOpen, []);
 	const memoizedStudySet = useCallback(setCurrentStudy, []);
+
+	const queryClient = useQueryClient();
 
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(() => {
 		return [
@@ -85,6 +88,7 @@ function CompletedStudies() {
 				body: JSON.stringify({ patient_id, patient_name, examination, dob }),
 			});
 
+			queryClient.invalidateQueries({ queryKey: ["studies", "all"] });
 			table.setEditingRow(null);
 		},
 	};
