@@ -28,6 +28,7 @@ function CompletedStudies() {
 			{ accessorKey: "patient_id", header: "MRN", size: 50 },
 			{ accessorKey: "patient_name", header: "Patient Name" },
 			{ accessorKey: "dob", header: "Date of Birth", size: 50 },
+			{ accessorKey: "gender", header: "Gender", size: 50 },
 			{
 				accessorKey: "study_date",
 				header: "Study Date",
@@ -79,13 +80,13 @@ function CompletedStudies() {
 	const moreTableProps = {
 		editDisplayMode: "modal",
 		onEditingRowSave: async ({ values, table }: { values: Study; table: MRT_TableInstance<Study> }) => {
-			const { patient_id, patient_name, examination, dob, dicom_uid } = values;
+			const { patient_id, patient_name, examination, dob, dicom_uid, gender } = values;
 
 			await fetch("https://radiology.mtrh.go.ke/api/studies/modify/" + dicom_uid, {
 				method: "PUT",
 				credentials: "include",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ patient_id, patient_name, examination, dob }),
+				body: JSON.stringify({ patient_id, patient_name, examination, dob, gender }),
 			});
 
 			queryClient.invalidateQueries({ queryKey: ["studies", "all"] });
@@ -93,7 +94,7 @@ function CompletedStudies() {
 		},
 	};
 
-	const initial = { columnVisibility: { examination: false, dob: false, dicom_uid: false } };
+	const initial = { columnVisibility: { examination: false, dob: false, dicom_uid: false, gender: false } };
 
 	return (
 		<>
