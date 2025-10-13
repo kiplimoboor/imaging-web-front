@@ -1,11 +1,15 @@
 import LogoutIcon from "@mui/icons-material/Logout";
 import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/material";
+import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
 	const { user } = useAuth();
+	const navigate = useNavigate();
+
 	const handleLogout = async () => {
 		await fetch("https://radiology.mtrh.go.ke/oauth/revoke", { credentials: "include" });
+
 		localStorage.removeItem("token");
 
 		const frappeLogoutWindow = window.open("about:blank", "_blank", "width=100,height=100,top=0,left=0");
@@ -13,7 +17,8 @@ function Navbar() {
 			frappeLogoutWindow.location.href = "https://portal.mtrh.go.ke/api/method/logout";
 			setTimeout(() => frappeLogoutWindow.close(), 200);
 		}
-		setTimeout(() => (window.location.href = "http://127.0.0.1:5173/login"), 500);
+
+		setTimeout(() => navigate("/login"), 500);
 	};
 
 	return (
