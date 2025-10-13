@@ -1,36 +1,60 @@
-import { useEffect, useRef } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import CreateIcon from "@mui/icons-material/Create";
+import { IconButton } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { useStudies } from "../hooks/studies";
 
 const URL = "https://radiology.mtrh.go.ke";
 
 function Viewer() {
-  const { data } = useStudies();
-  const { uid } = useParams();
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+	const { data } = useStudies();
+	const { uid } = useParams();
+	const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const study = data?.find((study) => study.dicom_uid === uid);
+	const [notePanelOpen, setNotePanelOpen] = useState(true);
 
-  useEffect(() => {
-    const iframe = iframeRef.current;
-    if (!iframe || !study) return;
+	const study = data?.find((study) => study.dicom_uid === uid);
 
-    const load = () => iframe.contentWindow?.postMessage({ type: "STUDY_DATA", payload: study }, URL + "/editor/");
-    iframe.addEventListener("load", load);
-    if (iframe.contentDocument?.readyState === "complete") load();
+	useEffect(() => {
+		const iframe = iframeRef.current;
+		if (!iframe || !study) return;
 
-    return () => iframe.removeEventListener("load", load);
-  }, [study]);
+		const load = () => iframe.contentWindow?.postMessage({ type: "STUDY_DATA", payload: study }, URL + "/editor/");
+		iframe.addEventListener("load", load);
+		if (iframe.contentDocument?.readyState === "complete") load();
 
-  return (
-    <div className="flex h-screen w-full">
-      <iframe
-        src={`${URL}/ohif/viewer?StudyInstanceUIDs=${uid}`}
-        className={`h-full ${study?.radiologist ? "w-8/12" : "w-full"}`}
-      />
+		return () => iframe.removeEventListener("load", load);
+	}, [study]);
 
-      {Boolean(study?.radiologist) && <iframe ref={iframeRef} src={URL + "/editor/"} className="w-4/12" />}
-    </div>
-  );
+	return (
+		<div className="flex h-screen w-full">
+			<div className={`h-full ${study?.radiologist && notePanelOpen ? "w-8/12" : "w-full"}`}>
+				<iframe src={`${URL}/ohif/viewer?StudyInstanceUIDs=${uid}`} className="h-full w-full" />
+			</div>
+			{notePanelOpen && (
+				<div className="absolute right-5 top-1/2 -translate-y-1/2 bg-gray-300 rounded-lg">
+					<IconButton onClick={() => setNotePanelOpen(false)}>
+						<CloseIcon />
+					</IconButton>
+				</div>
+			)}
+
+			{!notePanelOpen && (
+				<div className="absolute right-5 top-1/2 -translate-y-1/2 bg-cyan-300 rounded-lg">
+					<IconButton onClick={() => setNotePanelOpen(true)}>
+						<CreateIcon />
+					</IconButton>
+				</div>
+			)}
+
+			{/* Always mounted, visibility toggled */}
+			{study?.radiologist && (
+				<div className={`h-full overflow-hidden ${notePanelOpen ? "w-4/12" : "w-0"}`}>
+					<iframe ref={iframeRef} src={URL + "/editor/"} className="h-full w-full" />
+				</div>
+			)}
+		</div>
+	);
 }
 export default Viewer;
