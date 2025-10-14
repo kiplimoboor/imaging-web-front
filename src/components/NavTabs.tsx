@@ -10,8 +10,8 @@ function NavTabs() {
 	const { isPrivileged } = useAuth();
 
 	const tabs = [
-		<Tab key="/" label="My Studies" value="/" to="/" component={Link} />,
 		<Tab key="/all" label="All Studies" value="/all" to="/all" component={Link} />,
+		<Tab key="/" label="My Studies" value="/" to="/" component={Link} />,
 	];
 
 	if (isPrivileged) {

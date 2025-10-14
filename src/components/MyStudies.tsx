@@ -1,89 +1,149 @@
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import EditIcon from "@mui/icons-material/Edit";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useQueryClient } from "@tanstack/react-query";
-import type { MRT_ColumnDef, MRT_Row } from "material-react-table";
-import { useMemo, useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useRadiologistStudies, useStudentAssignment, type Study } from "../hooks/studies";
-import { useActiveStudents, type User } from "../hooks/users";
+import type { MRT_ColumnDef, MRT_Row, MRT_TableInstance } from "material-react-table";
+import React, { type Dispatch, type SetStateAction, useCallback, useMemo, useState } from "react";
+import { type Study, useRadiologistStudies } from "../hooks/studies";
 import { studyStatusMap } from "../utils/constants";
+import { handlePrint } from "../utils/printer";
 import BaseTable from "./BaseTable";
+import PatientDetailsModal from "./PatientDetailsModal";
 import StatusPill from "./StatusPill";
 
-function MyStudies() {
-  const { data: studies } = useRadiologistStudies();
+function CompletedStudies() {
+	const { data: studies } = useRadiologistStudies();
+	const [patientModalOpen, setPatientModalOpen] = useState(false);
+	const [currentStudy, setCurrentStudy] = useState<Study | null>(null);
 
-  const columns = useMemo<MRT_ColumnDef<Study>[]>(() => {
-    return [
-      { accessorKey: "patient_id", header: "MRN", size: 50 },
-      { accessorKey: "patient_name", header: "Patient Name" },
-      { accessorKey: "study_date", header: "Study Date", size: 50 },
-      { accessorKey: "modalities", header: "Modalities", size: 40 },
-      {
-        header: "Status",
-        id: "status",
-        size: 50,
-        accessorFn: (row) => studyStatusMap[row.status].text,
-        Cell: ({ row }) => <StatusPill status={row.original.status} map={studyStatusMap} />,
-      },
-      { accessorKey: "student_name", header: "Resident", size: 50 },
-    ];
-  }, []);
+	const memoizedModalSet = useCallback(setPatientModalOpen, []);
+	const memoizedStudySet = useCallback(setCurrentStudy, []);
 
-  const RowActions = ({ row }: { row: MRT_Row<Study> }) => {
-    const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
-    const { data: students } = useActiveStudents();
-    const queryClient = useQueryClient();
-    const mutation = useStudentAssignment();
-    const rowData = row.original;
-    const { user } = useAuth();
+	const queryClient = useQueryClient();
 
-    const handleAssign = (student: User, dicom_uid: string) => {
-      queryClient.setQueryData(["studies", user?.id], (old: Study[]) =>
-        old.map((study) => {
-          if (study.id === rowData.id) {
-            return { ...study, status: 2, student_name: student.full_name };
-          }
-          return study;
-        }),
-      );
-      mutation.mutate({ dicom_uid, radiologist_id: student.id });
-      setMenuAnchor(null);
-    };
+	const columns = useMemo<MRT_ColumnDef<Study>[]>(() => {
+		return [
+			{ accessorKey: "patient_id", header: "MRN", size: 50 },
+			{ accessorKey: "patient_name", header: "Patient Name" },
+			{ accessorKey: "dob", header: "Date of Birth", size: 50 },
+			{ accessorKey: "gender", header: "Gender", size: 50 },
+			{
+				accessorKey: "study_date",
+				header: "Study Date",
+				size: 50,
+				enableEditing: false,
+				muiEditTextFieldProps: { style: { display: "none" } },
+			},
+			{
+				accessorKey: "modalities",
+				header: "Modalities",
+				size: 40,
+				enableEditing: false,
+				muiEditTextFieldProps: { style: { display: "none" } },
+			},
+			{
+				header: "Status",
+				id: "status",
+				size: 50,
+				accessorFn: (row) => studyStatusMap[row.status].text,
+				Cell: ({ row }) => <StatusPill status={row.original.status} map={studyStatusMap} />,
+				enableEditing: false,
+				muiEditTextFieldProps: { style: { display: "none" } },
+			},
+			{
+				accessorKey: "radiologist_name",
+				header: "Radiologist",
+				size: 50,
+				enableEditing: false,
+				muiEditTextFieldProps: { style: { display: "none" } },
+			},
+			{ accessorKey: "examination", header: "Examination", size: 50 },
+			{
+				accessorKey: "dicom_uid",
+				header: "UID",
+				size: 50,
+				enableEditing: false,
+				muiEditTextFieldProps: { style: { display: "none" } },
+			},
+		];
+	}, []);
 
-    return (
-      <>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton onClick={() => window.open("viewer/" + rowData.dicom_uid)}>
-            <Tooltip title="View Study">
-              <VisibilityIcon />
-            </Tooltip>
-          </IconButton>
+	const renderRowActions = useCallback(
+		({ row, table }: { row: MRT_Row<Study>; table: MRT_TableInstance<Study> }) => (
+			<RowActions row={row} setPatientModalOpen={memoizedModalSet} setCurrentStudy={memoizedStudySet} table={table} />
+		),
+		[memoizedModalSet, memoizedStudySet],
+	);
 
-          <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)} disabled={rowData.status > 1}>
-            <Tooltip title="Assign to Resident">
-              <PersonAddIcon />
-            </Tooltip>
-          </IconButton>
+	const moreTableProps = {
+		editDisplayMode: "modal",
+		onEditingRowSave: async ({ values, table }: { values: Study; table: MRT_TableInstance<Study> }) => {
+			const { patient_id, patient_name, examination, dob, dicom_uid, gender } = values;
 
-          <Menu open={Boolean(menuAnchor)} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} keepMounted>
-            <Box sx={{ px: 2, py: 1 }}>
-              <Typography variant="subtitle1" color="textSecondary">
-                Available Resident Radiologists
-              </Typography>
-            </Box>
-            {students?.map((student) => (
-              <MenuItem key={student.id} onClick={() => handleAssign(student, rowData.dicom_uid)}>
-                {student.full_name}
-              </MenuItem>
-            ))}
-          </Menu>
-        </Box>
-      </>
-    );
-  };
+			await fetch("https://radiology.mtrh.go.ke/api/studies/modify/" + dicom_uid, {
+				method: "PUT",
+				credentials: "include",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ patient_id, patient_name, examination, dob, gender }),
+			});
 
-  return <BaseTable data={studies} columns={columns} rowActions={RowActions} />;
+			queryClient.invalidateQueries({ queryKey: ["studies", "all"] });
+			table.setEditingRow(null);
+		},
+	};
+
+	const initial = { columnVisibility: { examination: false, dob: false, dicom_uid: false, gender: false } };
+
+	return (
+		<>
+			<BaseTable
+				data={studies}
+				columns={columns}
+				rowActions={renderRowActions}
+				others={moreTableProps}
+				intial={initial}
+			/>
+			<PatientDetailsModal open={patientModalOpen} setOpen={setPatientModalOpen} study={currentStudy} />
+		</>
+	);
 }
-export default MyStudies;
+
+type RowActionsProps = {
+	table: MRT_TableInstance<Study>;
+	row: MRT_Row<Study>;
+	setPatientModalOpen: Dispatch<SetStateAction<boolean>>;
+	setCurrentStudy: Dispatch<SetStateAction<Study | null>>;
+};
+
+const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy, table }: RowActionsProps) => {
+	const [_, setPdfLoading] = useState(false);
+	const rowData = row.original;
+
+	return (
+		<>
+			<Box sx={{ display: "flex", alignItems: "center" }}>
+				<IconButton onClick={() => window.open("viewer/" + rowData.dicom_uid)}>
+					<Tooltip title="View Study">
+						<VisibilityIcon />
+					</Tooltip>
+				</IconButton>
+
+				<IconButton onClick={() => handlePrint({ setPdfLoading, rowData, setCurrentStudy, setPatientModalOpen })}>
+					<span style={{ display: "flex", width: "100%", height: "100%" }}>
+						<PictureAsPdfIcon />
+					</span>
+				</IconButton>
+
+				<IconButton onClick={() => table.setEditingRow(row)}>
+					<span style={{ display: "flex", width: "100%", height: "100%" }}>
+						<EditIcon />
+					</span>
+				</IconButton>
+			</Box>
+		</>
+	);
+});
+
+export default CompletedStudies;
