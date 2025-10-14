@@ -48,7 +48,6 @@ function Viewer() {
 				</div>
 			)}
 
-			{/* Always mounted, visibility toggled */}
 			{study?.radiologist && (
 				<div className={`h-full overflow-hidden ${notePanelOpen ? "w-4/12" : "w-0"}`}>
 					<iframe ref={iframeRef} src={URL + "/editor/"} className="h-full w-full" />

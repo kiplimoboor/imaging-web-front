@@ -15,33 +15,33 @@ import { AdminRoutes, PrivateRoutes } from "./routes/AppRoutes";
 
 const queryClient = new QueryClient();
 function App() {
-  return (
-    <div className="font-inter">
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/auth" element={<AuthCallback />} />
-            <Route path="/401" element={<Unauthorized />} />
-            <Route path="/viewer/:uid" element={<Viewer />} />
-            <Route element={<PrivateRoutes />}>
-              <Route path="/" element={<StudiesLayout />}>
-                <Route index element={<StudiesIndex />} />
-                <Route element={<AdminRoutes />}>
-                  <Route path="new" element={<NewStudies />} />
-                  <Route path="all" element={<AllStudies />} />
-                  <Route path="complete" element={<CompletedStudies />} />
-                </Route>
-              </Route>
-              <Route element={<AdminRoutes />}>
-                <Route path="/users" element={<Users />} />
-              </Route>
-            </Route>
-          </Routes>
-        </AuthProvider>
-      </QueryClientProvider>
-    </div>
-  );
+	return (
+		<div className="font-inter">
+			<QueryClientProvider client={queryClient}>
+				<AuthProvider>
+					<Routes>
+						<Route path="/login" element={<Login />} />
+						<Route path="/auth" element={<AuthCallback />} />
+						<Route path="/401" element={<Unauthorized />} />
+						<Route path="/viewer/:uid" element={<Viewer />} />
+						<Route element={<PrivateRoutes />}>
+							<Route path="/" element={<StudiesLayout />}>
+								<Route index element={<StudiesIndex />} />
+								<Route path="all" element={<AllStudies />} />
+								<Route element={<AdminRoutes />}>
+									<Route path="new" element={<NewStudies />} />
+									<Route path="complete" element={<CompletedStudies />} />
+								</Route>
+							</Route>
+							<Route element={<AdminRoutes />}>
+								<Route path="/users" element={<Users />} />
+							</Route>
+						</Route>
+					</Routes>
+				</AuthProvider>
+			</QueryClientProvider>
+		</div>
+	);
 }
 
 export default App;
