@@ -6,7 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef, MRT_Row, MRT_TableInstance } from "material-react-table";
 import React, { type Dispatch, type SetStateAction, useCallback, useMemo, useState } from "react";
-import { type Study, useReportedStudies } from "../hooks/studies";
+import { type Study, useCompleteStudies } from "../hooks/studies";
 import { allStudiesStatusMap } from "../utils/constants";
 import { handlePrint } from "../utils/printer";
 import BaseTable from "./BaseTable";
@@ -14,7 +14,7 @@ import PatientDetailsModal from "./PatientDetailsModal";
 import StatusPill from "./StatusPill";
 
 function CompletedStudies() {
-	const { data: studies } = useReportedStudies();
+	const { data: studies } = useCompleteStudies();
 	const [patientModalOpen, setPatientModalOpen] = useState(false);
 	const [currentStudy, setCurrentStudy] = useState<Study | null>(null);
 
