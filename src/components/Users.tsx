@@ -1,122 +1,90 @@
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { Tooltip } from "@mui/material";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Switch from "@mui/material/Switch";
-import { MaterialReactTable, useMaterialReactTable, type MRT_ColumnDef, type MRT_Row } from "material-react-table";
-import { useMemo } from "react";
-import { userStatusMap } from "../data/test";
-import { useCreateUser, useUpdateUser, useUsers, type User } from "../hooks/users";
+import { useQueryClient } from "@tanstack/react-query";
+import { type MRT_ColumnDef, type MRT_Row, type MRT_RowData, type MRT_TableState } from "material-react-table";
+import { useMemo, useState } from "react";
+import { type User, useUpdateUser, useUsers } from "../hooks/users";
+import { userStatusMap } from "../utils/constants";
 import Analytics from "./Analytics";
+import BaseTable from "./BaseTable";
+import CreateUserDialog from "./CreateUserDialog";
 import Navbar from "./Navbar";
+import StatusPill from "./StatusPill";
 
 function Users() {
-  const { data: users } = useUsers();
-  const mutation = useCreateUser();
+	const { data: users } = useUsers();
+	const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const columns = useMemo<MRT_ColumnDef<User>[]>(
-    () => [
-      { accessorKey: "id", header: "Id", enableEditing: false },
-      { accessorKey: "full_name", header: "Name", muiEditTextFieldProps: { required: true } },
-      { accessorKey: "email", header: "Email", muiEditTextFieldProps: { required: true } },
-      {
-        accessorKey: "role",
-        header: "Role",
-        editVariant: "select",
-        editSelectOptions: ["Administrator", "System User", "Student", "Support"],
-        muiEditTextFieldProps: { required: true, select: true },
-      },
-      {
-        header: "Status",
-        id: "status",
-        enableEditing: false,
-        accessorFn: (row) => userStatusMap[row.status]?.text,
-        Cell: ({ cell }) => {
-          const status = userStatusMap[cell.row.original.status];
-          return (
-            <Box
-              component="span"
-              sx={(theme) => ({
-                backgroundColor: theme.palette[status.color].dark,
-                borderRadius: "9999px",
-                color: "#ffffff",
-                px: 2,
-                py: 0.5,
-                textAlign: "center",
-                display: "inline-block",
-                minWidth: "100px",
-              })}
-            >
-              {status.text}
-            </Box>
-          );
-        },
-      },
-    ],
-    [],
-  );
+	const columns = useMemo<MRT_ColumnDef<User>[]>(() => {
+		return [
+			{ accessorKey: "full_name", header: "Name" },
+			{ accessorKey: "email", header: "Email" },
+			{ accessorKey: "role", header: "Role" },
+			{
+				header: "Status",
+				accessorFn: (user) => userStatusMap[user.status].text,
+				Cell: ({ row }) => <StatusPill status={row.original.status} map={userStatusMap} />,
+			},
+		];
+	}, []);
 
-  const table = useMaterialReactTable({
-    columns,
-    data: users ?? [],
-    initialState: { showGlobalFilter: true, sorting: [{ id: "id", desc: false }] },
-    enableDensityToggle: false,
-    enableRowActions: true,
-    positionActionsColumn: "last",
-    createDisplayMode: "modal",
-    onCreatingRowSave: ({ table, values }) => {
-      const { full_name, email, role } = values;
-      mutation.mutate({ full_name, email, role });
-      table.setCreatingRow(null);
-    },
-    renderRowActions: ({ row }) => <RowActions row={row} />,
-    renderTopToolbar: ({ table }) => {
-      return (
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            variant="contained"
-            onClick={() => table.setCreatingRow(true)}
-            sx={{ margin: "12px" }}
-            startIcon={<PersonAddIcon />}
-          >
-            New User
-          </Button>
-        </Box>
-      );
-    },
-  });
+	const initial: Partial<MRT_TableState<MRT_RowData>> = {
+		showColumnFilters: false,
+		sorting: [{ id: "role", desc: false }],
+	};
 
-  return (
-    <>
-      <Navbar />
-      <Analytics />
-      <div className="w-10/12 mx-auto my-8">
-        <MaterialReactTable table={table} />
-      </div>
-    </>
-  );
+	return (
+		<>
+			<Navbar />
+			<div className="w-10/12 mx-auto">
+				<div className="flex items-center justify-between my-6">
+					<h2 className="text-xl font-sm">User List</h2>
+					<Button variant="contained" startIcon={<PersonAddIcon />} onClick={() => setCreateDialogOpen(true)}>
+						Add User
+					</Button>
+				</div>
+				<BaseTable columns={columns} data={users} rowActions={RowActions} intial={initial} />
+			</div>
+			<CreateUserDialog open={createDialogOpen} setOpen={setCreateDialogOpen} />
+		</>
+	);
 }
 
-interface RowActionProps {
-  row: MRT_Row<User>;
-}
-
+/*
+ *
+ * row actions specifically for this table
+ *
+ * */
+type RowActionProps = { row: MRT_Row<User> };
 function RowActions({ row }: RowActionProps) {
-  const mutation = useUpdateUser();
+	const queryClient = useQueryClient();
+	const updateMutation = useUpdateUser();
+	const { id, status, role } = row.original;
+	const isActive = status === 1;
 
-  const { id, status, role } = row.original;
-  const active = status === 1;
-  const isActive = status === 1;
-  return (
-    <Tooltip title={status === 1 ? "Deactivate" : "Activate"}>
-      <Switch
-        name={"user-status"}
-        checked={active}
-        disabled={role === "Support"}
-        onChange={() => mutation.mutate({ id, field: "status", value: isActive ? "0" : "1" })}
-      />
-    </Tooltip>
-  );
+	const toggleUserStatus = () => {
+		updateMutation.mutate(
+			{ id, field: "status", value: isActive ? 0 : 1 },
+			{
+				onSuccess: () => {
+					queryClient.setQueryData(["users"], (old: User[]) =>
+						old.map((user) => {
+							if (user.id === id) return { ...user, status: isActive ? 0 : 1 };
+							return user;
+						}),
+					);
+					queryClient.invalidateQueries({ queryKey: ["users", "active"] });
+				},
+			},
+		);
+	};
+	return (
+		<Tooltip title={status === 1 ? "Deactivate" : "Activate"}>
+			<Switch name={"user-status"} checked={isActive} disabled={role === "Support"} onChange={toggleUserStatus} />
+		</Tooltip>
+	);
 }
 
 export default Users;

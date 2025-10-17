@@ -9,26 +9,26 @@ import {
 } from "material-react-table";
 
 import type { JSX } from "react";
-import type { Study } from "../hooks/studies";
 
-type BaseTableProps = {
-	columns: MRT_ColumnDef<Study>[];
-	data: Study[] | undefined;
-	rowActions?: ({ row, table }: { row: MRT_Row<Study>; table: MRT_TableInstance<Study> }) => JSX.Element;
+type BaseTableProps<TData extends MRT_RowData> = {
+	columns: MRT_ColumnDef<TData>[];
+	data: TData[] | undefined;
+	rowActions?: ({ row, table }: { row: MRT_Row<TData>; table: MRT_TableInstance<TData> }) => JSX.Element;
 	others?: any;
 	intial?: Partial<MRT_TableState<MRT_RowData>>;
 };
 
-function BaseTable({ columns, data, rowActions, others, intial }: BaseTableProps) {
+function BaseTable<TData extends MRT_RowData>({ columns, data, rowActions, others, intial }: BaseTableProps<TData>) {
 	const table = useMaterialReactTable({
 		columns,
 		data: data ?? [],
 		state: { isLoading: !data },
 		enableDensityToggle: false,
 		initialState: {
+			density: "compact",
+			pagination: { pageIndex: 0, pageSize: 50 },
 			showColumnFilters: true,
 			showGlobalFilter: true,
-			density: "compact",
 			...intial,
 		},
 		enableRowActions: rowActions !== undefined,
