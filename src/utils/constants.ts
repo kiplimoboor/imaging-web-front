@@ -16,9 +16,17 @@ const allStudiesStatusMap: StudyStatus = {
 	4: studyStatusMap[4],
 };
 
+const guestStudyStatusMap: StudyStatus = {
+	0: { text: "Ongoing", color: "primary" },
+	1: { text: "Ongoing", color: "primary" },
+	2: { text: "Ongoing", color: "primary" },
+	3: { text: "Ongoing", color: "primary" },
+	4: { text: "Reported", color: "success" },
+};
+
 const userStatusMap: Record<number, { text: string; color: "error" | "primary" }> = {
 	0: { text: "Inactive", color: "error" },
 	1: { text: "Active", color: "primary" },
 };
 
-export { allStudiesStatusMap, studyStatusMap, type StudyStatus, userStatusMap };
+export { allStudiesStatusMap, studyStatusMap, type StudyStatus, userStatusMap, guestStudyStatusMap };

@@ -11,7 +11,8 @@ import StudiesIndex from "./components/StudiesIndex.tsx";
 import StudiesLayout from "./components/StudiesLayout";
 import Viewer from "./components/Viewer.tsx";
 import { AuthProvider } from "./context/AuthContext";
-import { AdminRoutes, PrivateRoutes } from "./routes/AppRoutes";
+import GuestPage from "./pages/Guest/GuestPage.tsx";
+import { AdminRoutes, GuestRoutes, PrivateRoutes } from "./routes/AppRoutes";
 
 const queryClient = new QueryClient();
 function App() {
@@ -20,6 +21,9 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<AuthProvider>
 					<Routes>
+						<Route element={<GuestRoutes />}>
+							<Route path="/guest" element={<GuestPage />} />
+						</Route>
 						<Route path="/login" element={<Login />} />
 						<Route path="/auth" element={<AuthCallback />} />
 						<Route path="/401" element={<Unauthorized />} />
