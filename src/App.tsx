@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, Routes } from "react-router";
+import UsersPage from "@/pages/Users/UsersPage.tsx";
 import Unauthorized from "./components/401.tsx";
 import AllStudies from "./components/AllStudies.tsx";
 import AuthCallback from "./components/AuthCallback";
@@ -8,7 +9,6 @@ import Login from "./components/Login.tsx";
 import NewStudies from "./components/NewStudies.tsx";
 import StudiesIndex from "./components/StudiesIndex.tsx";
 import StudiesLayout from "./components/StudiesLayout";
-import Users from "./components/Users";
 import Viewer from "./components/Viewer.tsx";
 import { AuthProvider } from "./context/AuthContext";
 import { AdminRoutes, PrivateRoutes } from "./routes/AppRoutes";
@@ -34,7 +34,7 @@ function App() {
 								</Route>
 							</Route>
 							<Route element={<AdminRoutes />}>
-								<Route path="/users" element={<Users />} />
+								<Route path="/users" element={<UsersPage />} />
 							</Route>
 						</Route>
 					</Routes>

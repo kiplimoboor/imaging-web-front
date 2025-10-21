@@ -7,12 +7,12 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef, MRT_Row } from "material-react-table";
 import React, { type Dispatch, type SetStateAction, useCallback, useMemo, useState } from "react";
+import BaseTable from "@/components/BaseTable";
 import { useAuth } from "../context/AuthContext";
 import { type Study, useAssignment, useStudies } from "../hooks/studies";
 import { type User, useActiveUsers } from "../hooks/users";
 import { allStudiesStatusMap } from "../utils/constants";
 import { handlePrint } from "../utils/printer";
-import BaseTable from "./BaseTable";
 import PatientDetailsModal from "./PatientDetailsModal";
 import StatusPill from "./StatusPill";
 
