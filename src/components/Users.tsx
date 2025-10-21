@@ -7,7 +7,6 @@ import { type MRT_ColumnDef, type MRT_Row, type MRT_RowData, type MRT_TableState
 import { useMemo, useState } from "react";
 import { type User, useUpdateUser, useUsers } from "../hooks/users";
 import { userStatusMap } from "../utils/constants";
-import Analytics from "./Analytics";
 import BaseTable from "./BaseTable";
 import CreateUserDialog from "./CreateUserDialog";
 import Navbar from "./Navbar";
