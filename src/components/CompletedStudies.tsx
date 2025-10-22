@@ -37,9 +37,12 @@ function CompletedStudies() {
 				muiEditTextFieldProps: { style: { display: "none" } },
 			},
 			{
-				accessorKey: "modalities",
-				header: "Modalities",
-				size: 40,
+				header: "Examination",
+				accessorFn: (row): string => {
+					if (!row.modalities) return row.examination;
+					if (!row.examination) return String(row.modalities);
+					return row.modalities + " - " + row.examination.replace("^MTRH", " ");
+				},
 				enableEditing: false,
 				muiEditTextFieldProps: { style: { display: "none" } },
 			},

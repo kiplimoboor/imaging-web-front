@@ -29,7 +29,14 @@ function AllStudies() {
 			{ accessorKey: "patient_id", header: "MRN", size: 50 },
 			{ accessorKey: "patient_name", header: "Patient Name" },
 			{ accessorKey: "study_date", header: "Study Date", size: 50 },
-			{ accessorKey: "modalities", header: "Modalities", size: 40 },
+			{
+				header: "Examination",
+				accessorFn: (row): string => {
+					if (!row.modalities) return row.examination;
+					if (!row.examination) return String(row.modalities);
+					return row.modalities + " - " + row.examination.replace("^MTRH", " ");
+				},
+			},
 			{
 				header: "Status",
 				id: "status",
