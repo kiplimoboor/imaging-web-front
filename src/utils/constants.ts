@@ -9,11 +9,11 @@ const studyStatusMap: StudyStatus = {
 };
 
 const allStudiesStatusMap: StudyStatus = {
-	0: studyStatusMap[0],
-	1: studyStatusMap[1],
-	2: studyStatusMap[1],
+	0: { text: "New Study", color: "primary" },
+	1: { text: "Assigned", color: "warning" },
+	2: { text: "Resident", color: "secondary" },
 	3: studyStatusMap[1],
-	4: studyStatusMap[4],
+	4: { text: "Completed", color: "success" },
 };
 
 const guestStudyStatusMap: StudyStatus = {

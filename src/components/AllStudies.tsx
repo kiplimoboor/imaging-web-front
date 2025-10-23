@@ -9,9 +9,9 @@ import type { MRT_ColumnDef, MRT_Row } from "material-react-table";
 import React, { type Dispatch, type SetStateAction, useCallback, useMemo, useState } from "react";
 import BaseTable from "@/components/BaseTable";
 import { useAuth } from "../context/AuthContext";
-import { type Study, useAssignment, useStudies } from "../hooks/studies";
+import { type Study, useAssignment, useStudentAssignment, useStudies } from "../hooks/studies";
 import { type User, useActiveUsers } from "../hooks/users";
-import { allStudiesStatusMap } from "../utils/constants";
+import type { StudyStatus } from "../utils/constants";
 import { handlePrint } from "../utils/printer";
 import PatientDetailsModal from "./PatientDetailsModal";
 import StatusPill from "./StatusPill";
@@ -41,10 +41,21 @@ function AllStudies() {
 				header: "Status",
 				id: "status",
 				size: 50,
-				accessorFn: (row) => allStudiesStatusMap[row.status].text,
-				Cell: ({ row }) => <StatusPill status={row.original.status} map={allStudiesStatusMap} />,
+				Cell: ({ row }) => {
+					const statusMap: StudyStatus = {
+						0: { text: "New Study", color: "primary" },
+						1: { text: "Assigned", color: "warning" },
+						2: { text: "Resident", color: "secondary" },
+						3: row.original.student ? { text: "Resident", color: "secondary" } : { text: "Assigned", color: "warning" },
+						4: { text: "Completed", color: "success" },
+					};
+					return <StatusPill status={row.original.status} map={statusMap} />;
+				},
 			},
-			{ accessorKey: "radiologist_name", header: "Radiologist", size: 50 },
+			{
+				header: "Radiologist",
+				accessorFn: (row) => (row.student_name ? row.student_name : row.radiologist_name),
+			},
 		];
 	}, []);
 
@@ -74,7 +85,8 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
 	const [pdfLoading, setPdfLoading] = useState(false);
 	const { data: radiologists } = useActiveUsers();
 	const queryClient = useQueryClient();
-	const mutation = useAssignment();
+	const radiologistMutation = useAssignment();
+	const registrarMutation = useStudentAssignment();
 	const rowData = row.original;
 	const { user, isPrivileged } = useAuth();
 
@@ -82,6 +94,7 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
 		queryClient.setQueryData(["studies", "all"], (old: Study[]) =>
 			old.map((study) => {
 				if (study.id === rowData.id) {
+					if (radiologist.role === "Registrar") return { ...study, status: 2, student_name: radiologist.full_name };
 					return { ...study, status: 1, radiologist_name: radiologist.full_name };
 				} else {
 					return study;
@@ -89,17 +102,31 @@ const RowActions = React.memo(({ row, setPatientModalOpen, setCurrentStudy }: Ro
 			}),
 		);
 
-		mutation.mutate(
-			{ dicom_uid, radiologist_id: radiologist.id },
-			{ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }) },
-		);
+		if (radiologist.role === "Registrar") {
+			registrarMutation.mutate(
+				{ dicom_uid, radiologist_id: radiologist.id },
+				{ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }) },
+			);
+		} else {
+			radiologistMutation.mutate(
+				{ dicom_uid, radiologist_id: radiologist.id },
+				{ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }) },
+			);
+		}
 		setMenuAnchor(null);
 	};
 
 	return (
 		<>
 			<Box sx={{ display: "flex", alignItems: "center" }}>
-				<IconButton onClick={() => window.open("viewer/" + rowData.dicom_uid)}>
+				<IconButton
+					onClick={() => {
+						if (rowData.status === 0) {
+							return window.open("https://radiology.mtrh.go.ke/ohif/viewer?StudyInstanceUIDs=" + rowData.dicom_uid);
+						}
+						return window.open("viewer/" + rowData.dicom_uid);
+					}}
+				>
 					<Tooltip title="View Study">
 						<VisibilityIcon />
 					</Tooltip>

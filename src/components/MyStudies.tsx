@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef, MRT_Row, MRT_TableInstance } from "material-react-table";
 import React, { type Dispatch, type SetStateAction, useCallback, useMemo, useState } from "react";
 import { type Study, useRadiologistStudies } from "../hooks/studies";
-import { studyStatusMap } from "../utils/constants";
+import type { StudyStatus } from "../utils/constants";
 import { handlePrint } from "../utils/printer";
 import BaseTable from "./BaseTable";
 import PatientDetailsModal from "./PatientDetailsModal";
@@ -49,14 +49,24 @@ function CompletedStudies() {
 				header: "Status",
 				id: "status",
 				size: 50,
-				accessorFn: (row) => studyStatusMap[row.status].text,
-				Cell: ({ row }) => <StatusPill status={row.original.status} map={studyStatusMap} />,
+				Cell: ({ row }) => {
+					const studyStatusMap: StudyStatus = {
+						0: { text: "New Study", color: "primary" },
+						1: { text: "Assigned", color: "warning" },
+						2: { text: "Resident", color: "secondary" },
+						3: row.original.student
+							? { text: "Resident Draft", color: "secondary" }
+							: { text: "Draft", color: "error" },
+						4: { text: "Completed", color: "success" },
+					};
+					return <StatusPill status={row.original.status} map={studyStatusMap} />;
+				},
 				enableEditing: false,
 				muiEditTextFieldProps: { style: { display: "none" } },
 			},
 			{
-				accessorKey: "radiologist_name",
-				header: "Radiologist",
+				accessorKey: "student_name",
+				header: "Registrar",
 				size: 50,
 				enableEditing: false,
 				muiEditTextFieldProps: { style: { display: "none" } },
