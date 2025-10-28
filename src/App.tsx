@@ -1,17 +1,17 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, Routes } from "react-router";
+import AllStudies from "@/components/studies/tables/AllStudies";
 import UsersPage from "@/pages/Users/UsersPage.tsx";
 import Unauthorized from "./components/401.tsx";
-import AllStudies from "./components/AllStudies.tsx";
 import AuthCallback from "./components/AuthCallback";
-import CompletedStudies from "./components/CompletedStudies.tsx";
 import Login from "./components/Login.tsx";
-import NewStudies from "./components/NewStudies.tsx";
-import StudiesIndex from "./components/StudiesIndex.tsx";
-import StudiesLayout from "./components/StudiesLayout";
+import CompletedStudies from "./components/studies/tables/CompletedStudies.tsx";
+import StudiesIndex from "./components/studies/tables/IndexStudies.tsx";
+import NewStudies from "./components/studies/tables/NewStudies";
 import Viewer from "./components/Viewer.tsx";
 import { AuthProvider } from "./context/AuthContext";
 import GuestPage from "./pages/Guest/GuestPage.tsx";
+import StudiesLayout from "./pages/Studies/StudiesLayout.tsx";
 import { AdminRoutes, GuestRoutes, PrivateRoutes } from "./routes/AppRoutes";
 
 const queryClient = new QueryClient();

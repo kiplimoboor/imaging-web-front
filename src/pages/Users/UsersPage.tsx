@@ -2,8 +2,8 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import UserCreateDialog from "./UserCreateDialog";
-import UsersTable from "./UsersTable";
+import CreateUserDialog from "@/components/users/CreateUserDialog";
+import UsersTable from "@/components/users/UserTable";
 
 function UsersPage() {
 	const [createUserOpen, setCreateUserOpen] = useState(false);
@@ -19,7 +19,7 @@ function UsersPage() {
 				</div>
 				<UsersTable />
 			</div>
-			<UserCreateDialog open={createUserOpen} setOpen={setCreateUserOpen} />
+			<CreateUserDialog open={createUserOpen} setOpen={setCreateUserOpen} />
 		</>
 	);
 }

@@ -1,4 +1,4 @@
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import AllStudies from "./AllStudies";
 import MyStudies from "./MyStudies";
 

@@ -1,12 +1,12 @@
 import type { MRT_ColumnDef } from "material-react-table";
 import { useMemo } from "react";
+import BaseTable from "@/components/BaseTable";
+import StatusPill from "@/components/StatusPill";
 import { useAuth } from "@/context/AuthContext";
 import { useUserStudies } from "@/hooks/studies";
 import type { Actions, RowActionsProps, Study, StudyStatusMap } from "@/types";
-import BaseTable from "./BaseTable";
-import RowActions from "./RowActions";
-import StatusPill from "./StatusPill";
-import { commonColumns, commonInitialHide, hiddenColumns } from "./studies/columns";
+import { commonColumns, commonInitialHide, hiddenColumns } from "../columns";
+import RowActions from "../RowActions";
 
 function MyStudies() {
 	const { data: studies } = useUserStudies();

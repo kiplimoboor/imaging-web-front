@@ -1,11 +1,11 @@
 import type { MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { useCallback, useMemo } from "react";
+import BaseTable from "@/components/BaseTable";
+import StatusPill from "@/components/StatusPill";
 import { type Study, useNewStudies } from "@/hooks/studies";
 import type { Actions } from "@/types";
-import BaseTable from "./BaseTable";
-import RowActions from "./RowActions";
-import StatusPill from "./StatusPill";
-import { commonColumns } from "./studies/columns";
+import { commonColumns } from "../columns";
+import RowActions from "../RowActions";
 
 function NewStudies() {
 	const { data: studies } = useNewStudies();

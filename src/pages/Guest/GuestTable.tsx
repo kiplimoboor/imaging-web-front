@@ -3,13 +3,20 @@ import { useMemo } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
 import { useGetStudies } from "@/hooks/studies";
-import type { Study } from "@/types";
-import { guestStudyStatusMap } from "@/utils/constants";
+import type { Study, StudyStatusMap } from "@/types";
 
 import RowActions from "./RowActions";
 
 function GuestTable() {
 	const { data: studies } = useGetStudies();
+	const guestStudyStatusMap: StudyStatusMap = {
+		0: { text: "Ongoing", color: "primary" },
+		1: { text: "Ongoing", color: "primary" },
+		2: { text: "Ongoing", color: "primary" },
+		3: { text: "Ongoing", color: "primary" },
+		4: { text: "Reported", color: "success" },
+	};
+
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(
 		() => [
 			{ accessorKey: "patient_id", header: "MRN", size: 50 },

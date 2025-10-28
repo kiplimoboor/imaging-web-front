@@ -9,12 +9,14 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
+import { useQueryClient } from "@tanstack/react-query";
 import type { SetStateAction } from "react";
-import { useCreateUser } from "../hooks/users";
+import { useCreateUser } from "@/hooks/users";
 
 type CreateDialogProps = { open: boolean; setOpen: React.Dispatch<SetStateAction<boolean>> };
 
 function CreateUserDialog({ open, setOpen }: CreateDialogProps) {
+	const queryClient = useQueryClient();
 	const createMutation = useCreateUser();
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -22,7 +24,15 @@ function CreateUserDialog({ open, setOpen }: CreateDialogProps) {
 		const formData = new FormData(event.currentTarget);
 		const formJson = Object.fromEntries((formData as any).entries());
 		const { full_name, email, role } = formJson;
-		createMutation.mutate({ full_name, email, role }, { onSuccess: () => setOpen(false) });
+		createMutation.mutate(
+			{ full_name, email, role },
+			{
+				onSuccess: () => {
+					queryClient.invalidateQueries({ queryKey: ["users"] });
+					setOpen(false);
+				},
+			},
+		);
 	};
 
 	return (
@@ -61,7 +71,7 @@ function CreateUserDialog({ open, setOpen }: CreateDialogProps) {
 						<Select labelId="role-label" id="role" name="role" defaultValue="">
 							<MenuItem value="System User">Radiologist</MenuItem>
 							<MenuItem value="Administrator">Administrator</MenuItem>
-							<MenuItem value="Student">Student</MenuItem>
+							<MenuItem value="Registrar">Registrar</MenuItem>
 							<MenuItem value="Support">Support</MenuItem>
 						</Select>
 					</FormControl>

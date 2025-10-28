@@ -1,8 +1,8 @@
 import { Outlet } from "react-router";
-import { useAuth } from "../context/AuthContext";
-import Analytics from "./Analytics";
-import Navbar from "./Navbar";
-import NavTabs from "./NavTabs";
+import Analytics from "@/components/Analytics";
+import Navbar from "@/components/Navbar";
+import NavTabs from "@/components/NavTabs";
+import { useAuth } from "@/context/AuthContext";
 
 function StudiesLayout() {
 	const { isPrivileged } = useAuth();

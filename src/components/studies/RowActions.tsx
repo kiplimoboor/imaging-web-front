@@ -1,13 +1,13 @@
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
 import type { RowActionsProps } from "@/types";
-import ReviewAction from "./studies/RowActions/ReviewAction";
-import ViewAction from "./studies/RowActions/ViewAction";
+import ViewAction from "./row-actions/ViewAction";
 
-const AssignAction = React.lazy(() => import("./studies/RowActions/AssignAction"));
-const EditAction = React.lazy(() => import("./studies/RowActions/EditAction"));
-const PdfAction = React.lazy(() => import("./studies/RowActions/PdfAction"));
-const SelfAssignAction = React.lazy(() => import("./studies/RowActions/SelfAssignAction"));
+const AssignAction = React.lazy(() => import("./row-actions/AssignAction"));
+const EditAction = React.lazy(() => import("./row-actions/EditAction"));
+const PdfAction = React.lazy(() => import("./row-actions/PdfAction"));
+const SelfAssignAction = React.lazy(() => import("./row-actions/SelfAssignAction"));
+const ReviewAction = React.lazy(() => import("./row-actions/ReviewAction"));
 
 function RowActions({ row, actions, table }: RowActionsProps) {
 	const { dicom_uid, status, student, radiologist, id } = row.original;

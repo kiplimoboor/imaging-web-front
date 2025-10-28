@@ -1,13 +1,13 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef } from "material-react-table";
 import { useCallback, useMemo } from "react";
+import BaseTable from "@/components/BaseTable";
+import StatusPill from "@/components/StatusPill";
 import { useGetStudies } from "@/hooks/studies";
 import type { Actions, EditingRowSaveArgs, RowActionsProps, Study, StudyStatusMap } from "@/types";
-import BaseTable from "./BaseTable";
-import RowActions from "./RowActions";
-import StatusPill from "./StatusPill";
-import { commonColumns, commonInitialHide, hiddenColumns } from "./studies/columns";
-import { studyUpdate } from "./studies/utils";
+import { commonColumns, commonInitialHide, hiddenColumns } from "../columns";
+import RowActions from "../RowActions";
+import { studyUpdate } from "../utils";
 
 function AllStudies() {
 	const queryClient = useQueryClient();
