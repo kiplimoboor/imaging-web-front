@@ -1,10 +1,13 @@
 import { useAuth } from "../context/AuthContext";
+import AllStudies from "./AllStudies";
 import MyStudies from "./MyStudies";
-import StudentStudies from "./StudentStudies";
 
 function StudiesIndex() {
 	const { user } = useAuth();
-	const isStudent = user?.role === "Registrar";
-	return isStudent ? <StudentStudies /> : <MyStudies />;
+	const role = user?.role;
+
+	if (role === "Support") return <AllStudies />;
+
+	return <MyStudies />;
 }
 export default StudiesIndex;

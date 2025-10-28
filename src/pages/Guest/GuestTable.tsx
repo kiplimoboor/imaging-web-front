@@ -2,14 +2,14 @@ import type { MRT_ColumnDef } from "material-react-table";
 import { useMemo } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
-import { useStudies } from "@/hooks/studies";
+import { useGetStudies } from "@/hooks/studies";
 import type { Study } from "@/types";
 import { guestStudyStatusMap } from "@/utils/constants";
 
 import RowActions from "./RowActions";
 
 function GuestTable() {
-	const { data: studies } = useStudies();
+	const { data: studies } = useGetStudies();
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(
 		() => [
 			{ accessorKey: "patient_id", header: "MRN", size: 50 },

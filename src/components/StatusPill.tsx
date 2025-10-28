@@ -1,7 +1,7 @@
-import { Box } from "@mui/material";
-import type { StudyStatus } from "../utils/constants";
+import Box from "@mui/material/Box";
+import type { StudyStatusMap } from "@/types";
 
-type StatusPillProps = { status: number; map: StudyStatus };
+type StatusPillProps = { status: number; map: StudyStatusMap };
 
 function StatusPill({ status, map }: StatusPillProps) {
 	const { color, text } = map[status];

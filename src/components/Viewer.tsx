@@ -3,12 +3,12 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import { IconButton } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
-import { useStudies } from "../hooks/studies";
+import { useGetStudies } from "@/hooks/studies";
 
 const URL = "https://radiology.mtrh.go.ke";
 
 function Viewer() {
-	const { data } = useStudies();
+	const { data } = useGetStudies();
 	const { uid } = useParams();
 	const iframeRef = useRef<HTMLIFrameElement>(null);
 

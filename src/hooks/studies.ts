@@ -1,54 +1,41 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import type { Study } from "@/types";
 import { useAuth } from "../context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-interface Study {
-	id: number;
-	dicom_uid: string;
-	patient_id: string;
-	patient_name: string;
-	gender: string;
-	dob: string;
-	examination: string;
-	study_date: string;
-	modalities: string[];
-	status: 0 | 1 | 2 | 3 | 4;
-	radiologist: number | null;
-	student: number;
-	radiologist_name: string | null;
-	student_name: string | null;
-	note: string | null;
-}
-
 type AssignmentCreate = { dicom_uid: string; radiologist_id: number };
 
-function useStudies() {
+function useGetStudies() {
 	return useQuery<Study[]>({
 		queryKey: ["studies", "all"],
-		queryFn: () => getStudies(),
+		queryFn: async () => {
+			const res = await fetch(API_URL + "/studies");
+			const data: Study[] = await res.json();
+			return data;
+		},
 	});
 }
 
-function useStudentStudies() {
+function useUserStudies() {
 	const { user } = useAuth();
 	return useQuery<Study[]>({
 		queryKey: ["studies", user?.id],
-		queryFn: () => getStudentStudies(user?.id),
-	});
-}
-
-function useRadiologistStudies() {
-	const { user } = useAuth();
-	return useQuery<Study[]>({
-		queryKey: ["studies", user?.id],
-		queryFn: () => getStudies(user?.id),
+		queryFn: async (): Promise<Study[]> => {
+			let url;
+			if (user?.role === "System User" || user?.role === "Administrator") {
+				url = API_URL + "/studies?radiologist=" + user.id;
+			} else url = API_URL + "/studies?student=" + user?.id;
+			const res = await fetch(url, { credentials: "include" });
+			const data: Study[] = await res.json();
+			return data;
+		},
 	});
 }
 
 function useNewStudies() {
-	const { data: allStudies } = useStudies();
+	const { data: allStudies } = useGetStudies();
 
 	const newStudies = useMemo(() => {
 		if (!allStudies) return [];
@@ -62,27 +49,11 @@ function useCompleteStudies() {
 	return useQuery<Study[]>({
 		queryKey: ["studies", "complete"],
 		queryFn: async (): Promise<Study[]> => {
-			const res = await fetch(API_URL + "/studies/complete", { credentials: "include" });
+			const res = await fetch(API_URL + "/studies?status=4", { credentials: "include" });
 			const data: Study[] = await res.json();
 			return data;
 		},
 	});
-}
-
-async function getStudies(radiologist?: number): Promise<Study[]> {
-	const url_params = new URLSearchParams();
-	if (radiologist) url_params.append("radiologist", radiologist.toString());
-	const res = await fetch(API_URL + "/studies?" + url_params, { credentials: "include" });
-	const data: Study[] = await res.json();
-	return data;
-}
-
-async function getStudentStudies(student?: number): Promise<Study[]> {
-	const url_params = new URLSearchParams();
-	if (student) url_params.append("student", student.toString());
-	const res = await fetch(API_URL + "/studies/student?" + url_params, { credentials: "include" });
-	const data: Study[] = await res.json();
-	return data;
 }
 
 function useAssignment() {
@@ -116,10 +87,9 @@ function useStudentAssignment() {
 export {
 	useAssignment,
 	useNewStudies,
-	useRadiologistStudies,
 	useStudentAssignment,
-	useStudentStudies,
-	useStudies,
+	useGetStudies,
+	useUserStudies,
 	useCompleteStudies,
 	type Study,
 };

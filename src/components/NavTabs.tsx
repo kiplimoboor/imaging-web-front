@@ -7,12 +7,18 @@ function NavTabs() {
 	const location = useLocation();
 	const currentTab = location.pathname;
 
-	const { isPrivileged } = useAuth();
+	const { isPrivileged, user } = useAuth();
 
-	const tabs = [
-		<Tab key="/all" label="All Studies" value="/all" to="/all" component={Link} />,
-		<Tab key="/" label="My Studies" value="/" to="/" component={Link} />,
-	];
+	const isSupport = user?.role === "Support";
+
+	const tabs = [];
+
+	if (isSupport) tabs.push(<Tab key="/" label="All Studies" value="/" to="/" component={Link} />);
+	else
+		tabs.push(
+			<Tab key="/all" label="All Studies" value="/all" to="/all" component={Link} />,
+			<Tab key="/" label="My Studies" value="/" to="/" component={Link} />,
+		);
 
 	if (isPrivileged) {
 		tabs.push(

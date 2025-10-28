@@ -74,7 +74,7 @@ type UserUpdate = { id: number; field: string; value: string | number };
 function useUpdateUser() {
 	return useMutation({
 		mutationFn: async ({ id, field, value }: UserUpdate) => {
-			// TODO: handle non-ok responses
+			//  TODO: handle non-ok responses
 			await fetch(API_URL + "/users", {
 				credentials: "include",
 				method: "PATCH",
