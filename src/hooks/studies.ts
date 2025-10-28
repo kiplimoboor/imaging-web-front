@@ -11,7 +11,7 @@ function useGetStudies() {
 	return useQuery<Study[]>({
 		queryKey: ["studies", "all"],
 		queryFn: async () => {
-			const res = await fetch(API_URL + "/studies");
+			const res = await fetch(API_URL + "/studies", { credentials: "include" });
 			const data: Study[] = await res.json();
 			return data;
 		},
