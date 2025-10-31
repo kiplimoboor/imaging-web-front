@@ -4,14 +4,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useUpdateStudy } from "@/hooks/studies";
-import { useActiveUsers } from "@/hooks/users";
+import { useUsers } from "@/hooks/users";
 import type { Study, User } from "@/types";
 
 function ReviewAction({ id }: { id: number }) {
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 	const queryClient = useQueryClient();
 	const mutation = useUpdateStudy();
-	const { data: radiologists } = useActiveUsers();
+	const { data } = useUsers();
+	const radiologists = data?.filter((radiologist) => radiologist.role === "Radiologist" && radiologist.status === 1);
 	const { user } = useAuth();
 
 	const chooseReviewer = async (radiologist: User) => {
@@ -40,15 +41,13 @@ function ReviewAction({ id }: { id: number }) {
 			</Tooltip>
 
 			<Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
-				{radiologists
-					?.filter((radiologist) => radiologist.role === "System User")
-					.map((radiologist) => {
-						return (
-							<MenuItem key={radiologist.id} onClick={() => chooseReviewer(radiologist)}>
-								{radiologist.full_name}
-							</MenuItem>
-						);
-					})}
+				{radiologists?.map((radiologist) => {
+					return (
+						<MenuItem key={radiologist.id} onClick={() => chooseReviewer(radiologist)}>
+							{radiologist.full_name}
+						</MenuItem>
+					);
+				})}
 			</Menu>
 		</>
 	);

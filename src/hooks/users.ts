@@ -1,17 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { User } from "@/types";
 import { loginRedirect } from "../utils/auth";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-interface User {
-	id: number;
-	full_name: string;
-	email: string;
-	status: number;
-	role: string;
-	admin: boolean;
-	studies: number;
-}
 
 function useUsers() {
 	return useQuery<User[]>({
@@ -25,30 +16,6 @@ function useUsers() {
 				if (user.role === "System User") return { ...user, role: "Radiologist" };
 				return user;
 			});
-		},
-	});
-}
-
-function useActiveUsers() {
-	return useQuery<User[]>({
-		queryKey: ["users", "active"],
-		queryFn: async () => {
-			const res = await fetch(API_URL + "/users/active", { credentials: "include" });
-			if (res.status === 401) loginRedirect();
-			const data: User[] = await res.json();
-			return data;
-		},
-	});
-}
-
-function useActiveStudents() {
-	return useQuery<User[]>({
-		queryKey: ["students"],
-		queryFn: async () => {
-			const res = await fetch(API_URL + "/users/students/active", { credentials: "include" });
-			if (res.status === 401) loginRedirect();
-			const data: User[] = await res.json();
-			return data;
 		},
 	});
 }
@@ -74,7 +41,6 @@ type UserUpdate = { id: number; field: string; value: string | number };
 function useUpdateUser() {
 	return useMutation({
 		mutationFn: async ({ id, field, value }: UserUpdate) => {
-			//  TODO: handle non-ok responses
 			await fetch(API_URL + "/users", {
 				credentials: "include",
 				method: "PATCH",
@@ -86,4 +52,4 @@ function useUpdateUser() {
 	});
 }
 
-export { useActiveStudents, useActiveUsers, useCreateUser, useUpdateUser, useUsers, type User };
+export { useCreateUser, useUpdateUser, useUsers };

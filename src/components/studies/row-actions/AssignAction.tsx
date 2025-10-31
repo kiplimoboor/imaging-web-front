@@ -3,14 +3,15 @@ import { IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useUpdateStudy } from "@/hooks/studies";
-import { useActiveUsers } from "@/hooks/users";
+import { useUsers } from "@/hooks/users";
 import type { Study, User } from "@/types";
 
 function AssignAction({ id }: { id: number }) {
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 	const queryClient = useQueryClient();
 	const mutation = useUpdateStudy();
-	const { data: radiologists } = useActiveUsers();
+	const { data } = useUsers();
+	const radiologists = data?.filter((user) => user.status === 1 && user.role != "Support");
 
 	const handleAssign = (radiologist: User) => {
 		const isRegistrar = radiologist.role === "Registrar";

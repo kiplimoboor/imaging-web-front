@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { useGetStudies } from "../hooks/studies";
-import { useActiveStudents, useActiveUsers } from "../hooks/users";
+import { useUsers } from "../hooks/users";
 
 function Analytics() {
 	let incomplete = 0;
@@ -8,9 +8,9 @@ function Analytics() {
 
 	let { data: new_studies } = useGetStudies();
 	new_studies = new_studies?.filter((study) => study.status === 0);
+	let { data: users } = useUsers();
+	users = users?.filter((user) => user.status === 1);
 	const { data: studies } = useGetStudies();
-	const { data: activeUsers } = useActiveUsers();
-	const { data: activeStudents } = useActiveStudents();
 
 	if (!studies) return;
 	studies.forEach((study) => {
@@ -43,9 +43,7 @@ function Analytics() {
 				<div className="bg-white shadow-sm px-4 py-3 justify-between flex-grow-1">
 					<p className="text-sm text-gray-500 font-bold">Active Users</p>
 					<div className="flex justify-between">
-						<h3 className="text-xl font-semibold text-gray-800">
-							{activeUsers && activeStudents && activeUsers?.length + activeStudents?.length}
-						</h3>
+						<h3 className="text-xl font-semibold text-gray-800">{users?.length}</h3>
 						<Link to="/users/" className="text-sm font-semibold text-blue-500 flex items-center group">
 							Manage Users
 							<span className="ml-1 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1">

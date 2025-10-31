@@ -1,30 +1,15 @@
 import CloseIcon from "@mui/icons-material/Close";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { IconButton } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router";
-import { useGetStudies } from "@/hooks/studies";
 
 const URL = "https://radiology.mtrh.go.ke";
 
 function Viewer() {
-	const { data } = useGetStudies();
 	const { uid } = useParams();
-	const iframeRef = useRef<HTMLIFrameElement>(null);
 
 	const [notePanelOpen, setNotePanelOpen] = useState(true);
-	const study = data?.find((study) => study.dicom_uid === uid);
-
-	useEffect(() => {
-		const iframe = iframeRef.current;
-		if (!iframe || !study) return;
-
-		const load = () => iframe.contentWindow?.postMessage({ type: "STUDY_DATA", payload: study }, URL + "/editor/");
-		iframe.addEventListener("load", load);
-		if (iframe.contentDocument?.readyState === "complete") load();
-
-		return () => iframe.removeEventListener("load", load);
-	}, [study]);
 
 	return (
 		<div className="flex h-screen w-full">
@@ -48,7 +33,7 @@ function Viewer() {
 			)}
 
 			<div className={`h-full overflow-hidden ${notePanelOpen ? "w-4/12" : "w-0"}`}>
-				<iframe ref={iframeRef} src={URL + "/editor/"} className="h-full w-full" />
+				<iframe src={URL + "/editor/" + uid} className="h-full w-full" />
 			</div>
 		</div>
 	);
