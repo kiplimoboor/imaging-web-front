@@ -1,12 +1,13 @@
 import { Link } from "react-router";
-import { useGetStudies, useNewStudies } from "../hooks/studies";
+import { useGetStudies } from "../hooks/studies";
 import { useActiveStudents, useActiveUsers } from "../hooks/users";
 
 function Analytics() {
 	let incomplete = 0;
 	let complete = 0;
 
-	const { data: new_studies } = useNewStudies();
+	let { data: new_studies } = useGetStudies();
+	new_studies = new_studies?.filter((study) => study.status === 0);
 	const { data: studies } = useGetStudies();
 	const { data: activeUsers } = useActiveUsers();
 	const { data: activeStudents } = useActiveStudents();
@@ -29,7 +30,7 @@ function Analytics() {
 				<div className="bg-white shadow-sm px-4 py-3 justify-between flex-grow-1">
 					<p className="text-sm text-gray-500 font-bold">New Studies</p>
 					<div className="flex justify-between">
-						<h3 className="text-xl font-semibold text-gray-800">{new_studies.length}</h3>
+						<h3 className="text-xl font-semibold text-gray-800">{new_studies?.length}</h3>
 						<Link to="/" className="text-sm font-semibold text-blue-500 flex items-center group">
 							Studies
 							<span className="ml-1 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1">
