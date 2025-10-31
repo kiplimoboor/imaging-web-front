@@ -29,9 +29,9 @@ function RowActions({ row, actions, table }: RowActionsProps) {
 		<>
 			<ViewAction dicomUid={dicom_uid} status={status} />
 			<React.Suspense fallback={null}>
-				{canAssign && <AssignAction dicomUid={dicom_uid} />}
-				{canSelfAssign && <SelfAssignAction dicomUid={dicom_uid} />}
-				{canRequestReview && <ReviewAction dicomUid={dicom_uid} id={id} />}
+				{canAssign && <AssignAction id={id} />}
+				{canSelfAssign && <SelfAssignAction id={id} />}
+				{canRequestReview && <ReviewAction id={id} />}
 				{canEdit && <EditAction table={table} row={row} />}
 				{canGeneratePdf && <PdfAction table={table} row={row} />}
 			</React.Suspense>

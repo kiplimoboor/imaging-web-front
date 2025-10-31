@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Route, Routes } from "react-router";
 import AllStudies from "@/components/studies/tables/AllStudies";
 import UsersPage from "@/pages/Users/UsersPage.tsx";
@@ -43,6 +44,7 @@ function App() {
 						</Route>
 					</Routes>
 				</AuthProvider>
+				<ReactQueryDevtools initialIsOpen={false} />
 			</QueryClientProvider>
 		</div>
 	);

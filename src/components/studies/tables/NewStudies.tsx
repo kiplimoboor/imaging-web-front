@@ -2,13 +2,15 @@ import type { MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { useCallback, useMemo } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
-import { type Study, useNewStudies } from "@/hooks/studies";
+import { type Study, useGetStudies } from "@/hooks/studies";
 import type { Actions } from "@/types";
 import { commonColumns } from "../columns";
 import RowActions from "../RowActions";
 
 function NewStudies() {
-	const { data: studies } = useNewStudies();
+	const { data } = useGetStudies();
+
+	const studies = data?.filter((study) => study.status === 0);
 
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(
 		() => [

@@ -1,18 +1,13 @@
-import type { QueryClient } from "@tanstack/react-query";
-import type { Study, StudyTableInstance } from "@/types";
+import type { Study } from "@/types";
 
-async function studyUpdate(dicomUid: string, values: Study, table: StudyTableInstance, queryClient: QueryClient) {
+async function studyUpdate(id: number, values: Study) {
 	const { patient_id, patient_name, examination, dob, gender } = values;
-
-	await fetch("https://radiology.mtrh.go.ke/api/studies/modify/" + dicomUid, {
-		method: "PUT",
+	await fetch("http://127.0.0.1:3000/studies/" + id, {
+		method: "PATCH",
 		credentials: "include",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ patient_id, patient_name, examination, dob, gender }),
 	});
-
-	queryClient.invalidateQueries({ queryKey: ["studies", "all"] });
-	table.setEditingRow(null);
 }
 
 export { studyUpdate };

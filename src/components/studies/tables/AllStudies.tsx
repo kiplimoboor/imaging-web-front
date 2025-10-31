@@ -48,8 +48,16 @@ function AllStudies() {
 	}, []);
 
 	const tableConfig = {
-		onEditingRowSave: ({ values, table, row }: EditingRowSaveArgs) =>
-			studyUpdate(row.original.dicom_uid, values, table, queryClient),
+		onEditingRowSave: ({ values, table, row }: EditingRowSaveArgs) => {
+			studyUpdate(row.original.id, values);
+			queryClient.setQueryData(["studies", []], (old: Study[]) =>
+				old.map((study) => {
+					if (row.original.id === study.id) return { ...study, ...values };
+					return study;
+				}),
+			);
+			table.setEditingRow(null);
+		},
 	};
 
 	const actions: Actions[] = ["assign", "self-assign", "edit", "pdf"];

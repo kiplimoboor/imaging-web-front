@@ -5,13 +5,27 @@ import { useAuth } from "../context/AuthContext";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-type AssignmentCreate = { dicom_uid: string; radiologist_id: number };
-
-function useGetStudies() {
+type GetStudiesFilters = { radiologist?: number; student?: number; status?: number };
+function useGetStudies(filters?: GetStudiesFilters) {
+	const { radiologist, student, status } = filters ?? {};
+	const filterParams = [];
+	const searchParams = new URLSearchParams();
+	if (radiologist !== undefined) {
+		searchParams.append("radiologist", radiologist.toString());
+		filterParams.push(radiologist);
+	}
+	if (student !== undefined) {
+		searchParams.append("student", student.toString());
+		filterParams.push(student);
+	}
+	if (status !== undefined) {
+		searchParams.append("status", status.toString());
+		filterParams.push(status);
+	}
 	return useQuery<Study[]>({
-		queryKey: ["studies", "all"],
+		queryKey: ["studies", filterParams],
 		queryFn: async () => {
-			const res = await fetch(API_URL + "/studies", { credentials: "include" });
+			const res = await fetch(API_URL + "/studies?" + searchParams.toString(), { credentials: "include" });
 			const data: Study[] = await res.json();
 			return data;
 		},
@@ -20,22 +34,34 @@ function useGetStudies() {
 
 function useUserStudies() {
 	const { user } = useAuth();
-	return useQuery<Study[]>({
-		queryKey: ["studies", user?.id],
-		queryFn: async (): Promise<Study[]> => {
-			let url;
-			if (user?.role === "System User" || user?.role === "Administrator") {
-				url = API_URL + "/studies?radiologist=" + user.id;
-			} else url = API_URL + "/studies?student=" + user?.id;
-			const res = await fetch(url, { credentials: "include" });
-			const data: Study[] = await res.json();
-			return data;
+	const { data: allStudies } = useGetStudies({});
+	const isRadiologist = user?.role === "System User" || user?.role === "Administrator";
+
+	const newStudies = useMemo(() => {
+		if (!allStudies) return [];
+		return allStudies.filter((study) => (isRadiologist ? study.radiologist === user?.id : study.student == user?.id));
+	}, [allStudies]);
+
+	return { data: newStudies };
+}
+
+type StudyUpdateFields = { patient_id?: string; student?: number; radiologist?: number; status?: number };
+type UpdateStudyPayload = { id: number; data: StudyUpdateFields };
+function useUpdateStudy() {
+	return useMutation({
+		mutationFn: async ({ id, data }: UpdateStudyPayload) => {
+			await fetch(API_URL + "/studies/" + id, {
+				method: "PATCH",
+				headers: { "Content-Type": "application/json" },
+				credentials: "include",
+				body: JSON.stringify(data),
+			});
 		},
 	});
 }
 
 function useNewStudies() {
-	const { data: allStudies } = useGetStudies();
+	const { data: allStudies } = useGetStudies({ status: 0 });
 
 	const newStudies = useMemo(() => {
 		if (!allStudies) return [];
@@ -56,40 +82,4 @@ function useCompleteStudies() {
 	});
 }
 
-function useAssignment() {
-	return useMutation({
-		mutationFn: async ({ dicom_uid, radiologist_id }: AssignmentCreate) => {
-			const res = await fetch(API_URL + "/studies", {
-				credentials: "include",
-				method: "PATCH",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ dicom_uid, radiologist: radiologist_id }),
-			});
-			return res;
-		},
-	});
-}
-
-function useStudentAssignment() {
-	return useMutation({
-		mutationFn: async ({ dicom_uid, radiologist_id }: AssignmentCreate) => {
-			const res = await fetch(API_URL + "/studies/student", {
-				credentials: "include",
-				method: "PATCH",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ dicom_uid, student: radiologist_id }),
-			});
-			return res;
-		},
-	});
-}
-
-export {
-	useAssignment,
-	useNewStudies,
-	useStudentAssignment,
-	useGetStudies,
-	useUserStudies,
-	useCompleteStudies,
-	type Study,
-};
+export { useNewStudies, useGetStudies, useUserStudies, useCompleteStudies, useUpdateStudy, type Study };

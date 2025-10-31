@@ -2,44 +2,36 @@ import CheckIcon from "@mui/icons-material/Check";
 import { IconButton, Tooltip } from "@mui/material";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
-import { useAssignment, useStudentAssignment } from "@/hooks/studies";
+import { useUpdateStudy } from "@/hooks/studies";
 import type { Study } from "@/types";
 
-function SelfAssignAction({ dicomUid }: { dicomUid: string }) {
+function SelfAssignAction({ id }: { id: number }) {
 	const { user } = useAuth();
 	if (!user) return;
 
 	const queryClient = useQueryClient();
-	const radiologistMutation = useAssignment();
-	const registrarMutation = useStudentAssignment();
+	const mutation = useUpdateStudy();
+	const isRegistrar = user.role === "Registrar";
 
-	const handleAssign = () => {
-		queryClient.setQueryData(["studies", "all"], (old: Study[]) =>
+	const handleSelfAssign = () => {
+		queryClient.setQueryData(["studies", []], (old: Study[]) =>
 			old.map((study) => {
-				if (study.dicom_uid === dicomUid) {
-					if (user?.role === "Registrar") return { ...study, status: 2, student_name: user.full_name };
-					return { ...study, status: 1, radiologist_name: user?.full_name };
+				if (study.id === id) {
+					const newStudy: Study = isRegistrar
+						? { ...study, status: 2, student_name: user.full_name }
+						: { ...study, status: 1, radiologist_name: user.full_name };
+					return newStudy;
 				}
 				return study;
 			}),
 		);
-
-		if (user?.role === "Registrar") {
-			registrarMutation.mutate(
-				{ dicom_uid: dicomUid, radiologist_id: user.id },
-				{ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }) },
-			);
-		} else {
-			radiologistMutation.mutate(
-				{ dicom_uid: dicomUid, radiologist_id: user.id },
-				{ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["studies", user?.id] }) },
-			);
-		}
+		const updateData = isRegistrar ? { student: user.id, status: 2 } : { radiologist: user.id, status: 1 };
+		mutation.mutate({ id, data: updateData });
 	};
 
 	return (
 		<Tooltip title="Self Assign">
-			<IconButton onClick={handleAssign}>
+			<IconButton onClick={handleSelfAssign}>
 				<CheckIcon />
 			</IconButton>
 		</Tooltip>
