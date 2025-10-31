@@ -1,6 +1,6 @@
 import { decodeJwt } from "jose";
 import React, { createContext, useContext, useState } from "react";
-import { type User } from "../hooks/users";
+import type { User } from "@/types";
 
 type AuthContextProps = {
 	login: (code: string) => Promise<boolean>;
