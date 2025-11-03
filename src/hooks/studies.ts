@@ -30,7 +30,7 @@ function useGetStudies(filters?: GetStudiesFilters) {
 	});
 }
 
-type StudyUpdateFields = { patient_id?: string; student?: number; radiologist?: number; status?: number };
+type StudyUpdateFields = { patient_id?: string; student?: number | null; radiologist?: number | null; status?: number };
 type UpdateStudyPayload = { id: number; data: StudyUpdateFields };
 function useUpdateStudy() {
 	return useMutation({

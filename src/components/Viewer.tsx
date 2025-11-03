@@ -8,7 +8,7 @@ const URL = "https://radiology.mtrh.go.ke";
 
 function Viewer() {
 	const { uid } = useParams();
-	const viewerUrl = `${URL}/ohif/viewer/StudyInstanceUIDs=${uid}`;
+	const viewerUrl = `${URL}/ohif/viewer?StudyInstanceUIDs=${uid}`;
 	const editorUrl = `${URL}/test/${uid}`;
 
 	const [notePanelOpen, setNotePanelOpen] = useState(true);
@@ -34,7 +34,7 @@ function Viewer() {
 				</div>
 			)}
 
-			<div className={`h-full overflow-hidden ${notePanelOpen ? "w-10/12" : "w-0"}`}>
+			<div className={`h-full overflow-hidden ${notePanelOpen ? "w-4/12" : "w-0"}`}>
 				<iframe src={editorUrl} className="h-full w-full" />
 			</div>
 		</div>

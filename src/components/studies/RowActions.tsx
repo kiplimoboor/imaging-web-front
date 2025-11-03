@@ -29,7 +29,7 @@ function RowActions({ row, actions, table }: RowActionsProps) {
 		<>
 			<ViewAction dicomUid={dicom_uid} status={status} />
 			<React.Suspense fallback={null}>
-				{canAssign && <AssignAction id={id} />}
+				{canAssign && <AssignAction id={id} status={status} />}
 				{canSelfAssign && <SelfAssignAction id={id} />}
 				{canRequestReview && <ReviewAction id={id} />}
 				{canEdit && <EditAction table={table} row={row} />}

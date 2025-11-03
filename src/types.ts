@@ -23,7 +23,7 @@ type Study = {
 	modalities: string[];
 	status: 0 | 1 | 2 | 3 | 4;
 	radiologist: number | null;
-	student: number;
+	student: number | null;
 	radiologist_name: string | null;
 	student_name: string | null;
 	note: string | null;
