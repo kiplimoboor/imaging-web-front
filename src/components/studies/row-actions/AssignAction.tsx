@@ -62,17 +62,15 @@ function AssignAction({ id, status }: { id: number; status: number }) {
 				onClose={() => setAnchorEl(null)}
 				slotProps={{ paper: { style: { maxHeight: 300, width: "25ch" } } }}
 			>
-				{status !== 0 && (
-					<>
-						<MenuItem onClick={handleRemoveAssign}>
-							<ListItemIcon>
-								<PersonRemoveIcon />
-							</ListItemIcon>
-							<ListItemText>Remove Assignment</ListItemText>
-						</MenuItem>
-						<Divider />
-					</>
-				)}
+				{status !== 0 && [
+					<MenuItem key="remove-assign" onClick={handleRemoveAssign}>
+						<ListItemIcon>
+							<PersonRemoveIcon />
+						</ListItemIcon>
+						<ListItemText>Remove Assignment</ListItemText>
+					</MenuItem>,
+					<Divider key="divider" />,
+				]}
 				{radiologists?.map((radiologist) => (
 					<MenuItem key={radiologist.id} onClick={() => handleAssign(radiologist)}>
 						{radiologist.full_name}
