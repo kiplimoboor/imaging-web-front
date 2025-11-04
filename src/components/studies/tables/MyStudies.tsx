@@ -59,10 +59,12 @@ function MyStudies() {
 			);
 
 			queryClient.setQueryData(["studies", []], (old: Study[]) =>
-				old.map((study) => {
-					if (row.original.id === study.id) return { ...study, ...values };
-					return study;
-				}),
+				old
+					? old.map((study) => {
+							if (row.original.id === study.id) return { ...study, ...values };
+							return study;
+						})
+					: [],
 			);
 
 			table.setEditingRow(null);
