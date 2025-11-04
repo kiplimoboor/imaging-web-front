@@ -11,7 +11,7 @@ import { studyUpdate } from "../utils";
 
 function CompletedStudies() {
 	const { data } = useGetStudies();
-	const studies = data?.filter((study) => study.status === 4);
+	const studies = useMemo(() => data?.filter((study) => study.status === 4), [data]);
 	const queryClient = useQueryClient();
 
 	const renderStatus = useCallback(
@@ -46,7 +46,6 @@ function CompletedStudies() {
 					return study;
 				}),
 			);
-
 			table.setEditingRow(null);
 		},
 	};

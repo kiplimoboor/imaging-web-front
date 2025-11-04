@@ -9,9 +9,7 @@ import RowActions from "../RowActions";
 
 function NewStudies() {
 	const { data } = useGetStudies();
-
-	const studies = data?.filter((study) => study.status === 0);
-
+	const studies = useMemo(() => data?.filter((study) => study.status === 0), [data]);
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(
 		() => [
 			...commonColumns,
@@ -24,7 +22,6 @@ function NewStudies() {
 		],
 		[],
 	);
-
 	const actions: Actions[] = ["assign"];
 	const rowActions = useCallback(({ row }: { row: MRT_Row<Study> }) => <RowActions row={row} actions={actions} />, []);
 

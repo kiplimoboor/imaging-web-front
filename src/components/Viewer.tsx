@@ -9,7 +9,7 @@ const URL = "https://radiology.mtrh.go.ke";
 function Viewer() {
 	const { uid } = useParams();
 	const viewerUrl = `${URL}/ohif/viewer?StudyInstanceUIDs=${uid}`;
-	const editorUrl = `${URL}/test/${uid}`;
+	const editorUrl = `${URL}/editor/${uid}`;
 
 	const [notePanelOpen, setNotePanelOpen] = useState(true);
 
