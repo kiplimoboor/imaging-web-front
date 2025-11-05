@@ -20,7 +20,7 @@ type Study = {
 	dob: string;
 	examination: string;
 	study_date: string;
-	modalities: string[];
+	modalities: string;
 	status: 0 | 1 | 2 | 3 | 4;
 	radiologist: number | null;
 	student: number | null;
