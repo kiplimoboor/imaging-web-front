@@ -10,9 +10,24 @@ const commonColumns: MRT_ColumnDef<Study>[] = [
 		header: "Examination",
 		accessorFn: (row) => {
 			const { modalities, examination } = row;
-			if (!modalities) return examination ?? "";
-			if (!examination) return String(modalities);
-			return `${modalities}-${examination.replace("^MTRH", " ")}`;
+
+			const formattedModalities = modalities ? modalities.split("\\")[0] : "";
+			let formattedExamination = "";
+
+			if (examination) {
+				let tempExamination = examination.replace(/^MTRH|\^MTRH/i, " ").trim();
+				const internalDupeRegex = /^(\w+)\s*(\1\s*)(.*)$/i;
+				const match = tempExamination.match(internalDupeRegex);
+				if (match) {
+					const word1 = match[1];
+					const restOfString = match[3] ? match[3].trim() : "";
+					formattedExamination = `${word1} ${restOfString}`.trim();
+				} else formattedExamination = tempExamination.split(/\s+/).slice(0, 3).join(" ");
+			}
+			if (!examination) return formattedModalities;
+			if (!modalities) return formattedExamination;
+
+			return `${formattedModalities}-${formattedExamination}`;
 		},
 		muiEditTextFieldProps: hiddenEdit,
 	},
