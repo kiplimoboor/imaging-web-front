@@ -2,13 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { User } from "@/types";
 import { loginRedirect } from "../utils/auth";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL + "/users";
 
 function useUsers() {
 	return useQuery<User[]>({
 		queryKey: ["users"],
 		queryFn: async () => {
-			const res = await fetch(API_URL + "/users", { credentials: "include" });
+			const res = await fetch(API_URL, { credentials: "include" });
 			if (res.status === 401) loginRedirect();
 			const data: User[] = await res.json();
 
@@ -25,7 +25,7 @@ function useCreateUser() {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: async ({ full_name, email, role }: UserCreate) => {
-			await fetch(API_URL + "/users", {
+			await fetch(API_URL, {
 				credentials: "include",
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -43,7 +43,8 @@ function useUpdateUser() {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: async ({ id, data }: UserUpdatePayload) => {
-			await fetch("http://127.0.0.1:3000/users/" + id, {
+			await fetch(`${API_URL}/${id}`, {
+				credentials: "include",
 				method: "PATCH",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(data),
