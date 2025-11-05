@@ -1,13 +1,14 @@
-import type { MRT_ColumnDef, MRT_RowData, MRT_TableState } from "material-react-table";
+import type { MRT_ColumnDef, MRT_RowData, MRT_TableInstance, MRT_TableState } from "material-react-table";
 import { useMemo } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
-import { useUsers } from "@/hooks/users";
+import { useUpdateUser, useUsers } from "@/hooks/users";
 import type { StudyStatusMap, User } from "@/types";
-import RowActions from "./RowActions";
+import RowActions, { type RowActionProps } from "./RowActions";
 
 function UsersTable() {
 	const { data: users } = useUsers();
+	const mutation = useUpdateUser();
 	const userStatusMap: StudyStatusMap = {
 		0: { text: "Inactive", color: "error" },
 		1: { text: "Active", color: "primary" },
@@ -15,14 +16,21 @@ function UsersTable() {
 
 	const columns = useMemo<MRT_ColumnDef<User>[]>(
 		() => [
-			{ accessorKey: "id", header: "Id" },
+			{ accessorKey: "id", header: "Id", muiEditTextFieldProps: { style: { display: "none" } } },
 			{ accessorKey: "full_name", header: "Name" },
 			{ accessorKey: "email", header: "Email" },
-			{ accessorKey: "role", header: "Role" },
+			{
+				accessorKey: "role",
+				header: "Role",
+				editVariant: "select",
+				editSelectOptions: ["Administrator", "System User", "Registrar", "Support"],
+				muiEditTextFieldProps: { select: true },
+			},
 			{
 				header: "Status",
 				accessorFn: (user) => userStatusMap[user.status].text,
 				Cell: ({ row }) => <StatusPill status={row.original.status} map={userStatusMap} />,
+				muiEditTextFieldProps: { style: { display: "none" } },
 			},
 		],
 		[],
@@ -37,7 +45,17 @@ function UsersTable() {
 		],
 	};
 
-	return <BaseTable data={users} columns={columns} rowActions={RowActions} intial={initial} />;
+	const tableConfig = {
+		onEditingRowSave: ({ values, table }: { values: User; table: MRT_TableInstance<User> }) => {
+			const { full_name, email, role, id } = values;
+			mutation.mutate({ id, data: { full_name, email, role } });
+			table.setEditingRow(null);
+		},
+	};
+
+	const rowActions = ({ table, row }: RowActionProps) => <RowActions row={row} table={table} />;
+
+	return <BaseTable data={users} columns={columns} rowActions={rowActions} intial={initial} others={tableConfig} />;
 }
 
 export default UsersTable;

@@ -37,18 +37,19 @@ function useCreateUser() {
 	});
 }
 
-type UserUpdate = { id: number; field: string; value: string | number };
+type UserUpdateFields = { full_name?: string; email?: string; role?: string; status?: number };
+type UserUpdatePayload = { id: number; data: UserUpdateFields };
 function useUpdateUser() {
+	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: async ({ id, field, value }: UserUpdate) => {
-			await fetch(API_URL + "/users", {
-				credentials: "include",
+		mutationFn: async ({ id, data }: UserUpdatePayload) => {
+			await fetch("http://127.0.0.1:3000/users/" + id, {
 				method: "PATCH",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ id, field, value }),
+				body: JSON.stringify(data),
 			});
 		},
-		onError: () => loginRedirect(),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
 	});
 }
 

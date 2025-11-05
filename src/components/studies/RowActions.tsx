@@ -22,8 +22,8 @@ function RowActions({ row, actions, table }: RowActionsProps) {
 	const canAssign = actions.includes("assign") && isPrivileged && status !== 4;
 	const canSelfAssign = actions.includes("self-assign") && status === 0 && radiologistRole.includes(user.role);
 	const canRequestReview = actions.includes("review") && user.role === "Registrar";
-	const canEdit = table && actions.includes("edit") && (isOwnStudy || isPrivileged) && status === 4;
-	const canGeneratePdf = table && actions.includes("pdf") && (isOwnStudy || isPrivileged) && status === 4;
+	const canEdit = table && actions.includes("edit") && (isOwnStudy || isPrivileged);
+	const canGeneratePdf = table && actions.includes("pdf") && status === 4;
 
 	return (
 		<>
