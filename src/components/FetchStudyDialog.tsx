@@ -56,7 +56,6 @@ function FetchStudyDialog({ open, setOpen }: FetchDialogProps) {
 						/>
 
 						<TextField
-							autoFocus
 							required
 							margin="dense"
 							id="study_date"
