@@ -9,6 +9,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
+import { useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 
 const API_URL = import.meta.env.VITE_API_URL + "/studies/retrieve";
@@ -17,6 +18,7 @@ type FetchDialogProps = { open: boolean; setOpen: React.Dispatch<React.SetStateA
 function FetchStudyDialog({ open, setOpen }: FetchDialogProps) {
 	const [modalOpen, setModalOpen] = React.useState(false);
 	const [success, setSuccess] = React.useState(false);
+	const queryClient = useQueryClient();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -29,8 +31,10 @@ function FetchStudyDialog({ open, setOpen }: FetchDialogProps) {
 			body: JSON.stringify(formJson),
 		});
 
-		if (res.status === 200) setSuccess(true);
-		else setSuccess(false);
+		if (res.status === 200) {
+			setSuccess(true);
+			queryClient.invalidateQueries({ queryKey: ["studies", []] });
+		} else setSuccess(false);
 
 		setModalOpen(true);
 		setOpen(false);
