@@ -30,7 +30,7 @@ function AuthProvider({ children }: React.PropsWithChildren) {
 	const [loadingAuth, setLoadingAuth] = useState(true);
 
 	const authCheck = async () => {
-		const res = await fetch("http://127.0.0.1:3000/oauth/check", {
+		const res = await fetch("https://radiology.mtrh.go.ke/oauth/check", {
 			credentials: "include",
 			headers: { "Content-Type": "application/json" },
 		});
@@ -44,7 +44,7 @@ function AuthProvider({ children }: React.PropsWithChildren) {
 	};
 
 	const login = async (code: string) => {
-		const res = await fetch("http://127.0.0.1:3000/oauth/exchange", {
+		const res = await fetch("https://radiology.mtrh.go.ke/oauth/exchange", {
 			method: "POST",
 			credentials: "include",
 			body: JSON.stringify({ code }),
