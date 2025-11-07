@@ -6,15 +6,13 @@ import { useAuth } from "../context/AuthContext";
 function NavTabs() {
 	const location = useLocation();
 	const currentTab = location.pathname;
-
-	const { isPrivileged, user } = useAuth();
-
+	const { isPrivileged, isRadiologist, user } = useAuth();
 	const isSupport = user?.role === "Support";
-
 	const tabs = [];
 
 	if (isSupport) tabs.push(<Tab key="/" label="All Studies" value="/" to="/" component={Link} />);
-	else
+
+	if (isRadiologist)
 		tabs.push(
 			<Tab key="/all" label="All Studies" value="/all" to="/all" component={Link} />,
 			<Tab key="/" label="My Studies" value="/" to="/" component={Link} />,

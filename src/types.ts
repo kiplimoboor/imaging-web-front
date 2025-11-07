@@ -5,7 +5,7 @@ type User = {
 	full_name: string;
 	email: string;
 	status: number;
-	role: string;
+	role: "Administrator" | "Registrar" | "Support" | "Secretary" | "Radiologist" | "Guest" | "System User";
 	admin: boolean;
 };
 

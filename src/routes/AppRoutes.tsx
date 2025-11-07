@@ -19,22 +19,21 @@ function PrivateRoutes() {
 		return loginRedirect();
 	}
 
-	if (user.role === "Guest") return <Navigate to="/guest" />;
-
 	return <Outlet />;
 }
 
 function AdminRoutes() {
-	const { user } = useAuth();
+	const { user, isPrivileged } = useAuth();
 	if (user == null) return <PrivateRoutes />;
-	if (user.admin == false) return <Navigate to="/401" />;
+	if (!isPrivileged) return <Navigate to="/401" />;
 	return <Outlet />;
 }
 
-function GuestRoutes() {
-	const { user } = useAuth();
+function RadiologistRoutes() {
+	const { user, isRadiologist } = useAuth();
 	if (user == null) return <PrivateRoutes />;
+	if (!isRadiologist) return <Navigate to="/401" />;
 	return <Outlet />;
 }
 
-export { AdminRoutes, PrivateRoutes, GuestRoutes };
+export { AdminRoutes, PrivateRoutes, RadiologistRoutes };

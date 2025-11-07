@@ -11,18 +11,16 @@ const ReviewAction = React.lazy(() => import("./row-actions/ReviewAction"));
 
 function RowActions({ row, actions, table }: RowActionsProps) {
 	const { dicom_uid, status, student, radiologist, id } = row.original;
-	const { user, isPrivileged } = useAuth();
-
-	const radiologistRole = ["Registrar", "System User"];
+	const { user, isPrivileged, isSecretary, isRadiologist } = useAuth();
 
 	if (!user) return;
 	if (!actions) return <ViewAction dicomUid={dicom_uid} status={status} />;
 
 	const isOwnStudy = user.id === student || user.id === radiologist;
 	const canAssign = actions.includes("assign") && isPrivileged && status !== 4;
-	const canSelfAssign = actions.includes("self-assign") && status === 0 && radiologistRole.includes(user.role);
+	const canSelfAssign = actions.includes("self-assign") && status === 0 && isRadiologist;
 	const canRequestReview = actions.includes("review") && user.role === "Registrar";
-	const canEdit = table && actions.includes("edit") && (isOwnStudy || isPrivileged);
+	const canEdit = table && actions.includes("edit") && (isOwnStudy || isPrivileged || isSecretary);
 	const canGeneratePdf = table && actions.includes("pdf") && status === 4;
 
 	return (

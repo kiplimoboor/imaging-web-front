@@ -11,7 +11,6 @@ function useUsers() {
 			const res = await fetch(API_URL, { credentials: "include" });
 			if (res.status === 401) loginRedirect();
 			const data: User[] = await res.json();
-
 			return data.map((user) => {
 				if (user.role === "System User") return { ...user, role: "Radiologist" };
 				return user;

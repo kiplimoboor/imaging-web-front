@@ -11,9 +11,8 @@ import StudiesIndex from "./components/studies/tables/IndexStudies.tsx";
 import NewStudies from "./components/studies/tables/NewStudies";
 import Viewer from "./components/Viewer.tsx";
 import { AuthProvider } from "./context/AuthContext";
-import GuestPage from "./pages/Guest/GuestPage.tsx";
 import StudiesLayout from "./pages/Studies/StudiesLayout.tsx";
-import { AdminRoutes, GuestRoutes, PrivateRoutes } from "./routes/AppRoutes";
+import { AdminRoutes, PrivateRoutes, RadiologistRoutes } from "./routes/AppRoutes";
 
 const queryClient = new QueryClient();
 function App() {
@@ -22,24 +21,25 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<AuthProvider>
 					<Routes>
-						<Route element={<GuestRoutes />}>
-							<Route path="/guest" element={<GuestPage />} />
-						</Route>
 						<Route path="/login" element={<Login />} />
 						<Route path="/auth" element={<AuthCallback />} />
 						<Route path="/401" element={<Unauthorized />} />
-						<Route path="/viewer/:uid" element={<Viewer />} />
+
 						<Route element={<PrivateRoutes />}>
+							<Route path="/viewer/:uid" element={<Viewer />} />
+							<Route element={<AdminRoutes />}>
+								<Route path="/users" element={<UsersPage />} />
+							</Route>
+
 							<Route path="/" element={<StudiesLayout />}>
 								<Route index element={<StudiesIndex />} />
-								<Route path="all" element={<AllStudies />} />
+								<Route element={<RadiologistRoutes />}>
+									<Route path="all" element={<AllStudies />} />
+								</Route>
 								<Route element={<AdminRoutes />}>
 									<Route path="new" element={<NewStudies />} />
 									<Route path="complete" element={<CompletedStudies />} />
 								</Route>
-							</Route>
-							<Route element={<AdminRoutes />}>
-								<Route path="/users" element={<UsersPage />} />
 							</Route>
 						</Route>
 					</Routes>

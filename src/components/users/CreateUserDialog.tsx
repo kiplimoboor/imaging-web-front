@@ -69,9 +69,10 @@ function CreateUserDialog({ open, setOpen }: CreateDialogProps) {
 					<FormControl fullWidth required margin="dense" variant="standard">
 						<InputLabel id="role-label">Select Role</InputLabel>
 						<Select labelId="role-label" id="role" name="role" defaultValue="">
-							<MenuItem value="System User">Radiologist</MenuItem>
+							<MenuItem value="Radiologist">Radiologist</MenuItem>
 							<MenuItem value="Administrator">Administrator</MenuItem>
 							<MenuItem value="Registrar">Registrar</MenuItem>
+							<MenuItem value="Secretary">Secretary</MenuItem>
 							<MenuItem value="Support">Support</MenuItem>
 						</Select>
 					</FormControl>
