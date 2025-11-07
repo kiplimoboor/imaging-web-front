@@ -36,8 +36,9 @@ function AuthProvider({ children }: React.PropsWithChildren) {
 		});
 		if (res.status !== 200) return setLoadingAuth(false);
 		else {
-			const data = await res.json();
-			setUser(data);
+			const user: User = await res.json();
+			if (user.role === "System User") user.role = "Radiologist";
+			setUser(user);
 			setLoadingAuth(false);
 		}
 	};
@@ -50,7 +51,8 @@ function AuthProvider({ children }: React.PropsWithChildren) {
 			headers: { "Content-Type": "application/json" },
 		});
 		if (res.status != 200) return false;
-		const user = await res.json();
+		const user: User = await res.json();
+		if (user.role === "System User") user.role = "Radiologist";
 		setUser(user);
 		return true;
 	};
