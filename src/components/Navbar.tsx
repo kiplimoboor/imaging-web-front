@@ -1,5 +1,5 @@
 import LogoutIcon from "@mui/icons-material/Logout";
-import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
@@ -9,51 +9,27 @@ function Navbar() {
 
 	const handleLogout = async () => {
 		await fetch("https://radiology.mtrh.go.ke/oauth/revoke", { credentials: "include" });
-
 		localStorage.removeItem("token");
-
 		const frappeLogoutWindow = window.open("about:blank", "_blank", "width=100,height=100,top=0,left=0");
 		if (frappeLogoutWindow) {
 			frappeLogoutWindow.location.href = "https://portal.mtrh.go.ke/api/method/logout";
 			setTimeout(() => frappeLogoutWindow.close(), 200);
 		}
-
 		setTimeout(() => navigate("/login"), 500);
 	};
 
 	return (
-		<AppBar
-			position="static"
-			sx={{ backgroundColor: "white", color: "#AA0000", boxShadow: "none", borderBottom: "1px solid #e0e0e0" }}
-		>
-			<Container maxWidth="xl">
-				<Toolbar disableGutters>
-					<Box sx={{ display: "flex", alignItems: "center" }}>
+		<>
+			<div className="mb-3 border-b border-gray-200">
+				<div className="w-10/12 mx-auto my-1 flex items-center justify-between">
+					<div className="flex items-center">
 						<img src="/mtrh.svg" alt="MTRH Logo" />
-						<Typography
-							variant="h6"
-							noWrap
-							component="a"
-							sx={{
-								mr: 2,
-								display: { xs: "none", md: "flex" },
-								fontFamily: "monospace",
-								fontWeight: 700,
-								letterSpacing: ".3rem",
-								color: "inherit",
-								textDecoration: "none",
-							}}
-						>
-							MTRH
-						</Typography>
-					</Box>
-					<Box sx={{ flexGrow: 1 }} />
+						<h1 className="font-bold text-xl tracking-widest text-[rgb(170,0,0)]">MTRH</h1>
+					</div>
 					{user && (
-						<Box sx={{ display: "flex", alignItems: "center" }}>
-							<Typography variant="body2" sx={{ color: "black", marginRight: "6px" }}>
-								<strong>{user.full_name}</strong>
-							</Typography>
-							<>|</>
+						<div className="flex items-center">
+							<h1 className="mr-3">{user.full_name}</h1>
+							<span className="text-[rgb(170,0,0)]">|</span>
 							<Button
 								size="small"
 								startIcon={<LogoutIcon />}
@@ -62,11 +38,11 @@ function Navbar() {
 							>
 								Log Out
 							</Button>
-						</Box>
+						</div>
 					)}
-				</Toolbar>
-			</Container>
-		</AppBar>
+				</div>
+			</div>
+		</>
 	);
 }
 

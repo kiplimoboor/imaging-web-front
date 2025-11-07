@@ -1,4 +1,3 @@
-import { decodeJwt } from "jose";
 import React, { createContext, useContext, useState } from "react";
 import type { User } from "@/types";
 
@@ -6,6 +5,9 @@ type AuthContextProps = {
 	login: (code: string) => Promise<boolean>;
 	user: User | null;
 	isPrivileged: boolean;
+	isRadiologist: boolean;
+	isSecretary: boolean;
+	isGuest: boolean;
 	loadingAuth: boolean;
 	authCheck: () => void;
 };
@@ -14,6 +16,9 @@ const AuthContext = createContext<AuthContextProps>({
 	login: async () => false,
 	user: null,
 	isPrivileged: false,
+	isRadiologist: false,
+	isSecretary: false,
+	isGuest: false,
 	loadingAuth: true,
 	authCheck: () => {},
 });
@@ -21,39 +26,34 @@ const AuthContext = createContext<AuthContextProps>({
 const useAuth = () => useContext(AuthContext);
 
 function AuthProvider({ children }: React.PropsWithChildren) {
-	const privilegedRoles = ["Administrator", "Support"];
 	const [user, setUser] = useState<User | null>(null);
 	const [loadingAuth, setLoadingAuth] = useState(true);
 
 	const authCheck = async () => {
-		const res = await fetch("https://radiology.mtrh.go.ke/oauth/check", {
+		const res = await fetch("http://127.0.0.1:3000/oauth/check", {
 			credentials: "include",
 			headers: { "Content-Type": "application/json" },
 		});
-
-		if (res.status !== 200) setLoadingAuth(false);
+		if (res.status !== 200) return setLoadingAuth(false);
 		else {
-			const data = await res.json();
-			setUser(data);
+			const user: User = await res.json();
+			if (user.role === "System User") user.role = "Radiologist";
+			setUser(user);
 			setLoadingAuth(false);
 		}
-		return;
 	};
 
 	const login = async (code: string) => {
-		const res = await fetch("https://radiology.mtrh.go.ke/oauth/exchange", {
+		const res = await fetch("http://127.0.0.1:3000/oauth/exchange", {
 			method: "POST",
 			credentials: "include",
 			body: JSON.stringify({ code }),
 			headers: { "Content-Type": "application/json" },
 		});
-
 		if (res.status != 200) return false;
-
-		const data = await res.json();
-		const payload: User = decodeJwt(data.token);
-		setUser(payload);
-		localStorage.setItem("token", data.token);
+		const user: User = await res.json();
+		if (user.role === "System User") user.role = "Radiologist";
+		setUser(user);
 		return true;
 	};
 
@@ -62,7 +62,10 @@ function AuthProvider({ children }: React.PropsWithChildren) {
 			value={{
 				login,
 				user,
-				isPrivileged: Boolean(user && privilegedRoles.includes(user.role)),
+				isPrivileged: Boolean(user?.admin),
+				isRadiologist: user?.role === "Radiologist" || user?.role === "Registrar" || user?.role === "Administrator",
+				isSecretary: user?.role === "Secretary",
+				isGuest: user?.role === "Guest",
 				loadingAuth,
 				authCheck,
 			}}
