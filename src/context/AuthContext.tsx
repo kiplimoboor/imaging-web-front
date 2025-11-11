@@ -63,7 +63,7 @@ function AuthProvider({ children }: React.PropsWithChildren) {
 				login,
 				user,
 				isPrivileged: Boolean(user?.admin),
-				isRadiologist: user?.role === "Radiologist" || user?.role === "Registrar" || user?.role === "Administrator",
+				isRadiologist: user?.role === "Radiologist" || user?.role === "Registrar",
 				isSecretary: user?.role === "Secretary",
 				isGuest: user?.role === "Guest",
 				loadingAuth,

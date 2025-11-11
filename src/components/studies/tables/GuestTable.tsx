@@ -3,9 +3,8 @@ import { useMemo } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
 import { useGetStudies } from "@/hooks/studies";
-import type { Study, StudyStatusMap } from "@/types";
-
-import RowActions from "./RowActions";
+import type { RowActionsProps, Study, StudyStatusMap } from "@/types";
+import RowActions from "../RowActions";
 
 function GuestTable() {
 	const { data: studies } = useGetStudies();
@@ -33,6 +32,7 @@ function GuestTable() {
 		[],
 	);
 
-	return <BaseTable columns={columns} data={studies} rowActions={RowActions} />;
+	const rowActions = ({ row }: RowActionsProps) => <RowActions row={row} />;
+	return <BaseTable columns={columns} data={studies} rowActions={rowActions} />;
 }
 export default GuestTable;
