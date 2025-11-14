@@ -14,12 +14,9 @@ function PdfAction({ row, table }: { row: MRT_Row<Study>; table: StudyTableInsta
 	const handlePdf = async () => {
 		const study = row.original;
 		const requiredFields = ["patient_name", "patient_id", "dob", "gender", "examination", "study_date"];
-		for (const field of requiredFields) {
-			if (!Boolean(study[field as keyof Study])) return table.setEditingRow(row);
-		}
+		if (!requiredFields.every((field) => Boolean(study[field as keyof Study]))) return table.setEditingRow(row);
 
 		setPdfLoading(true);
-
 		try {
 			const noteRes = await fetch(API_URL + "/notes/" + study.dicom_uid, { credentials: "include" });
 			const { note } = await noteRes.json();
@@ -29,7 +26,6 @@ function PdfAction({ row, table }: { row: MRT_Row<Study>; table: StudyTableInsta
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ ...study, report: note }),
 			});
-
 			const data = await res.json();
 			setPdfLoading(false);
 			window.open(API_URL + "/pdf?filename=" + data.filename, "_blank");
