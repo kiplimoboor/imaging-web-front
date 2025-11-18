@@ -9,7 +9,7 @@ function ChangeTemplate({ editor }: ChangeTemplateProps) {
 		if (!editor) return;
 		if (newValue !== null) {
 			if (editor?.getText() === "") editor.commands.setContent(templates[newValue]);
-			else editor?.commands.setContent(editor.getHTML() + "<p></p>" + templates[newValue]);
+			else editor?.commands.setContent(editor.getHTML() + "<br>" + templates[newValue]);
 		} else editor?.commands.setContent("");
 	};
 
