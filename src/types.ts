@@ -12,6 +12,7 @@ type User = {
 type UserTableInstance = MRT_TableInstance<User>;
 
 type Study = {
+	accession: string;
 	id: number;
 	dicom_uid: string;
 	patient_id: string;
@@ -44,7 +45,10 @@ type StudyStatusMap = Record<number, StudyStatusDetails>;
 
 type EditingRowSaveArgs = { values: Study; table: MRT_TableInstance<Study>; row: MRT_Row<Study> };
 
+type AlertFunction = (type: "info" | "success" | "error", message: string) => void;
+
 export type {
+	AlertFunction,
 	User,
 	Study,
 	StudyStatusMap,
