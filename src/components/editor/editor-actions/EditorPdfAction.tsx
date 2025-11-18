@@ -1,4 +1,5 @@
 import { Button } from "@mui/material";
+import { Editor } from "@tiptap/react";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import StudyDetailsUpdate from "@/components/StudyDetailsUpdate";
 import type { AlertFunction, Study } from "@/types";
@@ -9,9 +10,9 @@ type EditorPdfActionProps = {
 	study: Study;
 	setStudy: Dispatch<SetStateAction<Study | null>>;
 	alertFn: AlertFunction;
-	content: string;
+	editor: Editor;
 };
-function EditorPdfAction({ study, setStudy, alertFn, content }: EditorPdfActionProps) {
+function EditorPdfAction({ study, setStudy, alertFn, editor }: EditorPdfActionProps) {
 	const [pdfLoading, setPdfLoading] = useState(false);
 	const [studyUpdaterOpen, setStudyUpdaterOpen] = useState(false);
 
@@ -37,7 +38,7 @@ function EditorPdfAction({ study, setStudy, alertFn, content }: EditorPdfActionP
 				method: "POST",
 				credentials: "include",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ ...study, report: content }),
+				body: JSON.stringify({ ...study, report: editor.getHTML() }),
 			});
 
 			const data = await res.json();

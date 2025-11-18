@@ -23,7 +23,7 @@ function EditorActions({ editor, study, setStudy }: EditActionProps) {
 		<div style={{ display: "flex", alignItems: "center", gap: "8px", margin: "12px", justifyContent: "center" }}>
 			<ChangeTemplate editor={editor} />
 			<SaveAndDraft editor={editor} study={study} alertFn={handleSnackbarAlert} />
-			<EditorPdfAction content={editor.getHTML()} study={study} setStudy={setStudy} alertFn={handleSnackbarAlert} />
+			<EditorPdfAction editor={editor} study={study} setStudy={setStudy} alertFn={handleSnackbarAlert} />
 			<SnackbarAlert open={alertOpen} setOpen={setAlertOpen} message={alertMessage} type={alertType} />
 		</div>
 	);
