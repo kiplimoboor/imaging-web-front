@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
 import type { User } from "@/types";
 
+const OAUTH_URL = import.meta.env.VITE_OAUTH_URL;
+
 type AuthContextProps = {
 	login: (code: string) => Promise<boolean>;
 	user: User | null;
@@ -30,7 +32,7 @@ function AuthProvider({ children }: React.PropsWithChildren) {
 	const [loadingAuth, setLoadingAuth] = useState(true);
 
 	const authCheck = async () => {
-		const res = await fetch("https://radiology.mtrh.go.ke/oauth/check", {
+		const res = await fetch(OAUTH_URL + "/check", {
 			credentials: "include",
 			headers: { "Content-Type": "application/json" },
 		});
@@ -44,7 +46,7 @@ function AuthProvider({ children }: React.PropsWithChildren) {
 	};
 
 	const login = async (code: string) => {
-		const res = await fetch("https://radiology.mtrh.go.ke/oauth/exchange", {
+		const res = await fetch(OAUTH_URL + "/exchange", {
 			method: "POST",
 			credentials: "include",
 			body: JSON.stringify({ code }),

@@ -14,6 +14,8 @@ import { Toolbar } from "../tiptap-ui-primitive/toolbar";
 import EditorActions from "./EditorActions";
 import TipTapToolbar from "./TipTapToolbar";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Editor() {
 	const { uid } = useParams();
 	const { user } = useAuth();
@@ -22,7 +24,7 @@ function Editor() {
 
 	useEffect(() => {
 		const getStudywithNote = async () => {
-			const res = await fetch("https://radiology.mtrh.go.ke/api/notes/" + uid, { credentials: "include" });
+			const res = await fetch(API_URL + "/notes/" + uid, { credentials: "include" });
 			const data: Study = await res.json();
 			const editable = data.radiologist === user?.id || data.student === user?.id;
 			setEditable(editable);

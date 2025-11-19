@@ -5,13 +5,13 @@ import type { AlertFunction, Study } from "@/types";
 const API_URL = import.meta.env.VITE_API_URL + "/notes";
 
 type SaveAndDraftProps = { editor: Editor; study: Study; alertFn: AlertFunction };
+
 function SaveAndDraft({ editor, study, alertFn }: SaveAndDraftProps) {
 	const handleSave = async (type: 0 | 1) => {
 		const res = await fetch(API_URL, {
 			method: "POST",
 			credentials: "include",
 			body: JSON.stringify({
-				id: study.patient_id,
 				uid: study.dicom_uid,
 				note: editor.getHTML(),
 				type: type,
