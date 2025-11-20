@@ -22,7 +22,7 @@ function NewStudies() {
 		],
 		[],
 	);
-	const actions: Actions[] = ["assign"];
+	const actions: Actions[] = ["assign", "note"];
 	const rowActions = useCallback(({ row }: { row: MRT_Row<Study> }) => <RowActions row={row} actions={actions} />, []);
 
 	return <BaseTable data={studies} columns={columns} rowActions={rowActions} />;

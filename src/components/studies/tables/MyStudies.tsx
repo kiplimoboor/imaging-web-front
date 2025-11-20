@@ -45,7 +45,7 @@ function MyStudies() {
 		return [...commonColumns, ...hiddenColumns, ...localColumns];
 	}, []);
 
-	const actions: Actions[] = ["review", "edit", "pdf"];
+	const actions: Actions[] = ["review", "edit", "pdf", "note"];
 	const rowActions = ({ table, row }: RowActionsProps) => <RowActions table={table} row={row} actions={actions} />;
 
 	const tableConfig = {

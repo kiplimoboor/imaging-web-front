@@ -60,7 +60,7 @@ function AllStudies() {
 		},
 	};
 
-	const actions: Actions[] = ["assign", "self-assign", "edit", "review", "pdf"];
+	const actions: Actions[] = ["assign", "self-assign", "edit", "review", "pdf", "note"];
 	const rowActions = useCallback(({ table, row }: RowActionsProps) => {
 		return <RowActions row={row} actions={actions} table={table} />;
 	}, []);

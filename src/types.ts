@@ -32,7 +32,7 @@ type Study = {
 
 type StudyTableInstance = MRT_TableInstance<Study>;
 
-type Actions = "assign" | "self-assign" | "edit" | "pdf" | "review";
+type Actions = "assign" | "self-assign" | "edit" | "pdf" | "review" | "note";
 
 type RowActionsProps = { table?: StudyTableInstance; row: MRT_Row<Study>; actions?: Actions[] };
 
