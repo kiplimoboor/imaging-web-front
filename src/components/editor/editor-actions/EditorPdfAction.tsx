@@ -23,6 +23,7 @@ function EditorPdfAction({ study, setStudy, alertFn, editor }: EditorPdfActionPr
 		for (const field of requiredStudyFields) {
 			if (Boolean(study[field as keyof Study]) === false) {
 				setPdfLoading(false);
+				setStudy({ ...study, note: editor.getHTML() });
 				alertFn("error", "One or more study fields are missing. Update before printing");
 				setStudyUpdaterOpen(true);
 				return;
