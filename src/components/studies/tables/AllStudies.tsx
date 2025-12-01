@@ -8,6 +8,8 @@ import { commonColumns, commonInitialHide, hiddenColumns } from "../columns";
 import RowActions from "../RowActions";
 import { studyUpdate } from "../utils";
 
+const API_URL = import.meta.env.VITE_API_URL + "/studies?";
+
 function AllStudies() {
 	const queryClient = useQueryClient();
 	const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
@@ -55,7 +57,7 @@ function AllStudies() {
 			columnFilters.forEach((filter) => {
 				if (typeof filter.value === "string") searchParams.set(filter.id, filter.value);
 			});
-			const res = await fetch("https://radiology.mtrh.go.ke/api/studies?" + searchParams.toString(), {
+			const res = await fetch(API_URL + searchParams.toString(), {
 				credentials: "include",
 			});
 			const data: Study[] = await res.json();

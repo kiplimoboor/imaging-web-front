@@ -7,6 +7,8 @@ import type { Actions, Study } from "@/types";
 import { commonColumns } from "../columns";
 import RowActions from "../RowActions";
 
+const API_URL = import.meta.env.VITE_API_URL + "/studies?";
+
 function NewStudies() {
 	const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(
@@ -30,7 +32,7 @@ function NewStudies() {
 				if (typeof filter.value === "string") searchParams.set(filter.id, filter.value);
 			});
 			searchParams.set("status", "0");
-			const res = await fetch("https://radiology.mtrh.go.ke/api/studies?" + searchParams.toString(), {
+			const res = await fetch(API_URL + searchParams.toString(), {
 				credentials: "include",
 			});
 			const data: Study[] = await res.json();

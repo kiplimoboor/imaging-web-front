@@ -26,7 +26,7 @@ function BaseTable<TData extends MRT_RowData>({ columns, data, rowActions, other
 		enableDensityToggle: false,
 		initialState: {
 			density: "compact",
-			pagination: { pageIndex: 0, pageSize: 50 },
+			pagination: { pageIndex: 0, pageSize: 30 },
 			showColumnFilters: true,
 			showGlobalFilter: true,
 			...intial,
