@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useUpdateStudy } from "@/hooks/studies";
 import { useUsers } from "@/hooks/users";
-import type { Study, User } from "@/types";
+import type { User } from "@/types";
 
 function AssignAction({ id, status }: { id: number; status: number }) {
 	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -18,34 +18,25 @@ function AssignAction({ id, status }: { id: number; status: number }) {
 
 	const handleAssign = (radiologist: User) => {
 		const isRegistrar = radiologist.role === "Registrar";
-		queryClient.setQueryData(["studies", []], (old: Study[]) =>
-			old.map((study) => {
-				if (study.id === id) {
-					const newStudy: Study = isRegistrar
-						? { ...study, status: 2, student_name: radiologist.full_name }
-						: { ...study, status: 1, radiologist_name: radiologist.full_name };
-					return newStudy;
-				}
-				return study;
-			}),
+		let updateData: any = {};
+		if (isRegistrar) {
+			updateData.student = radiologist.id;
+			updateData.status = 2;
+		} else {
+			updateData.radiologist = radiologist.id;
+			updateData.status = 1;
+		}
+		mutation.mutate(
+			{ id, data: updateData },
+			{ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["studies"] }) },
 		);
-		const updateData = isRegistrar
-			? { student: radiologist.id, status: 2 }
-			: { radiologist: radiologist.id, status: 1 };
-		mutation.mutate({ id, data: updateData });
-
 		setAnchorEl(null);
 	};
-
 	const handleRemoveAssign = () => {
-		queryClient.setQueryData(["studies", []], (old: Study[]) =>
-			old.map((study) => {
-				if (study.id === id)
-					return { ...study, status: 0, radiologist: null, student: null, radiologist_name: null, student_name: null };
-				return study;
-			}),
+		mutation.mutate(
+			{ id, data: { status: 0, radiologist: null, student: null } },
+			{ onSuccess: () => queryClient.invalidateQueries({ queryKey: ["studies"] }) },
 		);
-		mutation.mutate({ id, data: { status: 0, radiologist: null, student: null } });
 		setAnchorEl(null);
 	};
 

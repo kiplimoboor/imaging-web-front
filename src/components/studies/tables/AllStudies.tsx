@@ -1,9 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query";
-import type { MRT_ColumnDef } from "material-react-table";
-import { useCallback, useMemo } from "react";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { MRT_ColumnDef, MRT_ColumnFiltersState } from "material-react-table";
+import { useCallback, useMemo, useState } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
-import { useGetStudies } from "@/hooks/studies";
 import type { Actions, EditingRowSaveArgs, RowActionsProps, Study, StudyStatusMap } from "@/types";
 import { commonColumns, commonInitialHide, hiddenColumns } from "../columns";
 import RowActions from "../RowActions";
@@ -11,7 +10,7 @@ import { studyUpdate } from "../utils";
 
 function AllStudies() {
 	const queryClient = useQueryClient();
-	const { data: studies } = useGetStudies();
+	const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
 
 	//  NOTE: This function only exists for the Status column,
 	//  which needs a status for accessorFn() and Cell()
@@ -33,6 +32,7 @@ function AllStudies() {
 				header: "Radiologist",
 				accessorFn: (row) => (row.student_name ? row.student_name : row.radiologist_name),
 				muiEditTextFieldProps: { style: { display: "none" } },
+				enableColumnFilter: false,
 			},
 			{
 				header: "Status",
@@ -42,22 +42,37 @@ function AllStudies() {
 					return <StatusPill status={row.original.status} map={statusGenerator(Boolean(row.original.student))} />;
 				},
 				muiEditTextFieldProps: { style: { display: "none" } },
+				enableColumnFilter: false,
 			},
 			...hiddenColumns,
 		];
 	}, []);
 
+	const { data, isRefetching } = useQuery({
+		queryKey: ["studies", { columnFilters }],
+		queryFn: async () => {
+			const searchParams = new URLSearchParams();
+			columnFilters.forEach((filter) => {
+				if (typeof filter.value === "string") searchParams.set(filter.id, filter.value);
+			});
+			const res = await fetch("https://radiology.mtrh.go.ke/api/studies?" + searchParams.toString(), {
+				credentials: "include",
+			});
+			const data: Study[] = await res.json();
+			return data;
+		},
+		placeholderData: keepPreviousData,
+	});
+
 	const tableConfig = {
+		manualFiltering: true,
 		onEditingRowSave: ({ values, table, row }: EditingRowSaveArgs) => {
 			studyUpdate(row.original.id, values);
-			queryClient.setQueryData(["studies", []], (old: Study[]) =>
-				old.map((study) => {
-					if (row.original.id === study.id) return { ...study, ...values };
-					return study;
-				}),
-			);
+			queryClient.invalidateQueries({ queryKey: ["studies", { columnFilters }] });
 			table.setEditingRow(null);
 		},
+		onColumnFiltersChange: setColumnFilters,
+		state: { columnFilters, showProgressBars: isRefetching, isLoading: !data },
 	};
 
 	const actions: Actions[] = ["assign", "self-assign", "edit", "review", "pdf", "note"];
@@ -66,13 +81,7 @@ function AllStudies() {
 	}, []);
 
 	return (
-		<BaseTable
-			data={studies}
-			columns={columns}
-			rowActions={rowActions}
-			intial={commonInitialHide}
-			others={tableConfig}
-		/>
+		<BaseTable data={data} columns={columns} rowActions={rowActions} intial={commonInitialHide} others={tableConfig} />
 	);
 }
 
