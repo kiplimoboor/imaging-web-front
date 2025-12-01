@@ -6,7 +6,13 @@ const hiddenEdit = { style: { display: "none" } };
 const commonColumns: MRT_ColumnDef<Study>[] = [
 	{ accessorKey: "patient_id", header: "MRN", size: 50 },
 	{ accessorKey: "patient_name", header: "Patient Name" },
-	{ accessorKey: "study_date", header: "Study Date", size: 50, muiEditTextFieldProps: hiddenEdit },
+	{
+		accessorKey: "study_date",
+		header: "Study Date",
+		size: 50,
+		muiEditTextFieldProps: hiddenEdit,
+		enableColumnFilter: false,
+	},
 	{
 		header: "Examination",
 		accessorFn: (row) => {
@@ -31,6 +37,7 @@ const commonColumns: MRT_ColumnDef<Study>[] = [
 			return `${formattedModalities}-${formattedExamination}`;
 		},
 		muiEditTextFieldProps: hiddenEdit,
+		enableColumnFilter: false,
 	},
 ];
 
