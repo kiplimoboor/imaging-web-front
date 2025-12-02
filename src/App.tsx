@@ -6,6 +6,7 @@ import AllStudies from "@/components/studies/tables/AllStudies";
 import UsersPage from "@/pages/Users/UsersPage.tsx";
 import Unauthorized from "./components/401.tsx";
 import AuthCallback from "./components/AuthCallback";
+import Dashboard from "./components/Dashboard.tsx";
 import LoadingSpinner from "./components/LoadingSpinner.tsx";
 import Login from "./components/Login.tsx";
 import CompletedStudies from "./components/studies/tables/CompletedStudies.tsx";
@@ -24,6 +25,7 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<AuthProvider>
 					<Routes>
+						<Route path="/dashboard" element={<Dashboard />} />
 						<Route path="/login" element={<Login />} />
 						<Route path="/auth" element={<AuthCallback />} />
 						<Route path="/401" element={<Unauthorized />} />
