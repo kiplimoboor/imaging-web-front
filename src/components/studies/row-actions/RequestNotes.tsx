@@ -11,14 +11,17 @@ function RequestNotes({ accession }: { accession: string }) {
 		const procedure = "HLC-CPR-20" + accession.slice(0, 2) + "-" + accession.slice(2);
 		setAnchorEl(e.currentTarget);
 		const res = await fetch("https://portal.mtrh.go.ke/api/resource/Clinical%20Procedure/" + procedure);
-
 		if (!res.ok) {
 			setNote("The note seems to be missing for this study.");
 			return;
 		}
-
 		const { data } = await res.json();
-		setNote(data.notes ?? "");
+		const note = data.notes.split("\0");
+		if (note.length === 2) {
+			setNote(note[1]);
+		} else {
+			setNote(note[0]);
+		}
 	};
 
 	return (
