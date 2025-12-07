@@ -2,12 +2,12 @@ import type { MRT_ColumnDef } from "material-react-table";
 import { useMemo } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
-import { useGetStudies } from "@/hooks/studies";
+import { useStudies } from "@/hooks/studies";
 import type { RowActionsProps, Study, StudyStatusMap } from "@/types";
 import RowActions from "../RowActions";
 
 function GuestTable() {
-	const { data: studies } = useGetStudies();
+	const { data } = useStudies();
 	const guestStudyStatusMap: StudyStatusMap = {
 		0: { text: "Ongoing", color: "primary" },
 		1: { text: "Ongoing", color: "primary" },
@@ -33,6 +33,6 @@ function GuestTable() {
 	);
 
 	const rowActions = ({ row }: RowActionsProps) => <RowActions row={row} />;
-	return <BaseTable columns={columns} data={studies} rowActions={rowActions} />;
+	return <BaseTable columns={columns} data={data} rowActions={rowActions} />;
 }
 export default GuestTable;

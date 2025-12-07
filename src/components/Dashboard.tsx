@@ -60,24 +60,57 @@ function Dashboard() {
 				</div>
 
 				<div className="mt-12 grid grid-cols-4 gap-4">
-					{chartData.map((item) => {
-						return (
-							<div key={item.browser}>
-								<div className="shadow-sm p-3">
-									<h3 className="font-bold text-sm text-gray-500">Total Studies</h3>
-									<p className="text-2xl mt-3">10</p>
-									<Link to="/">
-										<p className="text-sm text-right font-semibold text-blue-500 flex justify-end group">
-											Studies
-											<span className="ml-1 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1">
-												→
-											</span>
-										</p>
-									</Link>
-								</div>
-							</div>
-						);
-					})}
+					<div className="shadow-sm p-3">
+						<h3 className="font-bold text-sm text-gray-500">Total Studies</h3>
+						<p className="text-2xl mt-3">10</p>
+						<Link to="/all">
+							<p className="text-sm text-right font-semibold text-blue-500 flex justify-end group">
+								Studies
+								<span className="ml-1 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1">
+									→
+								</span>
+							</p>
+						</Link>
+					</div>
+
+					<div className="shadow-sm p-3">
+						<h3 className="font-bold text-sm text-gray-500">New</h3>
+						<p className="text-2xl mt-3">10</p>
+						<Link to="/new">
+							<p className="text-sm text-right font-semibold text-blue-500 flex justify-end group">
+								New Studies
+								<span className="ml-1 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1">
+									→
+								</span>
+							</p>
+						</Link>
+					</div>
+
+					<div className="shadow-sm p-3">
+						<h3 className="font-bold text-sm text-gray-500">Completed</h3>
+						<p className="text-2xl mt-3">10</p>
+						<Link to="/completed">
+							<p className="text-sm text-right font-semibold text-blue-500 flex justify-end group">
+								Completed Studies
+								<span className="ml-1 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1">
+									→
+								</span>
+							</p>
+						</Link>
+					</div>
+
+					<div className="shadow-sm p-3">
+						<h3 className="font-bold text-sm text-gray-500">System Users</h3>
+						<p className="text-2xl mt-3">10</p>
+						<Link to="/users">
+							<p className="text-sm text-right font-semibold text-blue-500 flex justify-end group">
+								Manage Users
+								<span className="ml-1 transform transition-transform duration-300 ease-in-out group-hover:translate-x-1">
+									→
+								</span>
+							</p>
+						</Link>
+					</div>
 				</div>
 				<div className="flex my-12 gap-6">
 					<div className="w-3/4">
