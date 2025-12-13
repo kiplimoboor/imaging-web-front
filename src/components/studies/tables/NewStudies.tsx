@@ -22,7 +22,7 @@ function NewStudies() {
 		[],
 	);
 
-	const { data, isRefetching } = useStudies(filters);
+	const { data, isRefetching } = useStudies([{ id: "status", value: 0 }, ...filters]);
 
 	const tableConfig = {
 		manualFiltering: true,

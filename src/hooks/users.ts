@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { User } from "@/types";
 import { loginRedirect } from "../utils/auth";
 
@@ -7,6 +7,10 @@ const API_URL = import.meta.env.VITE_API_URL + "/users";
 function useUsers() {
 	return useQuery<User[]>({
 		queryKey: ["users"],
+		staleTime: Infinity,
+		refetchOnWindowFocus: "always",
+		refetchOnMount: false,
+		placeholderData: keepPreviousData,
 		queryFn: async () => {
 			const res = await fetch(API_URL, { credentials: "include" });
 			if (res.status === 401) loginRedirect();

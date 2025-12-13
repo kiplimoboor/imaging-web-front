@@ -7,7 +7,7 @@ import type { StudyStatusMap, User } from "@/types";
 import RowActions, { type RowActionProps } from "./RowActions";
 
 function UsersTable() {
-	const { data: users } = useUsers();
+	const { data, isRefetching } = useUsers();
 	const mutation = useUpdateUser();
 	const userStatusMap: StudyStatusMap = {
 		0: { text: "Inactive", color: "error" },
@@ -39,10 +39,7 @@ function UsersTable() {
 	const initial: Partial<MRT_TableState<MRT_RowData>> = {
 		columnVisibility: { id: false },
 		showColumnFilters: false,
-		sorting: [
-			{ id: "role", desc: false },
-			{ id: "id", desc: false },
-		],
+		pagination: { pageIndex: 0, pageSize: 50 },
 	};
 
 	const tableConfig = {
@@ -51,11 +48,12 @@ function UsersTable() {
 			mutation.mutate({ id, data: { full_name, email, role } });
 			table.setEditingRow(null);
 		},
+		state: { showProgressBars: isRefetching, isLoading: !data },
 	};
 
 	const rowActions = ({ table, row }: RowActionProps) => <RowActions row={row} table={table} />;
 
-	return <BaseTable data={users} columns={columns} rowActions={rowActions} intial={initial} others={tableConfig} />;
+	return <BaseTable data={data} columns={columns} rowActions={rowActions} intial={initial} others={tableConfig} />;
 }
 
 export default UsersTable;

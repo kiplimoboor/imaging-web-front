@@ -10,7 +10,7 @@ const commonColumns: MRT_ColumnDef<Study>[] = [
 		accessorKey: "study_date",
 		header: "Study Date",
 		size: 50,
-		muiEditTextFieldProps: hiddenEdit,
+		muiEditTextFieldProps: { style: { display: "none" } },
 		enableColumnFilter: false,
 	},
 	{
@@ -36,7 +36,7 @@ const commonColumns: MRT_ColumnDef<Study>[] = [
 
 			return `${formattedModalities}-${formattedExamination}`;
 		},
-		muiEditTextFieldProps: hiddenEdit,
+		muiEditTextFieldProps: { style: { display: "none" } },
 		enableColumnFilter: false,
 	},
 ];

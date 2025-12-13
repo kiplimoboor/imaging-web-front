@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef, MRT_ColumnFiltersState } from "material-react-table";
 import { useMemo, useState } from "react";
 import BaseTable from "@/components/BaseTable";
@@ -14,9 +14,7 @@ function MyStudies() {
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
 	const isRegistrar = user?.role === "Registrar";
-	const [filters, setFilters] = useState<MRT_ColumnFiltersState>([
-		{ id: user?.role === "Radiologist" ? "radiologist" : "student", value: user?.id },
-	]);
+	const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
 
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(() => {
 		const localColumns: MRT_ColumnDef<Study>[] = [
@@ -47,7 +45,10 @@ function MyStudies() {
 		return [...commonColumns, ...hiddenColumns, ...localColumns];
 	}, []);
 
-	const { data, isRefetching } = useStudies(filters);
+	const { data, isRefetching } = useStudies([
+		{ id: user?.role === "Radiologist" ? "radiologist" : "student", value: user?.id },
+		...filters,
+	]);
 
 	const actions: Actions[] = ["review", "edit", "pdf", "note"];
 	const rowActions = ({ table, row }: RowActionsProps) => <RowActions table={table} row={row} actions={actions} />;

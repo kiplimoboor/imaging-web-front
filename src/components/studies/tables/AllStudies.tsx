@@ -3,19 +3,20 @@ import type { MRT_ColumnDef, MRT_ColumnFiltersState } from "material-react-table
 import { useCallback, useMemo, useState } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
-import { useStudies } from "@/hooks/studies";
+import { useStudies, useUpdateStudy } from "@/hooks/studies";
 import type { Actions, EditingRowSaveArgs, RowActionsProps, Study, StudyStatusMap } from "@/types";
 import { commonColumns, commonInitialHide, hiddenColumns } from "../columns";
 import RowActions from "../RowActions";
-import { studyUpdate } from "../utils";
 
 function AllStudies() {
 	const queryClient = useQueryClient();
 	const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
+	const mutation = useUpdateStudy();
 
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(() => {
 		return [
 			...commonColumns,
+			...hiddenColumns,
 			{
 				header: "Radiologist",
 				accessorFn: (row) => (row.student_name ? row.student_name : row.radiologist_name),
@@ -38,7 +39,6 @@ function AllStudies() {
 				muiEditTextFieldProps: { style: { display: "none" } },
 				enableColumnFilter: false,
 			},
-			...hiddenColumns,
 		];
 	}, []);
 
@@ -47,7 +47,7 @@ function AllStudies() {
 	const tableConfig = {
 		manualFiltering: true,
 		onEditingRowSave: ({ values, table, row }: EditingRowSaveArgs) => {
-			studyUpdate(row.original.id, values);
+			mutation.mutate({ id: row.original.id, data: values });
 			queryClient.invalidateQueries({ queryKey: ["studies", { columnFilters: filters }] });
 			table.setEditingRow(null);
 		},

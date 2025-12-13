@@ -3,33 +3,6 @@ import type { Study } from "@/types";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-type GetStudiesFilters = { radiologist?: number; student?: number; status?: number };
-function useGetStudies(filters?: GetStudiesFilters) {
-	const { radiologist, student, status } = filters ?? {};
-	const filterParams = [];
-	const searchParams = new URLSearchParams();
-	if (radiologist !== undefined) {
-		searchParams.append("radiologist", radiologist.toString());
-		filterParams.push(radiologist);
-	}
-	if (student !== undefined) {
-		searchParams.append("student", student.toString());
-		filterParams.push(student);
-	}
-	if (status !== undefined) {
-		searchParams.append("status", status.toString());
-		filterParams.push(status);
-	}
-	return useQuery<Study[]>({
-		queryKey: ["studies", filterParams],
-		queryFn: async () => {
-			const res = await fetch(API_URL + "/studies?" + searchParams.toString(), { credentials: "include" });
-			const data: Study[] = await res.json();
-			return data;
-		},
-	});
-}
-
 type FilterProp = { id: string; value: unknown };
 function useStudies(filters: FilterProp[] = []) {
 	return useQuery<Study[]>({
@@ -50,19 +23,30 @@ function useStudies(filters: FilterProp[] = []) {
 	});
 }
 
-type StudyUpdateFields = { patient_id?: string; student?: number | null; radiologist?: number | null; status?: number };
+type StudyUpdateFields = {
+	patient_id?: string;
+	patient_name?: string;
+	examination?: string;
+	dob?: string;
+	gender?: string;
+	student?: number | null;
+	radiologist?: number | null;
+	status?: number;
+};
+
 type UpdateStudyPayload = { id: number; data: StudyUpdateFields };
 function useUpdateStudy() {
 	return useMutation({
 		mutationFn: async ({ id, data }: UpdateStudyPayload) => {
+			const { patient_id, patient_name, examination, dob, gender, student, radiologist, status } = data;
 			await fetch(API_URL + "/studies/" + id, {
 				method: "PATCH",
 				headers: { "Content-Type": "application/json" },
 				credentials: "include",
-				body: JSON.stringify(data),
+				body: JSON.stringify({ patient_id, patient_name, examination, dob, gender, student, radiologist, status }),
 			});
 		},
 	});
 }
 
-export { useGetStudies, useUpdateStudy, useStudies };
+export { useUpdateStudy, useStudies };

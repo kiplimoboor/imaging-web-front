@@ -36,7 +36,7 @@ function CompletedStudies() {
 		];
 	}, []);
 
-	const { data, isRefetching } = useStudies(filters);
+	const { data, isRefetching } = useStudies([{ id: "status", value: 4 }, ...filters]);
 
 	const actions: Actions[] = ["edit", "pdf"];
 	const rowActions = useCallback(({ row, table }: RowActionsProps) => {
