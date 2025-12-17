@@ -4,6 +4,7 @@ import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router";
 import AllStudies from "@/components/studies/tables/AllStudies";
 import StudiesPageLayout from "@/layouts/StudiesPageLayout";
+import UsersPageLayout from "@/layouts/UsersPageLayout.tsx";
 import Unauthorized from "./components/401.tsx";
 import AuthCallback from "./components/AuthCallback";
 import Dashboard from "./components/Dashboard.tsx";
@@ -14,7 +15,6 @@ import CompletedStudies from "./components/studies/tables/CompletedStudies.tsx";
 import NewStudies from "./components/studies/tables/NewStudies";
 import UsersTable from "./components/users/UserTable.tsx";
 import { AuthProvider } from "./context/AuthContext";
-import UsersPageLayout from "./layouts/UsersPageLayout.tsx";
 import { AdminRoutes, PrivateRoutes } from "./routes/AppRoutes";
 
 const Viewer = lazy(() => import("./components/Viewer.tsx"));

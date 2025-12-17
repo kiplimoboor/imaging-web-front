@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
+import StudiesPageLayout from "@/layouts/StudiesPageLayout";
 import Dashboard from "./Dashboard";
-import StudiesLayout from "./StudiesLayout";
 import CompletedStudies from "./studies/tables/CompletedStudies";
 import GuestTable from "./studies/tables/GuestTable";
 import MyStudies from "./studies/tables/MyStudies";
@@ -14,25 +14,25 @@ function Index() {
 
 	if (user?.role === "Registrar" || user?.role === "Radiologist") {
 		return (
-			<StudiesLayout>
+			<StudiesPageLayout>
 				<MyStudies />
-			</StudiesLayout>
+			</StudiesPageLayout>
 		);
 	}
 
 	if (user?.role === "Secretary") {
 		return (
-			<StudiesLayout>
+			<StudiesPageLayout>
 				<CompletedStudies />
-			</StudiesLayout>
+			</StudiesPageLayout>
 		);
 	}
 
 	if (user?.role === "Guest") {
 		return (
-			<StudiesLayout>
+			<StudiesPageLayout>
 				<GuestTable />
-			</StudiesLayout>
+			</StudiesPageLayout>
 		);
 	}
 

@@ -19,32 +19,30 @@ function Navbar() {
 	};
 
 	return (
-		<>
-			<div className="mb-3 border-b border-gray-200">
-				<div className="w-10/12 mx-auto my-1 flex items-center justify-between">
-					<Link to="/">
-						<div className="flex items-center">
-							<img src="/mtrh.svg" alt="MTRH Logo" />
-							<h1 className="font-bold text-xl tracking-widest text-[rgb(170,0,0)]">MTRH</h1>
-						</div>
-					</Link>
-					{user && (
-						<div className="flex items-center">
-							<h1 className="mr-3">{user.full_name}</h1>
-							<span className="text-[rgb(170,0,0)]">|</span>
-							<Button
-								size="small"
-								startIcon={<LogoutIcon />}
-								sx={{ color: "black", textTransform: "capitalize", marginLeft: "6px" }}
-								onClick={handleLogout}
-							>
-								Log Out
-							</Button>
-						</div>
-					)}
-				</div>
+		<div className="border-b border-gray-200">
+			<div className="w-10/12 mx-auto my-1 flex items-center justify-between">
+				<Link to="/">
+					<div className="flex items-center">
+						<img src="/mtrh.svg" alt="MTRH Logo" />
+						<h1 className="font-bold text-xl tracking-widest text-[rgb(170,0,0)]">MTRH</h1>
+					</div>
+				</Link>
+				{user && (
+					<div className="flex items-center">
+						<h1 className="mr-3">{user.full_name}</h1>
+						<span className="text-[rgb(170,0,0)]">|</span>
+						<Button
+							size="small"
+							startIcon={<LogoutIcon />}
+							sx={{ color: "black", textTransform: "capitalize", marginLeft: "6px" }}
+							onClick={handleLogout}
+						>
+							Log Out
+						</Button>
+					</div>
+				)}
 			</div>
-		</>
+		</div>
 	);
 }
 
