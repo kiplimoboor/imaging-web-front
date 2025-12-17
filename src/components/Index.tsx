@@ -2,6 +2,7 @@ import { useAuth } from "@/context/AuthContext";
 import Dashboard from "./Dashboard";
 import StudiesLayout from "./StudiesLayout";
 import CompletedStudies from "./studies/tables/CompletedStudies";
+import GuestTable from "./studies/tables/GuestTable";
 import MyStudies from "./studies/tables/MyStudies";
 
 function Index() {
@@ -23,6 +24,14 @@ function Index() {
 		return (
 			<StudiesLayout>
 				<CompletedStudies />
+			</StudiesLayout>
+		);
+	}
+
+	if (user?.role === "Guest") {
+		return (
+			<StudiesLayout>
+				<GuestTable />
 			</StudiesLayout>
 		);
 	}

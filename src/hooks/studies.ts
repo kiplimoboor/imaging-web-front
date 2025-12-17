@@ -14,7 +14,7 @@ function useStudies(filters: FilterProp[] = []) {
 		queryFn: async () => {
 			const searchParams = new URLSearchParams();
 			filters.forEach((parameter) => searchParams.set(parameter.id, String(parameter.value)));
-			const res = await fetch("https://radiology.mtrh.go.ke/api/studies?" + searchParams.toString(), {
+			const res = await fetch(API_URL + "/studies?" + searchParams.toString(), {
 				credentials: "include",
 			});
 			const data: Study[] = await res.json();

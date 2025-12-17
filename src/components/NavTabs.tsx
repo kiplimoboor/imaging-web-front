@@ -9,7 +9,7 @@ function NavTabs() {
 	const { user } = useAuth();
 	const tabs = [];
 
-	if (user && ["Radiologist", "Regstrar", "Administrator", "Support"].includes(user?.role)) {
+	if (user?.role === "Registrar" || user?.role === "Radiologist") {
 		tabs.push([<Tab key="/all" label="All Studies" value="/all" to="/all" component={Link} />]);
 	}
 
@@ -19,6 +19,7 @@ function NavTabs() {
 
 	if (user?.role === "Administrator" || user?.role === "Support") {
 		tabs.push(
+			<Tab key="/" label="All Studies" value="/" to="/" component={Link} />,
 			<Tab key="/new" label="New Studies" value="/new" to="/new" component={Link} />,
 			<Tab key="/completed" label="Complete" value="/completed" to="/completed" component={Link} />,
 		);
@@ -27,20 +28,6 @@ function NavTabs() {
 	if (user?.role === "Secretary") {
 		tabs.push(<Tab key="/" label="Completed" value="/" to="/" component={Link} />);
 	}
-
-	// if (isRadiologist)
-	// 	tabs.push(
-	// 		<Tab key="/all" label="All Studies" value="/all" to="/all" component={Link} />,
-	// 		<Tab key="/" label="My Studies" value="/" to="/" component={Link} />,
-	// 	);
-	//
-	// if (isPrivileged) {
-	// 	tabs.push(
-	// 		<Tab key="/" label="All Studies" value="/" to="/" component={Link} />,
-	// 		<Tab key="/new" label="New Studies" value="/new" to="/new" component={Link} />,
-	// 		<Tab key="/complete" label="Complete" value="/complete" to="/complete" component={Link} />,
-	// 	);
-	// }
 
 	return <Tabs value={currentTab}>{tabs}</Tabs>;
 }
