@@ -19,7 +19,7 @@ function RowActions({ row, actions, table }: RowActionsProps) {
 
 	const accessionRegex = /^\d{7}$/;
 	const isOwnStudy = user.id === student || user.id === radiologist;
-	const canAssign = actions.includes("assign") && isPrivileged && status !== 4;
+	const canAssign = actions.includes("assign") && isPrivileged;
 	const hasRequestNotes = actions.includes("note") && accessionRegex.test(accession);
 	const canSelfAssign = actions.includes("self-assign") && status === 0 && isRadiologist;
 	const canRequestReview = actions.includes("review") && user.role === "Registrar" && isOwnStudy;
