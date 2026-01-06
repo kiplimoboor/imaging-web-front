@@ -12,7 +12,9 @@ function PrivateRoutes() {
 		authCheck();
 	}, []);
 
-	if (loadingAuth) return <LoadingSpinner message="Checking Credentials" />;
+	if (loadingAuth) {
+		return <LoadingSpinner message="Checking Credentials" />;
+	}
 
 	if (user === null) {
 		sessionStorage.setItem("postLoginRedirect", location.pathname + location.search);
@@ -29,11 +31,4 @@ function AdminRoutes() {
 	return <Outlet />;
 }
 
-function RadiologistRoutes() {
-	const { user, isRadiologist } = useAuth();
-	if (user == null) return <PrivateRoutes />;
-	if (!isRadiologist) return <Navigate to="/401" />;
-	return <Outlet />;
-}
-
-export { AdminRoutes, PrivateRoutes, RadiologistRoutes };
+export { AdminRoutes, PrivateRoutes };

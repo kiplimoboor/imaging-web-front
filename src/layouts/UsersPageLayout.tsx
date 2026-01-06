@@ -1,17 +1,14 @@
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import Button from "@mui/material/Button";
-import { useState } from "react";
-import Analytics from "@/components/Analytics";
+import { type ReactNode, useState } from "react";
 import Navbar from "@/components/Navbar";
 import CreateUserDialog from "@/components/users/CreateUserDialog";
-import UsersTable from "@/components/users/UserTable";
 
-function UsersPage() {
+function UsersPageLayout({ children }: { children: ReactNode }) {
 	const [createUserOpen, setCreateUserOpen] = useState(false);
 	return (
 		<>
 			<Navbar />
-			<Analytics />
 			<div className="w-10/12 mx-auto">
 				<div className="flex items-center justify-between my-6">
 					<h2 className="text-xl font-sm">Users</h2>
@@ -19,10 +16,10 @@ function UsersPage() {
 						Add User
 					</Button>
 				</div>
-				<UsersTable />
+				{children}
 			</div>
 			<CreateUserDialog open={createUserOpen} setOpen={setCreateUserOpen} />
 		</>
 	);
 }
-export default UsersPage;
+export default UsersPageLayout;

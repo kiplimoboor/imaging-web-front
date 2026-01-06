@@ -1,21 +1,20 @@
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef, MRT_ColumnFiltersState } from "material-react-table";
 import { useMemo, useState } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
 import { useAuth } from "@/context/AuthContext";
+import { useStudies } from "@/hooks/studies";
 import type { Actions, EditingRowSaveArgs, RowActionsProps, Study, StudyStatusMap } from "@/types";
 import { commonColumns, commonInitialHide, hiddenColumns } from "../columns";
 import RowActions from "../RowActions";
 import { studyUpdate } from "../utils";
 
-const API_URL = import.meta.env.VITE_API_URL + "/studies?";
-
 function MyStudies() {
 	const { user } = useAuth();
 	const queryClient = useQueryClient();
 	const isRegistrar = user?.role === "Registrar";
-	const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
+	const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
 
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(() => {
 		const localColumns: MRT_ColumnDef<Study>[] = [
@@ -46,22 +45,10 @@ function MyStudies() {
 		return [...commonColumns, ...hiddenColumns, ...localColumns];
 	}, []);
 
-	const { data, isRefetching } = useQuery({
-		queryKey: ["studies", user?.id, { columnFilters }],
-		queryFn: async () => {
-			const searchParams = new URLSearchParams();
-			columnFilters.forEach((filter) => {
-				if (typeof filter.value === "string") searchParams.set(filter.id, filter.value);
-			});
-			user && searchParams.set("student", user.id.toString());
-			const res = await fetch(API_URL + searchParams.toString(), {
-				credentials: "include",
-			});
-			const data: Study[] = await res.json();
-			return data;
-		},
-		placeholderData: keepPreviousData,
-	});
+	const { data, isRefetching } = useStudies([
+		{ id: user?.role === "Radiologist" ? "radiologist" : "student", value: user?.id },
+		...filters,
+	]);
 
 	const actions: Actions[] = ["review", "edit", "pdf", "note"];
 	const rowActions = ({ table, row }: RowActionsProps) => <RowActions table={table} row={row} actions={actions} />;
@@ -69,12 +56,12 @@ function MyStudies() {
 	const tableConfig = {
 		onEditingRowSave: ({ values, table, row }: EditingRowSaveArgs) => {
 			studyUpdate(row.original.id, values);
-			queryClient.invalidateQueries({ queryKey: ["studies", user?.id, { columnFilters }] });
+			queryClient.invalidateQueries({ queryKey: ["studies", user?.id, { columnFilters: filters }] });
 			table.setEditingRow(null);
 		},
 		manualFiltering: true,
-		onColumnFiltersChange: setColumnFilters,
-		state: { columnFilters, showProgressBars: isRefetching, isLoading: !data },
+		onColumnFiltersChange: setFilters,
+		state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
 	};
 
 	return (
