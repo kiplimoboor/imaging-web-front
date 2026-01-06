@@ -10,8 +10,8 @@ function NavTabs() {
 	const tabs = [];
 
 	if (user?.role === "Radiologist" || user?.role === "Registrar") {
-		tabs.push(<Tab key="/" label="My Studies" value="/" to="/" component={Link} />);
 		tabs.push([<Tab key="/all" label="All Studies" value="/all" to="/all" component={Link} />]);
+		tabs.push(<Tab key="/" label="My Studies" value="/" to="/" component={Link} />);
 	}
 
 	if (user?.role === "Administrator" || user?.role === "Support") {
