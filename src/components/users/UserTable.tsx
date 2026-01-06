@@ -40,6 +40,10 @@ function UsersTable() {
 		columnVisibility: { id: false },
 		showColumnFilters: false,
 		pagination: { pageIndex: 0, pageSize: 50 },
+		sorting: [
+			{ id: "role", desc: false },
+			{ id: "id", desc: false },
+		],
 	};
 
 	const tableConfig = {
