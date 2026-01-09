@@ -35,7 +35,7 @@ function RequestNotes({ accession }: { accession: string }) {
 			<Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)}>
 				<div className="p-2 w-72">
 					<h1 className="font-bold mb-2">Request Note</h1>
-					<p>{note}</p>
+					<p className="whitespace-pre-wrap">{note}</p>
 				</div>
 			</Menu>
 		</>
