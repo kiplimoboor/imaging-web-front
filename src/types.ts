@@ -38,7 +38,7 @@ type RowActionsProps = { table?: StudyTableInstance; row: MRT_Row<Study>; action
 
 type StudyStatusDetails = {
 	text: string;
-	color: "warning" | "primary" | "success" | "error" | "secondary";
+	color: "warning" | "primary" | "success" | "error" | "secondary" | "info";
 };
 
 type StudyStatusMap = Record<number, StudyStatusDetails>;

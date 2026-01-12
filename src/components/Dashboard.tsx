@@ -23,6 +23,7 @@ function Dashboard() {
 			const res = await fetch("https://radiology.mtrh.go.ke/api/analytics", { credentials: "include" });
 			const data = await res.json();
 			setAnalytics(data);
+			console.log(data);
 		};
 		fetchAnalytics();
 	}, []);
@@ -50,8 +51,8 @@ function Dashboard() {
 						0: { text: "New Study", color: "primary" },
 						1: { text: "Assigned", color: "warning" },
 						2: { text: "Resident", color: "secondary" },
-						3: { text: "Resident", color: "secondary" },
-						4: { text: "Resident", color: "secondary" },
+						3: { text: "Ongoing", color: "info" },
+						4: { text: "Completed", color: "success" },
 					};
 					return <StatusPill status={row.original.status} map={map} />;
 				},
