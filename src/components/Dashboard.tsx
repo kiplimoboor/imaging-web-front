@@ -23,7 +23,6 @@ function Dashboard() {
 			const res = await fetch("https://radiology.mtrh.go.ke/api/analytics", { credentials: "include" });
 			const data = await res.json();
 			setAnalytics(data);
-			console.log(data);
 		};
 		fetchAnalytics();
 	}, []);
