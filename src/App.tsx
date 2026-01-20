@@ -11,6 +11,7 @@ import Dashboard from "./components/Dashboard.tsx";
 import Index from "./components/Index.tsx";
 import LoadingSpinner from "./components/LoadingSpinner.tsx";
 import Login from "./components/Login.tsx";
+import Query from "./components/Query.tsx";
 import CompletedStudies from "./components/studies/tables/CompletedStudies.tsx";
 import NewStudies from "./components/studies/tables/NewStudies";
 import UsersTable from "./components/users/UserTable.tsx";
@@ -69,6 +70,8 @@ function App() {
 										</UsersPageLayout>
 									}
 								/>
+
+								<Route path="/query" element={<Query />} />
 							</Route>
 
 							<Route

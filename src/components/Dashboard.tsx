@@ -68,9 +68,14 @@ function Dashboard() {
 		<>
 			<Navbar />
 			<div className="w-10/12 mx-auto mt-8">
-				<div>
-					<h1 className="text-xl font-semibold">Overview</h1>
-					<p className="text-sm text-gray-800">Welcome back, here is today's radiology status.</p>
+				<div className="flex justify-between items-center">
+					<div>
+						<h1 className="text-xl font-semibold">Overview</h1>
+						<p className="text-sm text-gray-800">Welcome back, here is today's radiology status.</p>
+					</div>
+					<div className="hidden">
+						<>Report goes here</>
+					</div>
 				</div>
 
 				<div className="mt-12 grid grid-cols-4 gap-4">
