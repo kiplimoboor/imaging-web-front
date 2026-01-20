@@ -1,6 +1,8 @@
+import DescriptionIcon from "@mui/icons-material/Description";
+import Button from "@mui/material/Button";
 import type { MRT_ColumnDef } from "material-react-table";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Legend, Pie, PieChart, Tooltip } from "recharts";
 import type { Study, StudyStatusMap } from "@/types";
 import BaseTable from "./BaseTable";
@@ -17,6 +19,7 @@ const TRACKED_MODALITIES = [
 
 function Dashboard() {
 	const [analytics, setAnalytics] = useState<any>();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchAnalytics = async () => {
@@ -73,8 +76,10 @@ function Dashboard() {
 						<h1 className="text-xl font-semibold">Overview</h1>
 						<p className="text-sm text-gray-800">Welcome back, here is today's radiology status.</p>
 					</div>
-					<div className="hidden">
-						<>Report goes here</>
+					<div>
+						<Button variant="contained" startIcon={<DescriptionIcon />} onClick={() => navigate("/query")}>
+							Query
+						</Button>
 					</div>
 				</div>
 
