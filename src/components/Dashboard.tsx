@@ -1,4 +1,4 @@
-import DescriptionIcon from "@mui/icons-material/Description";
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import Button from "@mui/material/Button";
 import type { MRT_ColumnDef } from "material-react-table";
 import { useEffect, useMemo, useState } from "react";
@@ -77,7 +77,7 @@ function Dashboard() {
 						<p className="text-sm text-gray-800">Welcome back, here is today's radiology status.</p>
 					</div>
 					<div>
-						<Button variant="contained" startIcon={<DescriptionIcon />} onClick={() => navigate("/query")}>
+						<Button variant="contained" startIcon={<QueryStatsIcon />} onClick={() => navigate("/query")}>
 							Query
 						</Button>
 					</div>
