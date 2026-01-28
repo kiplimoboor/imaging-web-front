@@ -23,7 +23,9 @@ function Query() {
 		return [
 			...commonColumns,
 			{ accessorKey: "dicom_uid", header: "DICOM" },
-			{ accessorKey: "status", header: "status" },
+			{ accessorKey: "scan_time", header: "Scan Date" },
+			{ accessorKey: "report_time", header: "Report Time" },
+			{ accessorKey: "turnaround_hours", header: "Turnaround (Hours)" },
 		];
 	}, []);
 
@@ -123,7 +125,6 @@ function Query() {
 						onChange={(event) => handleChange({ limit: event.target.value })}
 					/>
 
-					{/* pushes buttons to the right */}
 					<div className="flex-grow" />
 
 					<div className="flex items-center gap-2">
@@ -134,7 +135,7 @@ function Query() {
 								sx={{ height: 56, minWidth: 120 }}
 								onClick={() => fetch_data(true)}
 							>
-								Export CSV
+								Export
 							</Button>
 						)}
 
@@ -151,7 +152,7 @@ function Query() {
 							rowActions={rowActions}
 							others={{ enableColumnFilters: false, enableTopToolbar: false }}
 							intial={{
-								columnVisibility: { dicom_uid: false, status: false },
+								columnVisibility: { dicom_uid: false, status: false, study_date: false },
 								pagination: { pageIndex: 0, pageSize: 10 },
 							}}
 						/>
