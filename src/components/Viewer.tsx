@@ -2,14 +2,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { IconButton } from "@mui/material";
 import { useState } from "react";
-import { useParams } from "react-router";
+import { useSearchParams } from "react-router";
 import Editor from "@/components/editor/Editor";
 
 const URL = "https://radiology.mtrh.go.ke";
 
 function Viewer() {
-	const { uid } = useParams();
-	const viewerUrl = `${URL}/ohif/viewer?StudyInstanceUIDs=${uid}`;
+	const [searchParams] = useSearchParams()
+	const uid = searchParams.get("uid")
+	const viewer = searchParams.get("viewer")
+	const viewerUrl = `${URL}${viewer ? `/${viewer}` : ""}/viewer?StudyInstanceUIDs=${uid}`;
 	const [notePanelOpen, setNotePanelOpen] = useState(true);
 
 	return (

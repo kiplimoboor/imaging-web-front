@@ -7,7 +7,7 @@ import "@/components/tiptap-node/list-node/list-node.scss";
 import "@/components/tiptap-node/heading-node/heading-node.scss";
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useSearchParams } from "react-router";
 import { useAuth } from "@/context/AuthContext";
 import type { Study } from "@/types";
 import { Toolbar } from "../tiptap-ui-primitive/toolbar";
@@ -17,7 +17,8 @@ import TipTapToolbar from "./TipTapToolbar";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Editor() {
-	const { uid } = useParams();
+	const [searchParams] = useSearchParams()
+	const uid = searchParams.get("uid")
 	const { user } = useAuth();
 	const [study, setStudy] = useState<Study | null>(null);
 	const [editable, setEditable] = useState(true);

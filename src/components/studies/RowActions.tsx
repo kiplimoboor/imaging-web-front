@@ -11,11 +11,11 @@ const SelfAssignAction = React.lazy(() => import("./row-actions/SelfAssignAction
 const ReviewAction = React.lazy(() => import("./row-actions/ReviewAction"));
 
 function RowActions({ row, actions, table }: RowActionsProps) {
-	const { dicom_uid, status, student, radiologist, id, accession } = row.original;
+	const { dicom_uid, status, student, radiologist, id, accession, study_date } = row.original;
 	const { user, isPrivileged, isSecretary, isRadiologist } = useAuth();
 
 	if (!user) return;
-	if (!actions) return <ViewAction dicomUid={dicom_uid} status={status} />;
+	if (!actions) return <ViewAction dicomUid={dicom_uid} status={status} date={study_date} />;
 
 	const accessionRegex = /^\d{7}$/;
 	const isOwnStudy = user.id === student || user.id === radiologist;
@@ -29,7 +29,7 @@ function RowActions({ row, actions, table }: RowActionsProps) {
 	return (
 		<>
 			{hasRequestNotes && <RequestNotes accession={row.original.accession} />}
-			<ViewAction dicomUid={dicom_uid} status={status} />
+			<ViewAction dicomUid={dicom_uid} status={status} date={study_date} />
 			<React.Suspense fallback={null}>
 				{canAssign && <AssignAction id={id} status={status} />}
 				{canSelfAssign && <SelfAssignAction id={id} />}

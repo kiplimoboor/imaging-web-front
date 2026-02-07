@@ -75,7 +75,7 @@ function App() {
 							</Route>
 
 							<Route
-								path="/viewer/:uid"
+								path="/viewer"
 								element={
 									<Suspense fallback={<LoadingSpinner message="Loading Viewer" />}>
 										<Viewer />
