@@ -18,10 +18,10 @@ function GuestTable() {
 				size: 50,
 				Cell: ({ row }) => {
 					const map: StudyStatusMap = {
-						0: { text: "Ongoing", color: "primary" },
-						1: { text: "Ongoing", color: "primary" },
-						2: { text: "Ongoing", color: "primary" },
-						3: { text: "Ongoing", color: "primary" },
+						0: { text: "Scanned", color: "primary" },
+						1: { text: "Scanned", color: "primary" },
+						2: { text: "Scanned", color: "primary" },
+						3: { text: "Scanned", color: "primary" },
 						4: { text: "Reported", color: "success" },
 					};
 					return <StatusPill status={row.original.status} map={map} />;
