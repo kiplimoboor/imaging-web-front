@@ -28,7 +28,6 @@ function BaseTable<TData extends MRT_RowData>({ columns, data, rowActions, other
 			density: "compact",
 			pagination: { pageIndex: 0, pageSize: 30 },
 			showColumnFilters: true,
-			showGlobalFilter: true,
 			...intial,
 		},
 		enableRowActions: rowActions !== undefined,
