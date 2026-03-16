@@ -1,0 +1,50 @@
+name: radiology ci/cd
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    env:
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+      VITE_REDIRECT_URI: ${{ vars.VITE_REDIRECT_URI }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+
+      - name: set up node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.x"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: install and build
+        run: |
+          npm ci
+          npm run build --if-present
+
+      - name: save artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: dist
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+      - name: download dist
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist
+
+      - name: move file to home dir
+        run: |
+          rm -rf /var/www/index
+          mv ./dist /var/www/index
