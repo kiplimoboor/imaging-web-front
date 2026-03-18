@@ -26,7 +26,7 @@ function RequestNotes({ accession }: { accession: string }) {
 
 	return (
 		<>
-			<Tooltip title="RequestNotes">
+			<Tooltip title="Request Notes">
 				<IconButton onClick={(e) => fetchNotes(e)}>
 					<NotesIcon />
 				</IconButton>
