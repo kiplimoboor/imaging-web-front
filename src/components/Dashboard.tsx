@@ -10,6 +10,8 @@ import LoadingSpinner from "./LoadingSpinner";
 import Navbar from "./Navbar";
 import StatusPill from "./StatusPill";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const TRACKED_MODALITIES = [
 	{ name: "ct", fill: "#ffc658" },
 	{ name: "dx", fill: "#8884d8" },
@@ -23,7 +25,7 @@ function Dashboard() {
 
 	useEffect(() => {
 		const fetchAnalytics = async () => {
-			const res = await fetch("https://radiology.mtrh.go.ke/api/analytics", { credentials: "include" });
+			const res = await fetch(API_URL + "/analytics", { credentials: "include" });
 			const data = await res.json();
 			setAnalytics(data);
 		};
