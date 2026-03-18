@@ -27,7 +27,6 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<AuthProvider>
 					<Routes>
-						<Route path="/dashboard" element={<Dashboard />} />
 						<Route path="/login" element={<Login />} />
 						<Route path="/auth" element={<AuthCallback />} />
 						<Route path="/401" element={<Unauthorized />} />
