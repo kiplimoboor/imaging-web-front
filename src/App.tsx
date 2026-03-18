@@ -7,7 +7,6 @@ import StudiesPageLayout from "@/layouts/StudiesPageLayout";
 import UsersPageLayout from "@/layouts/UsersPageLayout.tsx";
 import Unauthorized from "./components/401.tsx";
 import AuthCallback from "./components/AuthCallback";
-import Dashboard from "./components/Dashboard.tsx";
 import Index from "./components/Index.tsx";
 import LoadingSpinner from "./components/LoadingSpinner.tsx";
 import Login from "./components/Login.tsx";
