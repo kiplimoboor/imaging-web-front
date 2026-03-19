@@ -23,8 +23,8 @@ function RowActions({ row, actions, table }: RowActionsProps) {
 	const hasRequestNotes = actions.includes("note") && accessionRegex.test(accession);
 	const canSelfAssign = actions.includes("self-assign") && status === 0 && isRadiologist;
 	const canRequestReview = actions.includes("review") && user.role === "Registrar" && isOwnStudy;
-	const canEdit = table && actions.includes("edit") && (isOwnStudy || isPrivileged || isSecretary);
-	const canGeneratePdf = table && actions.includes("pdf") && status === 4;
+	const canEdit = table && actions.includes("edit") && (isOwnStudy || isPrivileged || (isSecretary && status === 4));
+	const canGeneratePdf = table && actions.includes("pdf") && status === 4 && user.role !== "Guest";
 
 	return (
 		<>

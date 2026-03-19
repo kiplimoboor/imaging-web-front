@@ -1,18 +1,19 @@
 import type { MRT_ColumnDef, MRT_ColumnFiltersState } from "material-react-table";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
 import { useStudies } from "@/hooks/studies";
-import type { RowActionsProps, Study, StudyStatusMap } from "@/types";
-import { commonColumns } from "../columns";
+import type { Actions, RowActionsProps, Study, StudyStatusMap } from "@/types";
+import { commonColumns, commonInitialHide, hiddenColumns, hiddenEdit } from "../columns";
 import RowActions from "../RowActions";
 
-function GuestTable() {
+function GeneralTable() {
 	const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
 
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(
 		() => [
 			...commonColumns,
+			...hiddenColumns,
 			{
 				header: "Status",
 				size: 50,
@@ -26,6 +27,7 @@ function GuestTable() {
 					};
 					return <StatusPill status={row.original.status} map={map} />;
 				},
+				muiEditTextFieldProps: hiddenEdit,
 			},
 		],
 		[],
@@ -38,9 +40,13 @@ function GuestTable() {
 		onColumnFiltersChange: setFilters,
 		state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
 	};
-
-	const rowActions = ({ row }: RowActionsProps) => <RowActions row={row} />;
-	return <BaseTable columns={columns} data={data} rowActions={rowActions} others={tableConfig} />;
+	const actions: Actions[] = ["edit", "pdf"];
+	const rowActions = useCallback(({ row, table }: RowActionsProps) => {
+		return <RowActions row={row} table={table} actions={actions} />;
+	}, []);
+	return (
+		<BaseTable columns={columns} data={data} intial={commonInitialHide} rowActions={rowActions} others={tableConfig} />
+	);
 }
 
-export default GuestTable;
+export default GeneralTable;

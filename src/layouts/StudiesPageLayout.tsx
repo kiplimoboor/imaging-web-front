@@ -11,7 +11,7 @@ function StudiesLayout({ children }: { children: ReactNode }) {
 			<Navbar />
 			<Header />
 			<div className="w-10/12 mx-auto">
-				{user?.role !== "Guest" && <NavTabs />}
+				{user && !["Guest", "Secretary"].includes(user?.role) && <NavTabs />}
 				{children}
 			</div>
 		</>

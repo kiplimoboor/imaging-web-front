@@ -1,8 +1,7 @@
 import { useAuth } from "@/context/AuthContext";
 import StudiesPageLayout from "@/layouts/StudiesPageLayout";
 import Dashboard from "./Dashboard";
-import CompletedStudies from "./studies/tables/CompletedStudies";
-import GuestTable from "./studies/tables/GuestTable";
+import GeneralTable from "./studies/tables/GeneralTable";
 import MyStudies from "./studies/tables/MyStudies";
 
 function Index() {
@@ -20,18 +19,10 @@ function Index() {
 		);
 	}
 
-	if (user?.role === "Secretary") {
+	if (user?.role === "Secretary" || user?.role === "Guest") {
 		return (
 			<StudiesPageLayout>
-				<CompletedStudies />
-			</StudiesPageLayout>
-		);
-	}
-
-	if (user?.role === "Guest") {
-		return (
-			<StudiesPageLayout>
-				<GuestTable />
+				<GeneralTable />
 			</StudiesPageLayout>
 		);
 	}
