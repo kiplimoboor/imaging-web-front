@@ -1,14 +1,17 @@
+import { useQueryClient } from "@tanstack/react-query";
 import type { MRT_ColumnDef, MRT_ColumnFiltersState } from "material-react-table";
 import { useCallback, useMemo, useState } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
 import { useStudies } from "@/hooks/studies";
-import type { Actions, RowActionsProps, Study, StudyStatusMap } from "@/types";
+import type { Actions, EditingRowSaveArgs, RowActionsProps, Study, StudyStatusMap } from "@/types";
 import { commonColumns, commonInitialHide, hiddenColumns, hiddenEdit } from "../columns";
 import RowActions from "../RowActions";
+import { studyUpdate } from "../utils";
 
 function GeneralTable() {
 	const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
+	const queryClient = useQueryClient();
 
 	const columns = useMemo<MRT_ColumnDef<Study>[]>(
 		() => [
@@ -37,6 +40,11 @@ function GeneralTable() {
 
 	const tableConfig = {
 		manualFiltering: true,
+		onEditingRowSave: ({ values, table, row }: EditingRowSaveArgs) => {
+			studyUpdate(row.original.id, values);
+			queryClient.invalidateQueries({ queryKey: ["studies", { columnFilters: filters }] });
+			table.setEditingRow(null);
+		},
 		onColumnFiltersChange: setFilters,
 		state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
 	};
