@@ -19,7 +19,7 @@ function ViewAction({ dicomUid, status, date }: ViewActionProps) {
 	};
 	return (
 		<IconButton onClick={handleOpen}>
-			<Tooltip title="View in OHIF">
+			<Tooltip title="View Study">
 				<VisibilityIcon />
 			</Tooltip>
 		</IconButton>
@@ -27,4 +27,3 @@ function ViewAction({ dicomUid, status, date }: ViewActionProps) {
 }
 
 export default ViewAction;
-
