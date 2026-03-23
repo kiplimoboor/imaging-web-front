@@ -36,7 +36,7 @@ function PdfAction({ row, table }: { row: MRT_Row<Study>; table: StudyTableInsta
 	};
 
 	return (
-		<Tooltip title="Generate PDF">
+		<Tooltip title="PDF Report">
 			<IconButton onClick={handlePdf}>
 				{pdfLoading ? <CircularProgress size="1rem" /> : <PictureAsPdfIcon />}
 			</IconButton>
