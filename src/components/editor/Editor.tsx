@@ -17,8 +17,8 @@ import TipTapToolbar from "./TipTapToolbar";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Editor() {
-	const [searchParams] = useSearchParams()
-	const uid = searchParams.get("uid")
+	const [searchParams] = useSearchParams();
+	const uid = searchParams.get("uid");
 	const { user } = useAuth();
 	const [study, setStudy] = useState<Study | null>(null);
 	const [editable, setEditable] = useState(true);
