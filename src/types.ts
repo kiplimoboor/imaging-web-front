@@ -28,6 +28,7 @@ type Study = {
 	radiologist_name: string | null;
 	student_name: string | null;
 	note: string | null;
+	created_at: string;
 };
 
 type StudyTableInstance = MRT_TableInstance<Study>;
@@ -48,13 +49,13 @@ type EditingRowSaveArgs = { values: Study; table: MRT_TableInstance<Study>; row:
 type AlertFunction = (type: "info" | "success" | "error", message: string) => void;
 
 export type {
+	Actions,
 	AlertFunction,
-	User,
+	EditingRowSaveArgs,
+	RowActionsProps,
 	Study,
 	StudyStatusMap,
-	Actions,
-	RowActionsProps,
-	EditingRowSaveArgs,
-	UserTableInstance,
 	StudyTableInstance,
+	User,
+	UserTableInstance,
 };
