@@ -49,4 +49,4 @@ function useUpdateStudy() {
 	});
 }
 
-export { useUpdateStudy, useStudies };
+export { useStudies, useUpdateStudy };
