@@ -14,7 +14,9 @@ function AssignAction({ id, status }: { id: number; status: number }) {
 	const queryClient = useQueryClient();
 	const mutation = useUpdateStudy();
 	const { data } = useUsers();
-	const radiologists = data?.filter((user) => user.status === 1 && user.role != "Support");
+	const radiologists = data?.filter((user) => {
+		return user.status === 1 && (user.role === "Registrar" || user.role === "Radiologist");
+	});
 
 	const handleAssign = (radiologist: User) => {
 		const isRegistrar = radiologist.role === "Registrar";
