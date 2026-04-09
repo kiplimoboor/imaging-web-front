@@ -30,7 +30,7 @@ function BaseTable<TData extends MRT_RowData>({ columns, data, rowActions, other
 			showColumnFilters: true,
 			...intial,
 		},
-		enableRowActions: rowActions !== undefined,
+		enableRowActions: rowActions !== undefined || others.renderRowActionMenuItems !== undefined,
 		positionActionsColumn: "last",
 		renderRowActions: rowActions,
 		...others,

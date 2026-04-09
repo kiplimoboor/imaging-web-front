@@ -1,14 +1,17 @@
 import { useQueryClient } from "@tanstack/react-query";
-import type { MRT_ColumnDef, MRT_ColumnFiltersState } from "material-react-table";
+import type { MRT_ColumnDef, MRT_ColumnFiltersState, MRT_Row, MRT_TableInstance } from "material-react-table";
 import { useCallback, useMemo, useState } from "react";
 import BaseTable from "@/components/BaseTable";
 import StatusPill from "@/components/StatusPill";
+import { useAuth } from "@/context/AuthContext";
 import { useStudies, useUpdateStudy } from "@/hooks/studies";
 import type { Actions, EditingRowSaveArgs, RowActionsProps, Study, StudyStatusMap } from "@/types";
 import { commonColumns, commonInitialHide, hiddenColumns } from "../columns";
+import kebabRowActions from "../KebabRowActions";
 import RowActions from "../RowActions";
 
 function AllStudies() {
+	const { user } = useAuth();
 	const queryClient = useQueryClient();
 	const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
 	const mutation = useUpdateStudy();
@@ -53,6 +56,11 @@ function AllStudies() {
 		},
 		onColumnFiltersChange: setFilters,
 		state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
+		...(user?.role === "Support" && {
+			renderRowActionMenuItems: ({ table, row }: { table: MRT_TableInstance<Study>; row: MRT_Row<Study> }) => {
+				return kebabRowActions(table, row);
+			},
+		}),
 	};
 
 	const actions: Actions[] = ["assign", "self-assign", "edit", "review", "pdf", "note"];
@@ -61,7 +69,13 @@ function AllStudies() {
 	}, []);
 
 	return (
-		<BaseTable data={data} columns={columns} rowActions={rowActions} intial={commonInitialHide} others={tableConfig} />
+		<BaseTable
+			data={data}
+			columns={columns}
+			intial={commonInitialHide}
+			others={tableConfig}
+			rowActions={user?.role === "Support" ? undefined : rowActions}
+		/>
 	);
 }
 
