@@ -258,8 +258,10 @@ function DeleteStudy({ study, table }: { study: Study; table: MRT_TableInstance<
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={() => handleClick(false)}>Cancel</Button>
-					<Button onClick={() => handleClick(true)}>Delete</Button>
+					<Button onClick={() => handleClick(false)}>Keep</Button>
+					<Button onClick={() => handleClick(true)} color="error">
+						Delete
+					</Button>
 				</DialogActions>
 			</Dialog>
 		</>
