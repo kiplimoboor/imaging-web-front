@@ -216,12 +216,7 @@ function GeneratePdf({ row, table }: { row: MRT_Row<Study>; table: MRT_TableInst
 	};
 
 	return (
-		<MRT_ActionMenuItem
-			icon={<PictureAsPdf />}
-			label={loading ? "Generating ..." : "Report"}
-			onClick={handlePdf}
-			table={table}
-		/>
+		<MRT_ActionMenuItem icon={<PictureAsPdf />} label={loading ? "..." : "Report"} onClick={handlePdf} table={table} />
 	);
 }
 
