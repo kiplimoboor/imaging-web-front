@@ -133,6 +133,8 @@ function Login() {
 				{(step === "identify" || step === "login") && (
 					<input
 						type="email"
+						autoComplete="email"
+						name="email"
 						className="w-full p-3 border border-slate-300 rounded-none focus:ring-1 focus:ring-blue-500 outline-none transition-all text-center"
 						placeholder="enter email address"
 						value={credentials.email || ""}
@@ -143,7 +145,7 @@ function Login() {
 				{step === "login" && (
 					<input
 						type="password"
-						className={`w-full p-3 border border-slate-300 rounded-none focus:ring-1 focus:ring-blue-500 outline-none transition-all text-center ${credentials.email ? "mt-2" : ""}`}
+						className={`w-full p-3 border border-slate-300 rounded-none focus:ring-1 focus:ring-blue-500 outline-none transition-all text-center mt-2`}
 						placeholder="enter password"
 						onChange={(e) => setCredentials({ ...credentials, password: e.currentTarget.value })}
 					/>
