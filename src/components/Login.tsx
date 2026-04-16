@@ -38,12 +38,11 @@ function Login() {
 				return;
 			}
 
-			const res = await fetch(API_URL + "/external/user/" + credentials.email + "/password", {
+			const res = await fetch(API_URL + "/external/user/" + credentials.email + "/onboard-password", {
 				method: "PATCH",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ password: newPass }),
 			});
-
 			if (res.status === 200) {
 				setErrors((prev) => ({ ...prev, login: "" }));
 				setStep("identify");
@@ -58,13 +57,12 @@ function Login() {
 				const res = await fetch(API_URL + "/oauth/login", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
+					credentials: "include",
 					body: JSON.stringify({ email, password }),
 				});
 				if (res.status === 200) {
-					const data = await res.json();
 					setErrors((prev) => ({ ...prev, login: "" }));
-					console.log(data);
-					// window.location.href = "/";
+					window.location.href = "/";
 				} else if (res.status === 401) {
 					setErrors((prev) => ({ ...prev, login: "Invalid login credentials" }));
 					return;
