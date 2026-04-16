@@ -27,6 +27,6 @@ function Index() {
 		);
 	}
 
-	return <>Hi</>;
+	return <>Be Different. Be nice.</>;
 }
 export default Index;
