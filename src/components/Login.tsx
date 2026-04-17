@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { loginRedirect } from "@/utils/auth";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -103,13 +104,12 @@ function Login() {
 				</div>
 				{step === "gate" && (
 					<div className="space-y-6">
-						<a
-							href="/"
-							className="flex items-center justify-center w-full py-4 px-4 text-white bg-blue-600 hover:bg-blue-700 font-bold transition-all duration-200"
+						<button
+							onClick={() => loginRedirect()}
+							className="w-full py-4 px-4 text-white bg-blue-600 hover:bg-blue-700 font-bold transition-all duration-200 uppercase"
 						>
-							LOG IN WITH ERPNEXT
-						</a>
-
+							Log in with ERPNext
+						</button>
 						<div className="relative flex items-center py-2">
 							<div className="flex-grow border-t border-slate-300"></div>
 							<span className="flex-shrink mx-4 text-slate-400 text-xs font-bold tracking-widest">OR</span>

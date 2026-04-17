@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Navigate, Outlet, useLocation } from "react-router";
+import { Navigate, Outlet, useLocation, useSearchParams } from "react-router";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useAuth } from "../context/AuthContext";
 import { loginRedirect } from "../utils/auth";
@@ -7,6 +7,8 @@ import { loginRedirect } from "../utils/auth";
 function PrivateRoutes() {
 	const { user, loadingAuth, authCheck } = useAuth();
 	const location = useLocation();
+	const [searchParams] = useSearchParams();
+	const autoLogin = Number(searchParams.get("auto-login"));
 
 	useEffect(() => {
 		authCheck();
@@ -17,8 +19,11 @@ function PrivateRoutes() {
 	}
 
 	if (user === null) {
-		sessionStorage.setItem("postLoginRedirect", location.pathname + location.search);
-		return loginRedirect();
+		if (autoLogin === 1) {
+			sessionStorage.setItem("postLoginRedirect", location.pathname + location.search);
+			return loginRedirect();
+		}
+		return <Navigate to="/login" />;
 	}
 
 	return <Outlet />;
