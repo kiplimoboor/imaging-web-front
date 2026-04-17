@@ -32,6 +32,11 @@ function AuthProvider({ children }: React.PropsWithChildren) {
 	const [loadingAuth, setLoadingAuth] = useState(true);
 
 	const authCheck = async () => {
+		const url = new URL(window.location.href);
+		const params = url.searchParams;
+		if (params.get("auto-login") === "1") {
+			window.history.replaceState(null, "", "/");
+		}
 		const res = await fetch(API_URL + "/oauth/check", {
 			credentials: "include",
 			headers: { "Content-Type": "application/json" },
