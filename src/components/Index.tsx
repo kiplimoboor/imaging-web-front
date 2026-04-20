@@ -7,6 +7,10 @@ import MyStudies from "./studies/tables/MyStudies";
 function Index() {
 	const { user } = useAuth();
 
+	if (user === null) {
+		return;
+	}
+
 	if (user?.role === "Administrator" || user?.role === "Support") {
 		return <Dashboard />;
 	}
@@ -19,7 +23,8 @@ function Index() {
 		);
 	}
 
-	if (user?.role === "Secretary" || user?.role === "Guest") {
+	const generalUsers = ["Secretary", "Radiographer", "Guest"];
+	if (generalUsers.includes(user?.role)) {
 		return (
 			<StudiesPageLayout>
 				<GeneralTable />
