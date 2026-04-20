@@ -23,7 +23,7 @@ function Index() {
 		);
 	}
 
-	const generalUsers = ["Secretary", "Radiographer", "Guest"];
+	const generalUsers = ["Secretary", "Radiographer", "Guest", "Auditor"];
 	if (generalUsers.includes(user?.role)) {
 		return (
 			<StudiesPageLayout>
