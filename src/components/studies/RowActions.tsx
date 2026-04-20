@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
+import getStudyPolicy from "@/policies/studyPolicy";
 import type { RowActionsProps } from "@/types";
 import RequestNotes from "./row-actions/RequestNotes";
 import ViewAction from "./row-actions/ViewAction";
@@ -11,33 +12,25 @@ const SelfAssignAction = React.lazy(() => import("./row-actions/SelfAssignAction
 const ReviewAction = React.lazy(() => import("./row-actions/ReviewAction"));
 
 function RowActions({ row, actions, table }: RowActionsProps) {
-	const { dicom_uid, status, student, radiologist, id, accession, created_at } = row.original;
-	const { user, isPrivileged, isSecretary, isRadiologist } = useAuth();
-
-	if (!user) return;
+	const { dicom_uid, status, id, accession, created_at } = row.original;
+	const { user } = useAuth();
+	if (!user) {
+		return;
+	}
 	if (!actions) {
 		return <ViewAction dicomUid={dicom_uid} status={status} created_at={created_at} />;
 	}
-
-	const accessionRegex = /^\d{7}$/;
-	const isOwnStudy = user.id === student || user.id === radiologist;
-	const canAssign = actions.includes("assign") && isPrivileged;
-	const hasRequestNotes = actions.includes("note") && accessionRegex.test(accession);
-	const canSelfAssign = actions.includes("self-assign") && status === 0 && isRadiologist;
-	const canRequestReview = actions.includes("review") && user.role === "Registrar" && isOwnStudy;
-	const canEdit = table && actions.includes("edit") && (isOwnStudy || isPrivileged || (isSecretary && status === 4));
-	const canGeneratePdf = table && actions.includes("pdf") && status === 4 && user.role !== "Guest";
-
+	const permissions = getStudyPolicy(user, row.original, actions);
 	return (
 		<>
-			{hasRequestNotes && <RequestNotes accession={row.original.accession} />}
+			{actions.includes("note") && /^\d{7}$/.test(accession) && <RequestNotes accession={accession} />}
 			<ViewAction dicomUid={dicom_uid} status={status} created_at={created_at} />
 			<React.Suspense fallback={null}>
-				{canAssign && <AssignAction id={id} status={status} />}
-				{canSelfAssign && <SelfAssignAction id={id} />}
-				{canRequestReview && <ReviewAction id={id} />}
-				{canEdit && <EditAction table={table} row={row} />}
-				{canGeneratePdf && <PdfAction table={table} row={row} />}
+				{permissions.canAssign && <AssignAction id={id} status={status} />}
+				{permissions.canSelfAssign && <SelfAssignAction id={id} />}
+				{permissions.canRequestReview && <ReviewAction id={id} />}
+				{permissions.canEdit && table && <EditAction table={table} row={row} />}
+				{permissions.canGeneratePdf && table && <PdfAction table={table} row={row} />}
 			</React.Suspense>
 		</>
 	);
