@@ -23,7 +23,15 @@ function UsersTable() {
 				accessorKey: "role",
 				header: "Role",
 				editVariant: "select",
-				editSelectOptions: ["Administrator", "Radiologist", "Registrar", "Support", "Secretary"],
+				editSelectOptions: [
+					"Auditor",
+					"Administrator",
+					"Radiographer",
+					"Radiologist",
+					"Registrar",
+					"Secretary",
+					"Support",
+				],
 				muiEditTextFieldProps: { select: true },
 			},
 			{
