@@ -12,7 +12,12 @@ function Login() {
 	const [credentials, setCredentials] = useState<Credentials>({ email: null, password: null });
 
 	const handleNext = async () => {
+		const emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
 		if (step === "identify") {
+			if (credentials.email === null || emailRegex.test(credentials.email) === false) {
+				setErrors((prev) => ({ ...prev, login: "Please input a valid email address." }));
+				return;
+			}
 			try {
 				const res = await fetch(API_URL + "/external/user/" + credentials.email);
 				if (res.status !== 200) {
