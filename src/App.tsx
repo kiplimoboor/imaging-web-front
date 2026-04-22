@@ -21,72 +21,72 @@ const Viewer = lazy(() => import("./components/Viewer.tsx"));
 
 const queryClient = new QueryClient();
 function App() {
-	return (
-		<div className="font-inter">
-			<QueryClientProvider client={queryClient}>
-				<AuthProvider>
-					<Routes>
-						<Route path="/login" element={<Login />} />
-						<Route path="/auth" element={<AuthCallback />} />
-						<Route path="/401" element={<Unauthorized />} />
+  return (
+    <div className="font-inter">
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/auth" element={<AuthCallback />} />
+            <Route path="/401" element={<Unauthorized />} />
 
-						<Route element={<PrivateRoutes />}>
-							<Route path="/" element={<Index />} />
-							<Route
-								path="/all"
-								element={
-									<StudiesPageLayout>
-										<AllStudies />
-									</StudiesPageLayout>
-								}
-							/>
+            <Route element={<PrivateRoutes />}>
+              <Route path="/" element={<Index />} />
+              <Route
+                path="/all"
+                element={
+                  <StudiesPageLayout>
+                    <AllStudies />
+                  </StudiesPageLayout>
+                }
+              />
 
-							<Route element={<AdminRoutes />}>
-								<Route
-									path="/completed"
-									element={
-										<StudiesPageLayout>
-											<CompletedStudies />
-										</StudiesPageLayout>
-									}
-								/>
+              <Route element={<AdminRoutes />}>
+                <Route
+                  path="/completed"
+                  element={
+                    <StudiesPageLayout>
+                      <CompletedStudies />
+                    </StudiesPageLayout>
+                  }
+                />
 
-								<Route
-									path="/new"
-									element={
-										<StudiesPageLayout>
-											<NewStudies />
-										</StudiesPageLayout>
-									}
-								/>
+                <Route
+                  path="/new"
+                  element={
+                    <StudiesPageLayout>
+                      <NewStudies />
+                    </StudiesPageLayout>
+                  }
+                />
 
-								<Route
-									path="/users"
-									element={
-										<UsersPageLayout>
-											<UsersTable />
-										</UsersPageLayout>
-									}
-								/>
+                <Route
+                  path="/users"
+                  element={
+                    <UsersPageLayout>
+                      <UsersTable />
+                    </UsersPageLayout>
+                  }
+                />
 
-								<Route path="/query" element={<Query />} />
-							</Route>
+                <Route path="/query" element={<Query />} />
+              </Route>
 
-							<Route
-								path="/viewer"
-								element={
-									<Suspense fallback={<LoadingSpinner message="Loading Viewer" />}>
-										<Viewer />
-									</Suspense>
-								}
-							/>
-						</Route>
-					</Routes>
-				</AuthProvider>
-				<ReactQueryDevtools initialIsOpen={false} />
-			</QueryClientProvider>
-		</div>
-	);
+              <Route
+                path="/viewer"
+                element={
+                  <Suspense fallback={<LoadingSpinner message="Loading Viewer" />}>
+                    <Viewer />
+                  </Suspense>
+                }
+              />
+            </Route>
+          </Routes>
+        </AuthProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </div>
+  );
 }
 
 export default App;

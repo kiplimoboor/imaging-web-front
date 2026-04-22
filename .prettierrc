@@ -1,7 +1,0 @@
-{
-  "plugins": ["prettier-plugin-organize-imports"],
-  "organizeImportsSkipDestructiveCodeActions": true,
-  "printWidth": 120,
-  "proseWrap": "preserve",
-  "endOfLine": "lf"
-}

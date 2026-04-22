@@ -17,50 +17,50 @@ import TipTapToolbar from "./TipTapToolbar";
 const API_URL = import.meta.env.VITE_API_URL;
 
 function Editor() {
-	const [searchParams] = useSearchParams();
-	const uid = searchParams.get("uid");
-	const { user } = useAuth();
-	const [study, setStudy] = useState<Study | null>(null);
-	const [editable, setEditable] = useState(true);
+  const [searchParams] = useSearchParams();
+  const uid = searchParams.get("uid");
+  const { user } = useAuth();
+  const [study, setStudy] = useState<Study | null>(null);
+  const [editable, setEditable] = useState(true);
 
-	useEffect(() => {
-		const getStudywithNote = async () => {
-			const res = await fetch(API_URL + "/notes/" + uid, { credentials: "include" });
-			const data: Study = await res.json();
-			const editable = data.radiologist === user?.id || data.student === user?.id;
-			setEditable(editable);
-			setStudy(data);
-		};
+  useEffect(() => {
+    const getStudywithNote = async () => {
+      const res = await fetch(API_URL + "/notes/" + uid, { credentials: "include" });
+      const data: Study = await res.json();
+      const editable = data.radiologist === user?.id || data.student === user?.id;
+      setEditable(editable);
+      setStudy(data);
+    };
 
-		getStudywithNote();
-	}, [uid, user]);
+    getStudywithNote();
+  }, [uid, user]);
 
-	const editor = useEditor(
-		{
-			immediatelyRender: true,
-			editorProps: { attributes: { class: "simple-editor" } },
-			extensions: [StarterKit.configure({}), TextAlign.configure({ types: ["heading", "paragraph"] }), Typography],
-			content: study?.note || "",
-			editable,
-		},
-		[study, editable],
-	);
+  const editor = useEditor(
+    {
+      immediatelyRender: true,
+      editorProps: { attributes: { class: "simple-editor" } },
+      extensions: [StarterKit.configure({}), TextAlign.configure({ types: ["heading", "paragraph"] }), Typography],
+      content: study?.note || "",
+      editable,
+    },
+    [study, editable],
+  );
 
-	return (
-		<div>
-			<EditorContext.Provider value={{ editor }}>
-				{editable && study && (
-					<>
-						<EditorActions editor={editor} study={study} setStudy={setStudy} />
-						<Toolbar>
-							<TipTapToolbar />
-						</Toolbar>
-					</>
-				)}
-				<EditorContent editor={editor} role="presentation" className="simple-editor-content" />
-			</EditorContext.Provider>
-		</div>
-	);
+  return (
+    <div>
+      <EditorContext.Provider value={{ editor }}>
+        {editable && study && (
+          <>
+            <EditorActions editor={editor} study={study} setStudy={setStudy} />
+            <Toolbar>
+              <TipTapToolbar />
+            </Toolbar>
+          </>
+        )}
+        <EditorContent editor={editor} role="presentation" className="simple-editor-content" />
+      </EditorContext.Provider>
+    </div>
+  );
 }
 
 export default Editor;

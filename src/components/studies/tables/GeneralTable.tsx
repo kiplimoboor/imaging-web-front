@@ -10,51 +10,51 @@ import RowActions from "../RowActions";
 import { studyUpdate } from "../utils";
 
 function GeneralTable() {
-	const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
-	const queryClient = useQueryClient();
+  const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
+  const queryClient = useQueryClient();
 
-	const columns = useMemo<MRT_ColumnDef<Study>[]>(
-		() => [
-			...commonColumns,
-			...hiddenColumns,
-			{
-				header: "Status",
-				size: 50,
-				Cell: ({ row }) => {
-					const map: StudyStatusMap = {
-						0: { text: "Scanned", color: "primary" },
-						1: { text: "Scanned", color: "primary" },
-						2: { text: "Scanned", color: "primary" },
-						3: { text: "Scanned", color: "primary" },
-						4: { text: "Reported", color: "success" },
-					};
-					return <StatusPill status={row.original.status} map={map} />;
-				},
-				muiEditTextFieldProps: hiddenEdit,
-			},
-		],
-		[],
-	);
+  const columns = useMemo<MRT_ColumnDef<Study>[]>(
+    () => [
+      ...commonColumns,
+      ...hiddenColumns,
+      {
+        header: "Status",
+        size: 50,
+        Cell: ({ row }) => {
+          const map: StudyStatusMap = {
+            0: { text: "Scanned", color: "primary" },
+            1: { text: "Scanned", color: "primary" },
+            2: { text: "Scanned", color: "primary" },
+            3: { text: "Scanned", color: "primary" },
+            4: { text: "Reported", color: "success" },
+          };
+          return <StatusPill status={row.original.status} map={map} />;
+        },
+        muiEditTextFieldProps: hiddenEdit,
+      },
+    ],
+    [],
+  );
 
-	const { data, isRefetching } = useStudies(filters);
+  const { data, isRefetching } = useStudies(filters);
 
-	const tableConfig = {
-		manualFiltering: true,
-		onEditingRowSave: ({ values, table, row }: EditingRowSaveArgs) => {
-			studyUpdate(row.original.id, values);
-			queryClient.invalidateQueries({ queryKey: ["studies", { columnFilters: filters }] });
-			table.setEditingRow(null);
-		},
-		onColumnFiltersChange: setFilters,
-		state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
-	};
-	const actions: Actions[] = ["edit", "pdf"];
-	const rowActions = useCallback(({ row, table }: RowActionsProps) => {
-		return <RowActions row={row} table={table} actions={actions} />;
-	}, []);
-	return (
-		<BaseTable columns={columns} data={data} intial={commonInitialHide} rowActions={rowActions} others={tableConfig} />
-	);
+  const tableConfig = {
+    manualFiltering: true,
+    onEditingRowSave: ({ values, table, row }: EditingRowSaveArgs) => {
+      studyUpdate(row.original.id, values);
+      queryClient.invalidateQueries({ queryKey: ["studies", { columnFilters: filters }] });
+      table.setEditingRow(null);
+    },
+    onColumnFiltersChange: setFilters,
+    state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
+  };
+  const actions: Actions[] = ["edit", "pdf"];
+  const rowActions = useCallback(({ row, table }: RowActionsProps) => {
+    return <RowActions row={row} table={table} actions={actions} />;
+  }, []);
+  return (
+    <BaseTable columns={columns} data={data} intial={commonInitialHide} rowActions={rowActions} others={tableConfig} />
+  );
 }
 
 export default GeneralTable;

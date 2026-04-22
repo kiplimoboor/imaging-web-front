@@ -4,42 +4,42 @@ import Menu from "@mui/material/Menu";
 import { useState } from "react";
 
 function RequestNotes({ accession }: { accession: string }) {
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const [note, setNote] = useState("");
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [note, setNote] = useState("");
 
-	const fetchNotes = async (e: React.MouseEvent<HTMLElement>) => {
-		const procedure = "HLC-CPR-20" + accession.slice(0, 2) + "-" + accession.slice(2);
-		setAnchorEl(e.currentTarget);
-		const res = await fetch("https://portal.mtrh.go.ke/api/resource/Clinical%20Procedure/" + procedure);
-		if (!res.ok) {
-			setNote("The note seems to be missing for this study.");
-			return;
-		}
-		const { data } = await res.json();
-		const note = data.notes.split("\0");
-		if (note.length === 2) {
-			setNote(note[1]);
-		} else {
-			setNote(note[0]);
-		}
-	};
+  const fetchNotes = async (e: React.MouseEvent<HTMLElement>) => {
+    const procedure = "HLC-CPR-20" + accession.slice(0, 2) + "-" + accession.slice(2);
+    setAnchorEl(e.currentTarget);
+    const res = await fetch("https://portal.mtrh.go.ke/api/resource/Clinical%20Procedure/" + procedure);
+    if (!res.ok) {
+      setNote("The note seems to be missing for this study.");
+      return;
+    }
+    const { data } = await res.json();
+    const note = data.notes.split("\0");
+    if (note.length === 2) {
+      setNote(note[1]);
+    } else {
+      setNote(note[0]);
+    }
+  };
 
-	return (
-		<>
-			<Tooltip title="Request Notes">
-				<IconButton onClick={(e) => fetchNotes(e)}>
-					<NotesIcon />
-				</IconButton>
-			</Tooltip>
+  return (
+    <>
+      <Tooltip title="Request Notes">
+        <IconButton onClick={(e) => fetchNotes(e)}>
+          <NotesIcon />
+        </IconButton>
+      </Tooltip>
 
-			<Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)}>
-				<div className="p-2 w-72">
-					<h1 className="font-bold mb-2">Request Note</h1>
-					<p className="whitespace-pre-wrap">{note}</p>
-				</div>
-			</Menu>
-		</>
-	);
+      <Menu open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={() => setAnchorEl(null)}>
+        <div className="p-2 w-72">
+          <h1 className="font-bold mb-2">Request Note</h1>
+          <p className="whitespace-pre-wrap">{note}</p>
+        </div>
+      </Menu>
+    </>
+  );
 }
 
 export default RequestNotes;

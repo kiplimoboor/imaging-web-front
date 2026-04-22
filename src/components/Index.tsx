@@ -5,33 +5,33 @@ import GeneralTable from "./studies/tables/GeneralTable";
 import MyStudies from "./studies/tables/MyStudies";
 
 function Index() {
-	const { user } = useAuth();
+  const { user } = useAuth();
 
-	if (user === null) {
-		return;
-	}
+  if (user === null) {
+    return;
+  }
 
-	if (user?.role === "Administrator" || user?.role === "Support") {
-		return <Dashboard />;
-	}
+  if (user?.role === "Administrator" || user?.role === "Support") {
+    return <Dashboard />;
+  }
 
-	if (user?.role === "Registrar" || user?.role === "Radiologist") {
-		return (
-			<StudiesPageLayout>
-				<MyStudies />
-			</StudiesPageLayout>
-		);
-	}
+  if (user?.role === "Registrar" || user?.role === "Radiologist") {
+    return (
+      <StudiesPageLayout>
+        <MyStudies />
+      </StudiesPageLayout>
+    );
+  }
 
-	const generalUsers = ["Secretary", "Radiographer", "Guest", "Auditor"];
-	if (generalUsers.includes(user?.role)) {
-		return (
-			<StudiesPageLayout>
-				<GeneralTable />
-			</StudiesPageLayout>
-		);
-	}
+  const generalUsers = ["Secretary", "Radiographer", "Guest", "Auditor"];
+  if (generalUsers.includes(user?.role)) {
+    return (
+      <StudiesPageLayout>
+        <GeneralTable />
+      </StudiesPageLayout>
+    );
+  }
 
-	return <>Be Different. Be nice.</>;
+  return <>Be Different. Be nice.</>;
 }
 export default Index;

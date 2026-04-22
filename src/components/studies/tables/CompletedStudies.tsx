@@ -10,53 +10,53 @@ import RowActions from "../RowActions";
 import { studyUpdate } from "../utils";
 
 function CompletedStudies() {
-	const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
-	const queryClient = useQueryClient();
+  const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
+  const queryClient = useQueryClient();
 
-	const renderStatus = useCallback(
-		({ row }: { row: MRT_Row<Study> }) => (
-			<StatusPill status={row.original.status} map={{ 4: { text: "Complete", color: "success" } }} />
-		),
-		[],
-	);
+  const renderStatus = useCallback(
+    ({ row }: { row: MRT_Row<Study> }) => (
+      <StatusPill status={row.original.status} map={{ 4: { text: "Complete", color: "success" } }} />
+    ),
+    [],
+  );
 
-	const renderRadiologist = useCallback((row: Study) => row.student_name || row.radiologist_name, []);
+  const renderRadiologist = useCallback((row: Study) => row.student_name || row.radiologist_name, []);
 
-	const columns = useMemo<MRT_ColumnDef<Study>[]>(() => {
-		return [
-			...commonColumns,
-			...hiddenColumns,
-			{ header: "Status", size: 50, Cell: renderStatus, muiEditTextFieldProps: hiddenEdit, enableColumnFilter: false },
-			{
-				header: "Radiologist",
-				accessorFn: renderRadiologist,
-				muiEditTextFieldProps: hiddenEdit,
-				enableColumnFilter: false,
-			},
-		];
-	}, []);
+  const columns = useMemo<MRT_ColumnDef<Study>[]>(() => {
+    return [
+      ...commonColumns,
+      ...hiddenColumns,
+      { header: "Status", size: 50, Cell: renderStatus, muiEditTextFieldProps: hiddenEdit, enableColumnFilter: false },
+      {
+        header: "Radiologist",
+        accessorFn: renderRadiologist,
+        muiEditTextFieldProps: hiddenEdit,
+        enableColumnFilter: false,
+      },
+    ];
+  }, []);
 
-	const { data, isRefetching } = useStudies([{ id: "status", value: 4 }, ...filters]);
+  const { data, isRefetching } = useStudies([{ id: "status", value: 4 }, ...filters]);
 
-	const actions: Actions[] = ["edit", "pdf"];
-	const rowActions = useCallback(({ row, table }: RowActionsProps) => {
-		return <RowActions row={row} table={table} actions={actions} />;
-	}, []);
+  const actions: Actions[] = ["edit", "pdf"];
+  const rowActions = useCallback(({ row, table }: RowActionsProps) => {
+    return <RowActions row={row} table={table} actions={actions} />;
+  }, []);
 
-	const tableConfig = {
-		manualFiltering: true,
-		onEditingRowSave: ({ values, table, row }: EditingRowSaveArgs) => {
-			studyUpdate(row.original.id, values);
-			queryClient.invalidateQueries({ queryKey: ["studies", "completed", { columnFilters: filters }] });
-			table.setEditingRow(null);
-		},
-		onColumnFiltersChange: setFilters,
-		state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
-	};
+  const tableConfig = {
+    manualFiltering: true,
+    onEditingRowSave: ({ values, table, row }: EditingRowSaveArgs) => {
+      studyUpdate(row.original.id, values);
+      queryClient.invalidateQueries({ queryKey: ["studies", "completed", { columnFilters: filters }] });
+      table.setEditingRow(null);
+    },
+    onColumnFiltersChange: setFilters,
+    state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
+  };
 
-	return (
-		<BaseTable data={data} columns={columns} rowActions={rowActions} intial={commonInitialHide} others={tableConfig} />
-	);
+  return (
+    <BaseTable data={data} columns={columns} rowActions={rowActions} intial={commonInitialHide} others={tableConfig} />
+  );
 }
 
 export default CompletedStudies;

@@ -8,32 +8,32 @@ import { commonColumns } from "../columns";
 import RowActions from "../RowActions";
 
 function NewStudies() {
-	const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
-	const columns = useMemo<MRT_ColumnDef<Study>[]>(
-		() => [
-			...commonColumns,
-			{
-				header: "Status",
-				id: "status",
-				size: 50,
-				Cell: ({ row }) => <StatusPill status={row.original.status} map={{ 0: { text: "New", color: "primary" } }} />,
-			},
-		],
-		[],
-	);
+  const [filters, setFilters] = useState<MRT_ColumnFiltersState>([]);
+  const columns = useMemo<MRT_ColumnDef<Study>[]>(
+    () => [
+      ...commonColumns,
+      {
+        header: "Status",
+        id: "status",
+        size: 50,
+        Cell: ({ row }) => <StatusPill status={row.original.status} map={{ 0: { text: "New", color: "primary" } }} />,
+      },
+    ],
+    [],
+  );
 
-	const { data, isRefetching } = useStudies([{ id: "status", value: 0 }, ...filters]);
+  const { data, isRefetching } = useStudies([{ id: "status", value: 0 }, ...filters]);
 
-	const tableConfig = {
-		manualFiltering: true,
-		onColumnFiltersChange: setFilters,
-		state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
-	};
+  const tableConfig = {
+    manualFiltering: true,
+    onColumnFiltersChange: setFilters,
+    state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
+  };
 
-	const actions: Actions[] = ["assign", "note"];
-	const rowActions = useCallback(({ row }: { row: MRT_Row<Study> }) => <RowActions row={row} actions={actions} />, []);
+  const actions: Actions[] = ["assign", "note"];
+  const rowActions = useCallback(({ row }: { row: MRT_Row<Study> }) => <RowActions row={row} actions={actions} />, []);
 
-	return <BaseTable data={data} columns={columns} rowActions={rowActions} others={tableConfig} />;
+  return <BaseTable data={data} columns={columns} rowActions={rowActions} others={tableConfig} />;
 }
 
 export default NewStudies;
