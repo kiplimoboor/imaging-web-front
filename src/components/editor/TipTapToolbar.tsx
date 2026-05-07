@@ -1,5 +1,5 @@
 import { useCurrentEditor } from "@tiptap/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { HeadingButton } from "@/components/tiptap-ui/heading-button";
 import { MarkButton } from "@/components/tiptap-ui/mark-button";
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button";
