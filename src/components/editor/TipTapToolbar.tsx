@@ -1,3 +1,5 @@
+import { useCurrentEditor } from "@tiptap/react";
+import { useCallback, useEffect, useState } from "react";
 import { HeadingButton } from "@/components/tiptap-ui/heading-button";
 import { MarkButton } from "@/components/tiptap-ui/mark-button";
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button";
@@ -21,6 +23,7 @@ function TipTapToolbar() {
         <MarkButton type="bold" />
         <MarkButton type="italic" />
         <MarkButton type="underline" />
+        <CaseButton />
       </ToolbarGroup>
 
       <ToolbarSeparator />
@@ -41,6 +44,28 @@ function TipTapToolbar() {
 
       <Spacer />
     </>
+  );
+}
+
+export function CaseButton() {
+  const { editor } = useCurrentEditor();
+  const [isUpper, setIsUpper] = useState(false);
+
+  const handleCase = useCallback(() => {
+    if (!editor || editor.state.selection.empty) return;
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to);
+    const newText = isUpper ? selectedText.toLowerCase() : selectedText.toUpperCase();
+    editor.chain().focus().insertContentAt({ from, to }, newText).setTextSelection({ from, to }).run();
+    setIsUpper(!isUpper);
+  }, [editor, isUpper]);
+
+  if (!editor) return null;
+
+  return (
+    <button title="Switch case" className="tiptap-button" data-style="ghost" onClick={handleCase}>
+      Aa
+    </button>
   );
 }
 
