@@ -18,6 +18,7 @@ import { useUsers } from "@/hooks/users";
 import type { Study, User } from "@/types";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const MTRH_PORTAL_URL = "https://portal.mtrh.go.ke";
 
 function rowActions(table: MRT_TableInstance<Study>, row: MRT_Row<Study>) {
   const { status, accession } = row.original;
@@ -42,7 +43,7 @@ function rowActions(table: MRT_TableInstance<Study>, row: MRT_Row<Study>) {
   );
   if (status === 4) {
     actions.push(<GeneratePdf key="pdf" row={row} table={table} />);
-    actions.push(<GeneratePdfWithQR key="pdf" row={row} table={table} />);
+    actions.push(<GeneratePdfWithQR key="pdfqr" row={row} table={table} />);
   }
   actions.push(<DeleteStudy study={row.original} table={table} key="delete" />);
   return actions;
@@ -73,16 +74,12 @@ function RequestNote({ accession, table }: { accession: string; table: MRT_Table
   const fetchNotes = async (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
     const procedure = "HLC-CPR-20" + accession.slice(0, 2) + "-" + accession.slice(2);
-    const url = `https://portal.mtrh.go.ke/api/resource/Clinical Procedure?filters=[["name", "=", "${procedure}"]]&fields=["notes"]`;
+    const url = `${MTRH_PORTAL_URL}/api/method/clinical.api.radiology.ris.request.request_note?accession=${procedure}`;
     try {
       const res = await fetch(url);
-      if (!res.ok) {
-        return;
-      }
-
-      const { data } = await res.json();
-      if (data && data.length > 0) {
-        setNotes(data[0].notes);
+      const { message } = await res.json();
+      if (message) {
+        setNotes(message);
       }
     } catch (error) {
       console.error("failed to fetch notes:", error);
