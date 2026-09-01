@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import { useState } from "react";
 
-const MTRH_PORTAL_API = "https://portal.mtrh.go.ke/api/method/clinical.api.radiology";
+const MTRH_RADIOLOGY_API = "https://portal.mtrh.go.ke/api/method/clinical.api.radiology.ris";
 
 function RequestNotes({ accession }: { accession: string }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -12,7 +12,7 @@ function RequestNotes({ accession }: { accession: string }) {
   const fetchNotes = async (e: React.MouseEvent<HTMLElement>) => {
     const procedure = "HLC-CPR-20" + accession.slice(0, 2) + "-" + accession.slice(2);
     setAnchorEl(e.currentTarget);
-    const res = await fetch(MTRH_PORTAL_API + ".request.request_note?accession=" + procedure);
+    const res = await fetch(`${MTRH_RADIOLOGY_API}.request.request_note?accession=${procedure}`);
     if (!res.ok) {
       setNote("The note seems to be missing for this study.");
       return;
