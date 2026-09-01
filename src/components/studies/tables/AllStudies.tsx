@@ -56,7 +56,7 @@ function AllStudies() {
     },
     onColumnFiltersChange: setFilters,
     state: { columnFilters: filters, showProgressBars: isRefetching, isLoading: !data },
-    ...(user?.role === "Support" && {
+    ...((user?.role === "Support" || user?.role === "Administrator") && {
       renderRowActionMenuItems: ({ table, row }: { table: MRT_TableInstance<Study>; row: MRT_Row<Study> }) => {
         return kebabRowActions(table, row);
       },
@@ -74,7 +74,7 @@ function AllStudies() {
       columns={columns}
       intial={commonInitialHide}
       others={tableConfig}
-      rowActions={user?.role === "Support" ? undefined : rowActions}
+      rowActions={user?.role === "Support" || user?.role === "Administrator" ? undefined : rowActions}
     />
   );
 }
