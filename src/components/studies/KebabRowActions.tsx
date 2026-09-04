@@ -43,7 +43,6 @@ function rowActions(table: MRT_TableInstance<Study>, row: MRT_Row<Study>) {
   );
   if (status === 4) {
     actions.push(<GeneratePdf key="pdf" row={row} table={table} />);
-    actions.push(<GeneratePdfWithQR key="pdfqr" row={row} table={table} />);
   }
   actions.push(<DeleteStudy study={row.original} table={table} key="delete" />);
   return actions;
@@ -202,38 +201,6 @@ function GeneratePdf({ row, table }: { row: MRT_Row<Study>; table: MRT_TableInst
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...study, report: note }),
-      });
-      const data = await res.json();
-      setLoading(false);
-      window.open(API_URL + "/pdf?filename=" + data.filename, "_blank");
-    } catch (e) {
-      setLoading(false);
-      console.error("PDF generation failed:", e);
-    }
-  };
-
-  return (
-    <MRT_ActionMenuItem icon={<PictureAsPdf />} label={loading ? "..." : "Report"} onClick={handlePdf} table={table} />
-  );
-}
-
-function GeneratePdfWithQR({ row, table }: { row: MRT_Row<Study>; table: MRT_TableInstance<Study> }) {
-  const [loading, setLoading] = useState(false);
-
-  const handlePdf = async () => {
-    const study = row.original;
-    const requiredFields = ["patient_name", "patient_id", "dob", "gender", "examination", "study_date"];
-    if (!requiredFields.every((field) => Boolean(study[field as keyof Study]))) return table.setEditingRow(row);
-
-    setLoading(true);
-    try {
-      const noteRes = await fetch(API_URL + "/notes/" + study.dicom_uid, { credentials: "include" });
-      const { note } = await noteRes.json();
-      const res = await fetch(API_URL + "/pdf", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...study, report: note, withQR: true }),
       });
       const data = await res.json();
@@ -246,12 +213,7 @@ function GeneratePdfWithQR({ row, table }: { row: MRT_Row<Study>; table: MRT_Tab
   };
 
   return (
-    <MRT_ActionMenuItem
-      icon={<PictureAsPdf />}
-      label={loading ? "..." : "Test Report"}
-      onClick={handlePdf}
-      table={table}
-    />
+    <MRT_ActionMenuItem icon={<PictureAsPdf />} label={loading ? "..." : "Report"} onClick={handlePdf} table={table} />
   );
 }
 
