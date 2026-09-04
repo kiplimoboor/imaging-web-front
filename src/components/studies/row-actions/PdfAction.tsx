@@ -24,7 +24,7 @@ function PdfAction({ row, table }: { row: MRT_Row<Study>; table: StudyTableInsta
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...study, report: note }),
+        body: JSON.stringify({ ...study, report: note, withQR: true }),
       });
       const data = await res.json();
       setPdfLoading(false);
