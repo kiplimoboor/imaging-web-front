@@ -56,7 +56,7 @@ function View({ study, table }: { study: Study; table: MRT_TableInstance<Study> 
     const archived = new Date(study.created_at) < new Date("2026-02-06T00:00:00.000Z");
     if (study.status === 0 || (user?.role === "Guest" && study.status != 4)) {
       window.open(
-        `https://radiology.mtrh.go.ke/images${archived ? "-archive" : ""}/viewer?StudyInstanceUIDs=${study.dicom_uid}`,
+        `https://radiology.mtrh.go.ke/images${archived ? "-00" : ""}/viewer?StudyInstanceUIDs=${study.dicom_uid}`,
       );
     } else {
       window.open(`viewer?viewer=images${archived ? "-archive" : ""}&uid=${study.dicom_uid}`);
